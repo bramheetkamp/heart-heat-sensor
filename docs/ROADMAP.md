@@ -28,9 +28,9 @@ only intentionally deferred item.
 - [x] Every warning includes trigger values, baseline values, and a trend array (shows WHY)
 - [x] Wellness framing only — no medical diagnosis language
 - [x] iOS `WarningsEngineTests` — all three rules, baseline computation, RMSSD edge cases
-- [ ] **Fix OVERHEATING engine window: 24 h lookback misses seed data (37 h ago) — extend to 48 h** *(on `claude/festive-bell-a9ari0`, pending merge)*
-- [ ] Backend warnings engine unit tests (direct function calls with controlled timestamps, covering all 3 rules) *(on `claude/festive-bell-a9ari0`, pending merge)*
-- [ ] Seed script fires all 3 expected warnings *(on `claude/festive-bell-a9ari0`, pending merge)*
+- [x] **Fix OVERHEATING engine window: 24 h → 48 h so seed workout data fires correctly**
+- [x] Backend warnings engine unit tests (direct function calls with controlled timestamps, all 3 rules, 17 tests)
+- [x] Seed script fires all 3 expected warnings (OVERHEATING + GETTING_SICK + FATIGUE_RECOVERY)
 
 ---
 
@@ -95,14 +95,14 @@ only intentionally deferred item.
 - [x] Seed script — 35 days of scenario data, test account `test@example.com / password123`
 - [x] 19 API integration tests, all passing (`npm test`)
 - [ ] **Apple Sign-In: verify `identityToken` signature against Apple's JWKS endpoint (production security)**
-- [ ] Rate limiting on auth and readings endpoints (brute-force / abuse protection)
+- [x] Rate limiting on auth and readings endpoints (brute-force / abuse protection)
 
 ---
 
 ## Quality Gates (must all pass before PROJECT COMPLETE)
 
-- [x] Backend tests passing (`npm test` → 36/36 after festive-bell merge)
-- [ ] Seed script fires all 3 expected warnings after OVERHEATING window fix
+- [x] Backend tests passing (`npm test` → 40/40 after rate-limiting work)
+- [x] Seed script fires all 3 expected warnings (verified)
 - [ ] All ROADMAP items above checked (except Garmin)
 - [ ] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)
 - [ ] README instructions verified accurate

@@ -62,3 +62,48 @@ and exact instructions for the next run.
       network mock in tests; do this after rate limiting).
    c. Strict iOS Swift read-through for compile-correctness (no Xcode required for reading).
 5. Push docs update to `develop` after each merge.
+
+---
+
+## 2026-06-12 — Rate limiting + festive-bell merge
+
+**Merged this run**
+- `claude/festive-bell-a9ari0` → `develop`
+  - OVERHEATING lookback window: 24 h → 48 h (seed now fires all 3 warnings)
+  - 17 warnings engine unit tests added (`warningsEngine.test.ts`)
+  - Total tests after merge: 36/36
+
+**What was built this run**
+- Branch `claude/work-rate-limiting` (NOT yet merged — next run reviews it):
+  - Installed `@fastify/rate-limit@9` (Fastify v4 compatible)
+  - Global backstop: 200 req / min on all routes
+  - Per-route: `/auth/register` → 5/15 min; `/auth/login` + `/auth/apple` → 10/15 min;
+    `/readings/batch` → 100/min
+  - All limits configurable via `BuildServerOptions` (`authRateLimit` / `readingsRateLimit`)
+    so tests can use tight values without touching production defaults
+  - 4 new integration tests in `tests/rateLimit.test.ts` (separate server per describe block
+    to prevent shared in-memory counters from interfering); 40/40 total passing
+  - Rate-limit response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`,
+    `X-RateLimit-Reset`) verified in tests
+
+**Known issues / not verified on Linux**
+- iOS code cannot be compiled on Linux; all Swift review remains read-only.
+- Apple token JWKS verification is still a stub — only remaining backend security item.
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-rate-limiting`.
+   - `cd backend && npm install && npm test` — must show **40/40 passing**.
+   - Verify: auth endpoints return `X-RateLimit-Limit` header on normal responses.
+   - Merge into `develop` once review is clean.
+3. Update ROADMAP.md: check "Rate limiting" item.
+4. Phase 2 — next unchecked item:
+   **Apple Sign-In JWKS verification** (`/auth/apple`):
+   - Install `jose` package (`npm install jose`).
+   - Fetch JWKS from `https://appleid.apple.com/auth/keys`, verify RS256 signature,
+     validate `iss`, `aud`, and `exp` claims.
+   - For tests: use a mock JWKS server or pre-signed test JWT (don't hit live Apple endpoint).
+   - Work on a new branch `claude/work-apple-jwks`.
+5. After that: strict iOS Swift read-through for compile-correctness (all remaining
+   unchecked quality-gate items).
+6. Push docs update to `develop` after each merge.
