@@ -109,7 +109,10 @@ function checkOverheating(
   if (hasUnresolved(db, userId, 'OVERHEATING')) return null;
 
   const now = Date.now();
-  const cutoff = now - 24 * 60 * 60 * 1000;
+  // 48 h window: catches yesterday's overheating workout without triggering on
+  // distant historical events; aligns with the seed data (overheat readings
+  // land ~37 h in the past).
+  const cutoff = now - 48 * 60 * 60 * 1000;
   const recent = readings.filter((r) => r.timestamp >= cutoff && r.temp_site1 !== null);
 
   if (recent.length === 0) return null;
