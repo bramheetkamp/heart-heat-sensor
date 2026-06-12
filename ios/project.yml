@@ -1,0 +1,48 @@
+name: HeartRate
+
+options:
+  bundleIdPrefix: com.heartrate
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  defaultConfig: Debug
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    DEVELOPMENT_TEAM: ""          # set your team ID here
+    CODE_SIGN_STYLE: Automatic
+
+packages: {}
+
+targets:
+  HeartRate:
+    type: application
+    platform: iOS
+    sources:
+      - path: HeartRate
+        excludes:
+          - "**/*.md"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.app
+        INFOPLIST_FILE: HeartRate/Info.plist
+        CODE_SIGN_ENTITLEMENTS: HeartRate/HeartRate.entitlements
+        TARGETED_DEVICE_FAMILY: "1"    # iPhone only
+    info:
+      path: HeartRate/Info.plist
+      properties: {}
+
+  HeartRateTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: HeartRateTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.tests
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/HeartRate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HeartRate"
+    dependencies:
+      - target: HeartRate
