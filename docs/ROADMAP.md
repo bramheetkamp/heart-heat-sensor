@@ -28,9 +28,9 @@ only intentionally deferred item.
 - [x] Every warning includes trigger values, baseline values, and a trend array (shows WHY)
 - [x] Wellness framing only — no medical diagnosis language
 - [x] iOS `WarningsEngineTests` — all three rules, baseline computation, RMSSD edge cases
-- [ ] **Fix OVERHEATING engine window: 24 h lookback misses seed data (37 h ago) — extend to 48 h**
-- [ ] Backend warnings engine unit tests (direct function calls with controlled timestamps, covering all 3 rules)
-- [ ] Seed script fires all 3 expected warnings (currently only GETTING_SICK + FATIGUE_RECOVERY fire; OVERHEATING blocked by 24 h window)
+- [ ] **Fix OVERHEATING engine window: 24 h lookback misses seed data (37 h ago) — extend to 48 h** *(on `claude/festive-bell-a9ari0`, pending merge)*
+- [ ] Backend warnings engine unit tests (direct function calls with controlled timestamps, covering all 3 rules) *(on `claude/festive-bell-a9ari0`, pending merge)*
+- [ ] Seed script fires all 3 expected warnings *(on `claude/festive-bell-a9ari0`, pending merge)*
 
 ---
 
@@ -101,7 +101,7 @@ only intentionally deferred item.
 
 ## Quality Gates (must all pass before PROJECT COMPLETE)
 
-- [x] Backend tests passing (`npm test` → 19/19)
+- [x] Backend tests passing (`npm test` → 36/36 after festive-bell merge)
 - [ ] Seed script fires all 3 expected warnings after OVERHEATING window fix
 - [ ] All ROADMAP items above checked (except Garmin)
 - [ ] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)

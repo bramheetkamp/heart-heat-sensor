@@ -31,10 +31,15 @@ and exact instructions for the next run.
 - `docs/ROADMAP.md` created with full capability checklist.
 - `docs/IMPROVEMENT_LOG.md` created (this file).
 - Pushed both to `develop`.
-- Feature work started on `claude/festive-bell-a9ari0`:
+- Feature branch `claude/festive-bell-a9ari0`:
   - Fix `checkOverheating` lookback window: **24 h → 48 h** so seed data fires correctly.
-  - Add `backend/tests/warningsEngine.test.ts` — direct unit tests for all three warning
-    rules with controlled timestamps (no HTTP layer, no server startup overhead).
+    Seed now generates all 3 expected warnings (OVERHEATING + GETTING_SICK + FATIGUE_RECOVERY).
+  - Add `backend/tests/warningsEngine.test.ts` — 17 direct unit tests for all three warning
+    rules with controlled timestamps (no HTTP layer, no server startup overhead). Three edge
+    cases fixed during development: rapid-rise test data adjusted to stay below the absolute
+    threshold; "only 1 elevated day" test uses minute-level timestamp offsets to avoid
+    inadvertently crossing a UTC midnight boundary.
+  - Total backend test count after fix: **36/36** passing.
 
 **Known issues / not verified on Linux**
 - iOS code cannot be compiled; Swift review was read-only. Any type errors in Swift
@@ -45,13 +50,15 @@ and exact instructions for the next run.
 
 **Next run instructions**
 1. `git fetch --all`
-2. Develop is at `origin/develop`. Phase 1: review `claude/festive-bell-a9ari0` —
-   it should contain the OVERHEATING fix + new `warningsEngine.test.ts`. Run
-   `cd backend && npm install && npm test` (should now be ≥ 19 + new engine tests).
-   Run `npm run seed` and confirm all **3** warnings fire.
-3. Merge `claude/festive-bell-a9ari0` into `develop` once tests are green.
-4. Phase 2: pick the next unchecked ROADMAP item. Recommended order:
-   a. Apple Sign-In JWKS signature verification (backend, testable).
-   b. Rate limiting with `@fastify/rate-limit` + tests.
-   c. Strict iOS Swift review pass (compile-correctness, no Xcode needed for reading).
-5. Push docs update to `develop` after merge.
+2. `develop` is at `origin/develop`. Phase 1: review `claude/festive-bell-a9ari0`.
+   - `cd backend && npm install && npm test` — should show **36 tests passing**.
+   - `npm run seed` — should output **3 warnings** (OVERHEATING + GETTING_SICK + FATIGUE_RECOVERY).
+   - Merge into `develop` once review is clean.
+3. Update ROADMAP.md: check the three items under "Warnings Engine" that are now fixed.
+4. Phase 2 — recommended order:
+   a. **Rate limiting** with `@fastify/rate-limit` on auth and readings endpoints (backend,
+      testable, no external API needed, ~50 lines + tests).
+   b. Apple Sign-In JWKS signature verification (needs `jose` or `jsonwebtoken` package +
+      network mock in tests; do this after rate limiting).
+   c. Strict iOS Swift read-through for compile-correctness (no Xcode required for reading).
+5. Push docs update to `develop` after each merge.
