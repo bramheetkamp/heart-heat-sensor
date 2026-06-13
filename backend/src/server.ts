@@ -7,11 +7,14 @@ import authRoutes from './routes/auth.js';
 import readingsRoutes from './routes/readings.js';
 import warningsRoutes from './routes/warnings.js';
 import wellknownRoutes from './routes/wellknown.js';
+import { makeAppleJWKS, type AppleJWKS } from './services/appleAuth.js';
 
-// Augment FastifyInstance so routes can access `fastify.db`
+// Augment FastifyInstance so routes can access `fastify.db` and Apple auth state
 declare module 'fastify' {
   interface FastifyInstance {
     db: DB;
+    appleJwks: AppleJWKS;
+    appleAudience: string;
   }
 }
 
@@ -29,7 +32,13 @@ export interface BuildServerOptions {
   authRateLimit?: RateLimitConfig;
   /** Override readings/batch rate limit. Useful in tests. */
   readingsRateLimit?: RateLimitConfig;
+  /** Apple JWKS key resolver. Defaults to live Apple endpoint. Override in tests. */
+  appleJwks?: AppleJWKS;
+  /** Apple client ID checked against the token `aud` claim. Defaults to APPLE_CLIENT_ID env. */
+  appleAudience?: string;
 }
+
+export type { AppleJWKS } from './services/appleAuth.js';
 
 export const buildServer = async (opts?: BuildServerOptions): Promise<FastifyInstance> => {
   const dbPath = opts?.dbPath ?? process.env.DATABASE_PATH ?? './data/heartrate.db';
@@ -42,6 +51,12 @@ export const buildServer = async (opts?: BuildServerOptions): Promise<FastifyIns
   // ── Database ─────────────────────────────────────────────────────────────────
   const db = createDatabase(dbPath);
   fastify.decorate('db', db);
+
+  // ── Apple JWKS ───────────────────────────────────────────────────────────────
+  const appleAudience = opts?.appleAudience ?? process.env.APPLE_CLIENT_ID ?? 'com.pulse.app';
+  const appleJwks = opts?.appleJwks ?? makeAppleJWKS();
+  fastify.decorate('appleJwks', appleJwks);
+  fastify.decorate('appleAudience', appleAudience);
 
   // ── CORS ─────────────────────────────────────────────────────────────────────
   await fastify.register(cors, { origin: true, credentials: true });
