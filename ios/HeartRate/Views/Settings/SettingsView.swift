@@ -10,6 +10,7 @@ struct SettingsView: View {
 
     var body: some View {
         List {
+            appearanceSection
             demoSection
             thresholdsSection
             connectionSection
@@ -21,6 +22,26 @@ struct SettingsView: View {
     }
 
     // MARK: - Sections
+
+    private var appearanceSection: some View {
+        Section {
+            Picker(selection: Binding(
+                get: { env.appearance },
+                set: { env.appearance = $0 }
+            )) {
+                ForEach(AppearanceMode.allCases) { mode in
+                    Label(mode.label, systemImage: mode.icon).tag(mode)
+                }
+            } label: {
+                Label("Appearance", systemImage: "circle.lefthalf.filled")
+            }
+            .pickerStyle(.navigationLink)
+        } header: {
+            Text("Appearance")
+        } footer: {
+            Text("Dark is the default. Choose \"Adjust to Device\" to follow your system light/dark setting.")
+        }
+    }
 
     private var demoSection: some View {
         Section {
