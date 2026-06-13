@@ -73,7 +73,7 @@ final class SyncService: ObservableObject {
     // MARK: - Base URL
 
     static let baseURL: String = {
-        ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+        ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3100"
     }()
 
     // MARK: - Published State

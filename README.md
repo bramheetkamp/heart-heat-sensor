@@ -28,7 +28,7 @@ heart-heat-sensor/
 cd backend
 npm install
 cp .env.example .env          # edit JWT_SECRET at minimum
-npm run dev                   # starts on http://localhost:3000
+npm run dev                   # starts on http://localhost:3100
 ```
 
 ### Quick start (Docker)
@@ -245,10 +245,10 @@ On the backend, add a `/integrations/garmin` route group when ready.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PORT` | `3000` | HTTP port |
+| `PORT` | `3100` | HTTP port |
 | `JWT_SECRET` | `dev_secret_change_me` | **Change in production** |
 | `DATABASE_PATH` | `./data/heartrate.db` | SQLite file path |
 | `APPLE_CLIENT_ID` | `com.pulse.app` | Bundle ID checked against `aud` in Apple identity tokens |
 | `APPLE_BUNDLE_ID` | `com.heartrate.app` | Bundle ID embedded in the AASA file |
 | `APPLE_TEAM_ID` | `XXXXXXXXXX` | Apple Developer Team ID embedded in the AASA file |
-| `API_BASE_URL` | `http://localhost:3000` | Set as Xcode env var to point the iOS app at staging |
+| `API_BASE_URL` | `http://localhost:3100` | Set as Xcode env var to point the iOS app at staging |

@@ -6,7 +6,7 @@ struct SettingsView: View {
     @State private var profile: UserProfile?
     @State private var showDemoConfirm = false
     @State private var showResetConfirm = false
-    @State private var backendURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+    @State private var backendURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3100"
 
     var body: some View {
         List {
