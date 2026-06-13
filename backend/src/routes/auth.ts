@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import type { User } from '../types.js';
 import type { RateLimitConfig } from '../server.js';
+import { verifyAppleToken } from '../services/appleAuth.js';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -85,27 +86,15 @@ const authRoutes: FastifyPluginAsync<AuthPluginOptions> = async (fastify, plugin
 
     const { identityToken, email } = parsed.data;
 
-    // PRODUCTION NOTE: verify identityToken against Apple's public keys
-    // (https://appleid.apple.com/auth/keys) and validate iss, aud, exp claims.
-    // For development, we decode without verification.
     let appleSub: string;
     let appleEmail: string | undefined = email;
 
     try {
-      const parts = identityToken.split('.');
-      if (parts.length !== 3) {
-        return reply.status(400).send({ error: 'Invalid identity token format' });
-      }
-      const payloadJson = Buffer.from(parts[1], 'base64url').toString('utf-8');
-      const payload = JSON.parse(payloadJson) as { sub?: string; email?: string };
-
-      if (!payload.sub) {
-        return reply.status(400).send({ error: 'Identity token missing sub claim' });
-      }
-      appleSub = payload.sub;
-      if (!appleEmail && payload.email) appleEmail = payload.email;
+      const claims = await verifyAppleToken(identityToken, fastify.appleJwks, fastify.appleAudience);
+      appleSub = claims.sub;
+      if (!appleEmail && claims.email) appleEmail = claims.email;
     } catch {
-      return reply.status(400).send({ error: 'Failed to decode identity token' });
+      return reply.status(401).send({ error: 'Invalid Apple identity token' });
     }
 
     let user = db.prepare('SELECT * FROM users WHERE apple_sub = ?').get(appleSub) as User | undefined;
