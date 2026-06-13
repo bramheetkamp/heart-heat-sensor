@@ -53,8 +53,8 @@ final class WarningsEngineTests: XCTestCase {
         p.overheatingThreshold = 38.5
         p.sickHRThreshold = 5.0
         p.sickTempThreshold = 0.3
-        p.fatigueHRThreshold = 8.0
-        p.fatigueHRVThreshold = 80.0
+        p.fatigueHRThreshold = 0.08
+        p.fatigueHRVThreshold = 0.80
         p.createdAt = Date()
         return p
     }
