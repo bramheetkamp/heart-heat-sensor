@@ -103,7 +103,7 @@ only intentionally deferred item.
 
 - [x] Backend tests passing (`npm test` → 50/50 after Apple JWKS work)
 - [x] Seed script fires all 3 expected warnings (verified)
-- [ ] All ROADMAP items above checked (except Garmin)
-- [ ] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)
-- [ ] README instructions verified accurate
-- [ ] iOS Swift files pass strict manual review (types resolve, names match, imports present, no API misuse)
+- [x] All ROADMAP items above checked (except Garmin)
+- [x] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)
+- [x] README instructions verified accurate
+- [x] iOS Swift files pass strict manual review (types resolve, names match, imports present, no API misuse)

@@ -57,7 +57,7 @@ This creates a test account (`test@example.com` / `password123`) preloaded with 
 
 ```bash
 npm test
-# 19 tests, all in-process via Fastify inject() — no port required
+# 50 tests, all in-process via Fastify inject() — no port required
 ```
 
 ### API overview
@@ -248,6 +248,7 @@ On the backend, add a `/integrations/garmin` route group when ready.
 | `PORT` | `3000` | HTTP port |
 | `JWT_SECRET` | `dev_secret_change_me` | **Change in production** |
 | `DATABASE_PATH` | `./data/heartrate.db` | SQLite file path |
-| `APPLE_BUNDLE_ID` | `com.heartrate.app` | Bundle ID for AASA |
-| `APPLE_TEAM_ID` | `XXXXXXXXXX` | Apple Developer Team ID for AASA |
-| `API_BASE_URL` | `http://localhost:3000` | Set as Xcode env var to point app at staging |
+| `APPLE_CLIENT_ID` | `com.pulse.app` | Bundle ID checked against `aud` in Apple identity tokens |
+| `APPLE_BUNDLE_ID` | `com.heartrate.app` | Bundle ID embedded in the AASA file |
+| `APPLE_TEAM_ID` | `XXXXXXXXXX` | Apple Developer Team ID embedded in the AASA file |
+| `API_BASE_URL` | `http://localhost:3000` | Set as Xcode env var to point the iOS app at staging |

@@ -69,7 +69,7 @@ final class HRMeasurementParserTests: XCTestCase {
 
     func test_emptyData_throws() {
         XCTAssertThrowsError(try HRMeasurementParser.parse(Data())) { error in
-            if case HRMeasurementParser.ParseError.tooShort = error { } else {
+            if case ParseError.tooShort = error { } else {
                 XCTFail("Expected tooShort, got \(error)")
             }
         }
@@ -77,7 +77,7 @@ final class HRMeasurementParserTests: XCTestCase {
 
     func test_oneByte_throws() {
         XCTAssertThrowsError(try HRMeasurementParser.parse(Data([0x00]))) { error in
-            if case HRMeasurementParser.ParseError.tooShort = error { } else {
+            if case ParseError.tooShort = error { } else {
                 XCTFail("Expected tooShort, got \(error)")
             }
         }
