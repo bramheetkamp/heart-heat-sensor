@@ -76,6 +76,9 @@ final class DemoModeService: ObservableObject {
         let now = Date()
         let daysBack = 35
 
+        // Clear any previously-seeded demo data so switching scenarios is clean.
+        try? store.deleteReadings(deviceId: "DEMO")
+
         var readings: [Reading] = []
 
         for dayOffset in 0 ..< daysBack {

@@ -8,6 +8,10 @@ struct HeartRateApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(env)
+                // @Query in DashboardView/HistoryView reads from the environment's
+                // model container — point it at the same store DataStore writes to,
+                // otherwise queried data (incl. demo readings) never appears.
+                .modelContainer(env.dataStore.container)
                 .onOpenURL { url in
                     env.router.handle(url: url)
                 }

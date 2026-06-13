@@ -48,5 +48,6 @@ struct MainAppView: View {
             }
         }
         .tint(.orange)
+        .task { await env.notifications.requestAuthorization() }
     }
 }

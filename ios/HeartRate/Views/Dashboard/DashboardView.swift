@@ -86,7 +86,14 @@ struct DashboardView: View {
             ScenarioPickerSheet()
                 .environmentObject(env)
         }
-        .task { await refresh() }
+        .task {
+            // In demo mode with no data yet, seed the active scenario so the
+            // dashboard isn't empty (e.g. demo enabled without picking a scenario).
+            if env.isDemoMode && recentReadings.isEmpty {
+                try? await env.demoMode.seedReadings(scenario: env.demoMode.activeScenario, into: env.dataStore)
+            }
+            await refresh()
+        }
     }
 
     // MARK: - Mascot + Status Card
@@ -262,6 +269,7 @@ struct DashboardView: View {
             readings: Array(recentReadings.prefix(5000)),
             profile: (try? env.dataStore.getOrCreateProfile()) ?? UserProfile()
         )
+        await env.notifications.notifyIfNeeded(for: warnings)
         isRefreshing = false
     }
 }

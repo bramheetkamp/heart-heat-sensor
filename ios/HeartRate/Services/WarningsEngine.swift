@@ -1,10 +1,22 @@
 import Foundation
+import CryptoKit
 
 // MARK: - WarningsEngine
 
 /// Pure computation engine for deriving HealthWarnings from stored Readings.
 /// All methods are static — no mutable state.
 struct WarningsEngine {
+
+    /// Deterministic UUID derived from a stable seed string. The same logical
+    /// warning keeps the same id across recomputes, so detail deep-links resolve
+    /// and notifications aren't re-fired on every refresh.
+    static func stableID(for seed: String) -> UUID {
+        let digest = SHA256.hash(data: Data(seed.utf8))
+        let bytes = Array(digest.prefix(16))
+        return bytes.withUnsafeBytes { raw in
+            NSUUID(uuidBytes: raw.bindMemory(to: UInt8.self).baseAddress!) as UUID
+        }
+    }
 
     // MARK: - Minimum Data Requirements
 
@@ -37,7 +49,7 @@ struct WarningsEngine {
         if let hotReading = recent.first(where: { ($0.tempCore ?? 0) > profile.overheatingThreshold }) {
             let temp = hotReading.tempCore!
             return HealthWarning(
-                id: UUID(),
+                id: stableID(for: "overheating"),
                 type: .overheating,
                 firedAt: Date(),
                 resolvedAt: nil,
@@ -65,7 +77,7 @@ struct WarningsEngine {
                 let rise = laterTemp - baseTemp
                 if rise > 1.0 {
                     return HealthWarning(
-                        id: UUID(),
+                        id: stableID(for: "overheating"),
                         type: .overheating,
                         firedAt: Date(),
                         resolvedAt: nil,
@@ -133,7 +145,7 @@ struct WarningsEngine {
         let recentTemp = rollingAverage(readings: resting, days: 7, keyPath: \.tempCore) ?? tmpBaseline
 
         return HealthWarning(
-            id: UUID(),
+            id: stableID(for: "getting-sick"),
             type: .gettingSick,
             firedAt: Date(),
             resolvedAt: nil,
@@ -180,7 +192,7 @@ struct WarningsEngine {
         guard hrFatigued && hrvFatigued else { return nil }
 
         return HealthWarning(
-            id: UUID(),
+            id: stableID(for: "fatigue"),
             type: .fatigueRecovery,
             firedAt: Date(),
             resolvedAt: nil,

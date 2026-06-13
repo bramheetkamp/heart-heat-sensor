@@ -35,6 +35,14 @@ final class DataStore: ObservableObject {
         try context.save()
     }
 
+    /// Delete all readings recorded by a given device id (used to clear demo
+    /// data before re-seeding so scenarios don't accumulate or mix).
+    func deleteReadings(deviceId: String) throws {
+        let predicate = #Predicate<Reading> { $0.deviceId == deviceId }
+        try context.delete(model: Reading.self, where: predicate)
+        try context.save()
+    }
+
     /// Fetch readings within an inclusive date range, sorted ascending.
     func readings(from startDate: Date, to endDate: Date) throws -> [Reading] {
         let predicate = #Predicate<Reading> { reading in
