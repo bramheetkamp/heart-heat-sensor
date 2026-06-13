@@ -1,8 +1,9 @@
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import type { User } from '../types.js';
+import type { RateLimitConfig } from '../server.js';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -19,10 +20,17 @@ const appleSchema = z.object({
   email: z.string().email().optional(),
 });
 
-const authRoutes: FastifyPluginAsync = async (fastify) => {
-  const db = fastify.db;
+interface AuthPluginOptions extends FastifyPluginOptions {
+  authRateLimit?: RateLimitConfig;
+}
 
-  fastify.post('/register', async (request, reply) => {
+const authRoutes: FastifyPluginAsync<AuthPluginOptions> = async (fastify, pluginOpts) => {
+  const db = fastify.db;
+  // Production defaults: register is tighter (5/15 min) than login (10/15 min).
+  const loginRL: RateLimitConfig = pluginOpts.authRateLimit ?? { max: 10, timeWindow: '15 minutes' };
+  const registerRL: RateLimitConfig = pluginOpts.authRateLimit ?? { max: 5, timeWindow: '15 minutes' };
+
+  fastify.post('/register', { config: { rateLimit: registerRL } }, async (request, reply) => {
     const parsed = registerSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: 'Validation failed', details: parsed.error.flatten() });
@@ -47,7 +55,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     return reply.status(201).send({ token, userId: id });
   });
 
-  fastify.post('/login', async (request, reply) => {
+  fastify.post('/login', { config: { rateLimit: loginRL } }, async (request, reply) => {
     const parsed = loginSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: 'Validation failed', details: parsed.error.flatten() });
@@ -69,7 +77,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     return reply.send({ token, userId: user.id });
   });
 
-  fastify.post('/apple', async (request, reply) => {
+  fastify.post('/apple', { config: { rateLimit: loginRL } }, async (request, reply) => {
     const parsed = appleSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: 'Validation failed', details: parsed.error.flatten() });

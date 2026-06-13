@@ -1,7 +1,8 @@
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import type { Reading } from '../types.js';
+import type { RateLimitConfig } from '../server.js';
 
 const readingSchema = z.object({
   id: z.string().uuid().optional(),
@@ -52,8 +53,15 @@ function dbRowToReading(row: DbReading): Reading {
   };
 }
 
-const readingsRoutes: FastifyPluginAsync = async (fastify) => {
+interface ReadingsPluginOptions extends FastifyPluginOptions {
+  readingsRateLimit?: RateLimitConfig;
+}
+
+const readingsRoutes: FastifyPluginAsync<ReadingsPluginOptions> = async (fastify, pluginOpts) => {
   const db = fastify.db;
+  // 100 batch uploads per minute per IP is generous for real device sync but
+  // limits automated abuse. JWT is the primary access control.
+  const batchRL: RateLimitConfig = pluginOpts.readingsRateLimit ?? { max: 100, timeWindow: '1 minute' };
 
   fastify.addHook('preHandler', async (request, reply) => {
     try {
@@ -63,7 +71,7 @@ const readingsRoutes: FastifyPluginAsync = async (fastify) => {
     }
   });
 
-  fastify.post('/batch', async (request, reply) => {
+  fastify.post('/batch', { config: { rateLimit: batchRL } }, async (request, reply) => {
     const parsed = batchSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: 'Validation failed', details: parsed.error.flatten() });
