@@ -152,7 +152,7 @@ struct WarningDetailView: View {
 
             Text("This is a wellness indicator based on your personal trends, not a medical diagnosis. If you have concerns, consult a healthcare professional.")
                 .font(.caption2)
-                .foregroundColor(.tertiary)
+                .foregroundStyle(.tertiary)
                 .padding(.top, 8)
                 .lineSpacing(3)
         }

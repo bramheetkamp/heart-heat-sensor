@@ -228,7 +228,8 @@ struct WarningsEngine {
         readings.filter { $0.activity == .rest || $0.activity == .sleep }
     }
 
-    /// Compute RMSSD from an array of RR intervals (in seconds). Returns nil if < 2 values.
+    /// Compute RMSSD (in milliseconds) from an array of RR intervals given in
+    /// seconds. Returns nil if < 2 values.
     static func rmssd(from rrIntervals: [Double]) -> Double? {
         guard rrIntervals.count >= 2 else { return nil }
         var sumSq = 0.0
@@ -236,7 +237,7 @@ struct WarningsEngine {
             let diff = rrIntervals[i] - rrIntervals[i - 1]
             sumSq += diff * diff
         }
-        return sqrt(sumSq / Double(rrIntervals.count - 1))
+        return sqrt(sumSq / Double(rrIntervals.count - 1)) * 1000.0
     }
 
     // MARK: - Private Helpers

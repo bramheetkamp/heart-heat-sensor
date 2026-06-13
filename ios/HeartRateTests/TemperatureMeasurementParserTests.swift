@@ -67,8 +67,8 @@ final class TemperatureMeasurementParserTests: XCTestCase {
     // MARK: - Normal body temp range
 
     func test_normalBodyTemp_37c() throws {
-        // 37.0°C → mantissa=3700, exp=-2 → [0x70, 0x0E, 0x00, 0xFE]
-        let data = Data([0x00, 0x70, 0x0E, 0x00, 0xFE])
+        // 37.0°C → mantissa=3700 (0x0E74), exp=-2 → [0x74, 0x0E, 0x00, 0xFE]
+        let data = Data([0x00, 0x74, 0x0E, 0x00, 0xFE])
         let result = try TemperatureMeasurementParser.parse(data)
         XCTAssertEqual(result.value, 37.0, accuracy: 0.01)
     }

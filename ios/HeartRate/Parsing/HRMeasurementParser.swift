@@ -26,8 +26,8 @@ enum HRMeasurementParser {
     /// Byte 0 — Flags:
     ///   bit 0:   Heart Rate Value Format (0 = uint8, 1 = uint16)
     ///   bits 1-2: Sensor Contact Status
-    ///   bit 4:   Energy Expended Present
-    ///   bit 5:   RR-Interval Present
+    ///   bit 3:   Energy Expended Present
+    ///   bit 4:   RR-Interval Present
     ///
     /// Following the flags byte:
     ///   1 or 2 bytes — Heart Rate Value (LE)
@@ -39,8 +39,8 @@ enum HRMeasurementParser {
         let flags = data[0]
         let isUInt16Format = (flags & 0x01) != 0
         let contactBits   = (flags >> 1) & 0x03
-        let energyPresent = (flags & 0x10) != 0
-        let rrPresent     = (flags & 0x20) != 0
+        let energyPresent = (flags & 0x08) != 0
+        let rrPresent     = (flags & 0x10) != 0
 
         // Sensor contact: bits [2:1]. Value 2 = not detected, 3 = detected.
         let contactStatus: Bool?

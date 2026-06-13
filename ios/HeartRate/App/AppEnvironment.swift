@@ -7,7 +7,7 @@ final class AppEnvironment: ObservableObject {
     let dataStore: DataStore
     let demoMode: DemoModeService
     let syncService: SyncService
-    let router: AppRouter
+    var router: AppRouter
 
     @Published var isDemoMode: Bool {
         didSet { UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode") }
