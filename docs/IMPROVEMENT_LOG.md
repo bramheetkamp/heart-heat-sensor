@@ -160,3 +160,53 @@ and exact instructions for the next run.
       (excluding the Garmin extension point) — fix anything found.
 5. If all quality gates pass: proceed toward PROJECT COMPLETE (merge develop → main).
 6. Push docs update to `develop` after each merge.
+
+---
+
+## 2026-06-13 — Final quality gates + apple-jwks merge
+
+**Merged this run**
+- `claude/work-apple-jwks` → `develop`
+  - Apple Sign-In JWKS RS256 verification via `jose@5.x`
+  - `backend/src/services/appleAuth.ts` with `verifyAppleToken` / `makeAppleJWKS` / `makeLocalJWKS`
+  - 10 new tests (valid flows + 6 rejection cases); total **50/50 passing**
+  - `APPLE_CLIENT_ID` wired through `BuildServerOptions` so tests inject a local JWKS
+
+**What was built this run**
+- Branch `claude/work-final-quality-gates` (NOT yet merged — next run reviews it):
+  - **iOS Swift strict read-through** of all 30 `.swift` files:
+    - 26/27 source files CLEAN; 2/3 test files had bugs:
+    - `HRMeasurementParserTests.swift` lines 72 & 80: `HRMeasurementParser.ParseError.tooShort`
+      → `ParseError.tooShort` (definite compile error — `ParseError` is module-scoped,
+      not nested inside `HRMeasurementParser`)
+    - `WarningsEngineTests.swift` lines 56–57: `fatigueHRThreshold = 8.0` and
+      `fatigueHRVThreshold = 80.0` → `0.08` and `0.80` (thresholds are ratios stored
+      as 0.0–1.0; test was using raw percentages causing `test_fatigue_elevatedHR_lowHRV`
+      to never fire the warning)
+  - **README accuracy check**: fixed test count 19 → 50; added `APPLE_CLIENT_ID` to env table
+  - **`.env.example`**: added `APPLE_TEAM_ID` and `APPLE_BUNDLE_ID` (used by `wellknown.ts`
+    but missing from the file)
+  - **TODO/stub scan**: two "placeholder" hits are legitimate (synthetic Apple email for
+    users who withhold email, and UI `--` display text); Garmin stub properly marked
+  - **ROADMAP.md**: all 4 remaining quality gate checkboxes checked
+
+**Known issues / not verified on Linux**
+- iOS test fixes (`ParseError` scope, fatigue ratio) cannot be run on Linux; Xcode is
+  required to confirm they compile and the fatigue test now passes.
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-final-quality-gates`.
+   - `cd backend && npm install && npm test` — must still show **50/50 passing** (no backend changes expected).
+   - Review the two iOS test fixes for correctness:
+     - `HRMeasurementParserTests.swift` lines 72 & 80: `ParseError.tooShort` (no prefix)
+     - `WarningsEngineTests.swift` lines 56–57: `0.08` and `0.80`
+   - Merge into `develop` once clean.
+3. Update ROADMAP.md: all quality gates are already checked in the branch.
+4. Phase 2 — **PROJECT COMPLETE** (all roadmap items done):
+   - Run `cd backend && npm test` one final time — must show 50/50.
+   - Confirm all ROADMAP items are checked.
+   - Merge `develop` → `main` (fast-forward or no-ff).
+   - Add "PROJECT COMPLETE" log entry summarising everything built and anything
+     unverifiable on Linux (iOS compile-correctness).
+5. Push docs update to `develop` (and `main` after merge).
