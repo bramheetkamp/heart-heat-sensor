@@ -84,7 +84,7 @@ only intentionally deferred item.
 - [x] Schema: users, readings, warnings tables with indexes and WAL mode
 - [x] `POST /auth/register` — email + bcrypt password
 - [x] `POST /auth/login` — credential validation + JWT
-- [x] `POST /auth/apple` — Sign in with Apple (JWT decode; signature not cryptographically verified — see below)
+- [x] `POST /auth/apple` — Sign in with Apple with full RS256 JWKS verification (`iss`, `aud`, `exp`)
 - [x] `POST /readings/batch` — upsert up to 1 000 readings per call
 - [x] `GET /readings` — history with `from` / `to` / `limit` filters
 - [x] `GET /warnings`, `GET /warnings/:id` — list and detail
@@ -94,14 +94,14 @@ only intentionally deferred item.
 - [x] `.env.example` present with all required variables documented
 - [x] Seed script — 35 days of scenario data, test account `test@example.com / password123`
 - [x] 19 API integration tests, all passing (`npm test`)
-- [ ] **Apple Sign-In: verify `identityToken` signature against Apple's JWKS endpoint (production security)**
+- [x] **Apple Sign-In: verify `identityToken` signature against Apple's JWKS endpoint (production security)**
 - [x] Rate limiting on auth and readings endpoints (brute-force / abuse protection)
 
 ---
 
 ## Quality Gates (must all pass before PROJECT COMPLETE)
 
-- [x] Backend tests passing (`npm test` → 40/40 after rate-limiting work)
+- [x] Backend tests passing (`npm test` → 50/50 after Apple JWKS work)
 - [x] Seed script fires all 3 expected warnings (verified)
 - [ ] All ROADMAP items above checked (except Garmin)
 - [ ] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)

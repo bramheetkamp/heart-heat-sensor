@@ -107,3 +107,56 @@ and exact instructions for the next run.
 5. After that: strict iOS Swift read-through for compile-correctness (all remaining
    unchecked quality-gate items).
 6. Push docs update to `develop` after each merge.
+
+---
+
+## 2026-06-13 — Apple JWKS verification + work-rate-limiting merge
+
+**Merged this run**
+- `claude/work-rate-limiting` → `develop`
+  - Rate limiting on auth (`5/15 min` register, `10/15 min` login/apple) and readings (`100/min batch`)
+  - Global backstop at `200 req/min`
+  - 4 new integration tests; total 40/40 passing
+
+**What was built this run**
+- Branch `claude/work-apple-jwks` (NOT yet merged — next run reviews it):
+  - Installed `jose@5.x`
+  - New service `backend/src/services/appleAuth.ts`:
+    - `verifyAppleToken(token, jwks, audience)` — calls `jose.jwtVerify` with `iss`
+      (`https://appleid.apple.com`), `aud`, and `exp` validation
+    - `makeAppleJWKS(uri?)` — creates a live `RemoteJWKSet` from Apple's JWKS endpoint
+      (lazy-fetched on first verification call)
+    - `makeLocalJWKS(keySet)` — creates an in-memory `LocalJWKSet` for tests
+  - `BuildServerOptions.appleJwks` + `.appleAudience` — JWKS injected at build time;
+    `fastify.appleJwks` / `fastify.appleAudience` decorators make it available in routes
+  - `APPLE_CLIENT_ID` env var documented in `.env.example`
+  - 10 new tests in `tests/appleAuth.test.ts`: valid token (new user, returning user,
+    no-email, account linking), expired/wrong-iss/wrong-aud/unknown-key/malformed token,
+    missing identityToken field
+  - Total: **50/50 tests passing**, zero TypeScript errors (`tsc --noEmit`)
+
+**Known issues / not verified on Linux**
+- iOS code cannot be compiled on Linux; all Swift review remains read-only.
+- Apple JWKS token verification will only exercise the live `https://appleid.apple.com/auth/keys`
+  endpoint in production. Tests use `makeLocalJWKS` with a generated RS256 key pair and
+  never hit the network.
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-apple-jwks`.
+   - `cd backend && npm install && npm test` — must show **50/50 passing**.
+   - `npx tsc --noEmit` — must show zero errors.
+   - Merge into `develop` once clean.
+3. Update ROADMAP.md: check "Apple Sign-In JWKS" and bump test count to 50/50.
+4. Phase 2 — remaining unchecked quality gates:
+   a. **Strict iOS Swift read-through**: review every `.swift` file for compile-correctness
+      (types resolve, names match across files, imports present, no API misuse).
+      Pay particular attention to: `BLEManager`, `MockBLETransport`, `WarningsEngine`,
+      `AppRouter`, `SyncService`, `DataStore`, `MascotView`, and all SwiftUI views.
+      Annotate any suspected type/name errors found.
+   b. **README accuracy**: verify every instruction in README.md is accurate against
+      the current codebase (setup steps, commands, env vars, endpoints).
+   c. **TODO/stub scan**: `grep -r "TODO\|FIXME\|placeholder\|stub" backend/src ios/`
+      (excluding the Garmin extension point) — fix anything found.
+5. If all quality gates pass: proceed toward PROJECT COMPLETE (merge develop → main).
+6. Push docs update to `develop` after each merge.
