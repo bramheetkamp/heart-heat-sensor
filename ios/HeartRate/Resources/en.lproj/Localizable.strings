@@ -1,0 +1,5 @@
+/* Authentication errors */
+"ERROR_INVALID_CREDENTIALS" = "Incorrect email or password. Please try again.";
+"ERROR_EMAIL_ALREADY_REGISTERED" = "That email is already registered. Try logging in instead.";
+"ERROR_NETWORK_UNAVAILABLE" = "Can't reach the server. Check your connection and try again.";
+"ERROR_GENERIC" = "Something went wrong. Please try again.";

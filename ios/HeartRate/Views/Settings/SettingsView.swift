@@ -257,7 +257,7 @@ private struct AccountSetupView: View {
             profile.email = email; profile.backendToken = token
             try env.dataStore.container.mainContext.save()
             dismiss()
-        } catch { self.error = error.localizedDescription }
+        } catch { self.error = authErrorMessage(error) }
     }
 
     private func login() async {
@@ -268,6 +268,6 @@ private struct AccountSetupView: View {
             profile.email = email; profile.backendToken = token
             try env.dataStore.container.mainContext.save()
             dismiss()
-        } catch { self.error = error.localizedDescription }
+        } catch { self.error = authErrorMessage(error) }
     }
 }

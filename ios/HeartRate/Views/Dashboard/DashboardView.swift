@@ -36,49 +36,50 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                RefreshControl(isRefreshing: $isRefreshing) {
-                    await refresh()
-                }
-
-                VStack(spacing: 20) {
-                    mascotStatusCard
-                    metricsGrid
-                    if !warnings.filter({ $0.resolvedAt == nil }).isEmpty {
-                        activeWarningsSection
-                    }
-                    quickNavRow
-                }
-                .padding()
+        // NOTE: no NavigationStack here — MainAppView already provides one bound
+        // to env.router.path. A nested stack would swallow router pushes and
+        // leave the toolbar's value-based NavigationLink with no destination.
+        ScrollView {
+            RefreshControl(isRefreshing: $isRefreshing) {
+                await refresh()
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Today")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 12) {
-                        if env.isDemoMode {
-                            Button {
-                                showScenarioPicker = true
-                            } label: {
-                                Label("Scenario", systemImage: "wand.and.stars")
-                                    .font(.caption)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color.orange.opacity(0.15), in: Capsule())
-                                    .foregroundColor(.orange)
-                            }
-                        }
-                        NavigationLink(value: AppRoute.settings) {
-                            Image(systemName: "gearshape.fill")
-                                .foregroundColor(.secondary)
+
+            VStack(spacing: 20) {
+                mascotStatusCard
+                metricsGrid
+                if !warnings.filter({ $0.resolvedAt == nil }).isEmpty {
+                    activeWarningsSection
+                }
+                quickNavRow
+            }
+            .padding()
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Today")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack(spacing: 12) {
+                    if env.isDemoMode {
+                        Button {
+                            showScenarioPicker = true
+                        } label: {
+                            Label("Scenario", systemImage: "wand.and.stars")
+                                .font(.caption)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.orange.opacity(0.15), in: Capsule())
+                                .foregroundColor(.orange)
                         }
                     }
+                    NavigationLink(value: AppRoute.settings) {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundColor(.secondary)
+                    }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    ConnectionStatusBadge(state: env.bleService.connectionState)
-                }
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                ConnectionStatusBadge(state: env.bleService.connectionState)
             }
         }
         .sheet(isPresented: $showScenarioPicker) {

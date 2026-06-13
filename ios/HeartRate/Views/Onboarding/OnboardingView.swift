@@ -178,7 +178,7 @@ struct OnboardingView: View {
             try env.dataStore.container.mainContext.save()
             nextStep()
         } catch {
-            signupError = error.localizedDescription
+            signupError = authErrorMessage(error)
         }
     }
 
