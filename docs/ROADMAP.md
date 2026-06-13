@@ -1,5 +1,7 @@
 # Pulse — Development Roadmap
 
+**STATUS: PROJECT COMPLETE (2026-06-13)** — all items checked; `develop` merged → `main`.
+
 Derived from the product spec and codebase audit. Each item must be complete
 (no placeholders, no stubs) before being checked. Garmin integration is the
 only intentionally deferred item.
