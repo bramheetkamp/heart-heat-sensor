@@ -8,9 +8,9 @@ final class DataStore: ObservableObject {
 
     // MARK: - Init
 
-    init() {
+    init(inMemory: Bool = false) {
         let schema = Schema([Reading.self, UserProfile.self])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
         do {
             container = try ModelContainer(for: schema, configurations: [config])
         } catch {

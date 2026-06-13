@@ -25,6 +25,14 @@ final class AppEnvironment: ObservableObject {
         self.demoMode = demoMode
 
         let transport: BLETransportProtocol
+        #if targetEnvironment(simulator)
+        // CoreBluetooth is unavailable on the simulator, so always use the mock
+        // transport there — this lets the full pairing flow (scan → connect →
+        // stream) run and produce data even without a physical device.
+        let mock = MockBLETransport()
+        mock.apply(config: demoMode.currentStreamConfig(for: demoMode.activeScenario))
+        transport = mock
+        #else
         if isDemoMode {
             let mock = MockBLETransport()
             mock.applyScenario(demoMode.activeScenario)
@@ -32,8 +40,9 @@ final class AppEnvironment: ObservableObject {
         } else {
             transport = CoreBluetoothTransport()
         }
+        #endif
 
-        self.bleService = BLEService(transport: transport)
+        self.bleService = BLEService(transport: transport, dataStore: dataStore)
         self.syncService = SyncService()
 
         let router = AppRouter()

@@ -362,6 +362,11 @@ struct PairingStep: View {
             Spacer()
         }
         .padding(.horizontal, 32)
+        .task {
+            // Begin scanning whenever this screen appears (e.g. via the Pair
+            // shortcut). Idempotent — the transport ignores repeat scans.
+            if !env.bleService.isConnected { env.bleService.startScanning() }
+        }
         .onChange(of: env.bleService.isConnected) { connected in
             withAnimation { mascotState = connected ? .cheering : .scanning }
         }
