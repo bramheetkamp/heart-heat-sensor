@@ -23,6 +23,44 @@ enum SyncError: Error, LocalizedError {
             return "Network unavailable: \(reason)"
         }
     }
+
+    /// A short, localized, user-facing message suitable for auth screens.
+    /// Maps low-level/server errors to translated strings (see Localizable.strings).
+    var userFacingMessage: String {
+        switch self {
+        case .networkUnavailable:
+            return NSLocalizedString("ERROR_NETWORK_UNAVAILABLE", comment: "Backend unreachable")
+        case .serverError(let code, let body):
+            return NSLocalizedString(Self.localizationKey(forStatus: code, body: body),
+                                     comment: "Server-side auth error")
+        case .noToken, .invalidURL, .decodingError:
+            return NSLocalizedString("ERROR_GENERIC", comment: "Generic error")
+        }
+    }
+
+    /// Translate a backend `{ "error": "..." }` response into a Localizable.strings key.
+    private static func localizationKey(forStatus code: Int, body: String) -> String {
+        let serverError = (try? JSONDecoder().decode([String: String].self, from: Data(body.utf8)))?["error"] ?? body
+        let normalized = serverError.lowercased()
+        if normalized.contains("invalid credentials") {
+            return "ERROR_INVALID_CREDENTIALS"
+        }
+        if normalized.contains("already registered") {
+            return "ERROR_EMAIL_ALREADY_REGISTERED"
+        }
+        if code == 401 {
+            return "ERROR_INVALID_CREDENTIALS"
+        }
+        return "ERROR_GENERIC"
+    }
+}
+
+/// Convert any error thrown during auth into a localized, user-facing message.
+func authErrorMessage(_ error: Error) -> String {
+    if let syncError = error as? SyncError {
+        return syncError.userFacingMessage
+    }
+    return NSLocalizedString("ERROR_GENERIC", comment: "Generic error")
 }
 
 // MARK: - API Models
@@ -73,7 +111,7 @@ final class SyncService: ObservableObject {
     // MARK: - Base URL
 
     static let baseURL: String = {
-        ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+        ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3100"
     }()
 
     // MARK: - Published State

@@ -6,10 +6,11 @@ struct SettingsView: View {
     @State private var profile: UserProfile?
     @State private var showDemoConfirm = false
     @State private var showResetConfirm = false
-    @State private var backendURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3000"
+    @State private var backendURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3100"
 
     var body: some View {
         List {
+            appearanceSection
             demoSection
             thresholdsSection
             connectionSection
@@ -21,6 +22,26 @@ struct SettingsView: View {
     }
 
     // MARK: - Sections
+
+    private var appearanceSection: some View {
+        Section {
+            Picker(selection: Binding(
+                get: { env.appearance },
+                set: { env.appearance = $0 }
+            )) {
+                ForEach(AppearanceMode.allCases) { mode in
+                    Label(mode.label, systemImage: mode.icon).tag(mode)
+                }
+            } label: {
+                Label("Appearance", systemImage: "circle.lefthalf.filled")
+            }
+            .pickerStyle(.navigationLink)
+        } header: {
+            Text("Appearance")
+        } footer: {
+            Text("Dark is the default. Choose \"Adjust to Device\" to follow your system light/dark setting.")
+        }
+    }
 
     private var demoSection: some View {
         Section {
@@ -257,7 +278,7 @@ private struct AccountSetupView: View {
             profile.email = email; profile.backendToken = token
             try env.dataStore.container.mainContext.save()
             dismiss()
-        } catch { self.error = error.localizedDescription }
+        } catch { self.error = authErrorMessage(error) }
     }
 
     private func login() async {
@@ -268,6 +289,6 @@ private struct AccountSetupView: View {
             profile.email = email; profile.backendToken = token
             try env.dataStore.container.mainContext.save()
             dismiss()
-        } catch { self.error = error.localizedDescription }
+        } catch { self.error = authErrorMessage(error) }
     }
 }

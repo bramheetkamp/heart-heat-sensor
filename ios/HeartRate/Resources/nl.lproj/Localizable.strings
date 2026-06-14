@@ -1,0 +1,5 @@
+/* Authenticatiefouten */
+"ERROR_INVALID_CREDENTIALS" = "Onjuist e-mailadres of wachtwoord. Probeer het opnieuw.";
+"ERROR_EMAIL_ALREADY_REGISTERED" = "Dit e-mailadres is al geregistreerd. Probeer in te loggen.";
+"ERROR_NETWORK_UNAVAILABLE" = "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw.";
+"ERROR_GENERIC" = "Er is iets misgegaan. Probeer het opnieuw.";

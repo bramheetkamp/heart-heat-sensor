@@ -89,7 +89,7 @@ private struct WarningRow: View {
                     .lineLimit(2)
                 Text(warning.firedAt, style: .relative)
                     .font(.caption2)
-                    .foregroundColor(.tertiary)
+                    .foregroundStyle(.tertiary)
             }
 
             if warning.resolvedAt != nil {

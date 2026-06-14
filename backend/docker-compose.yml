@@ -3,11 +3,11 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "3100:3100"
     volumes:
       - ./data:/app/data
     environment:
-      - PORT=3000
+      - PORT=3100
       - JWT_SECRET=dev_secret_change_me
       - DATABASE_PATH=/app/data/heartrate.db
       - APPLE_BUNDLE_ID=com.heartrate.app

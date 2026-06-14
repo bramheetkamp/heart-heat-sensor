@@ -28,12 +28,13 @@ final class WarningsEngineTests: XCTestCase {
     }
 
     private func makeReadings(days: Int, hrBase: Double, tempBase: Double,
-                               hrDelta: Double = 0, tempDelta: Double = 0) -> [Reading] {
+                               hrDelta: Double = 0, tempDelta: Double = 0,
+                               startDaysAgo: Int = 0) -> [Reading] {
         var readings: [Reading] = []
         let now = Date()
         for day in 0..<days {
             for hour in [1, 7, 13, 19] {  // 4 readings per day
-                let t = Calendar.current.date(byAdding: .hour, value: -(day * 24 + (24 - hour)), to: now)!
+                let t = Calendar.current.date(byAdding: .hour, value: -((startDaysAgo + day) * 24 + (24 - hour)), to: now)!
                 let dayFactor = Double(days - day - 1)
                 let reading = makeReading(
                     timestamp: t,
@@ -101,8 +102,9 @@ final class WarningsEngineTests: XCTestCase {
 
     func test_gettingSick_elevatedHR() {
         let profile = defaultProfile()
-        // 30-day baseline: 60 bpm. Recent 7 days: 66 bpm (6 above baseline → >5 threshold)
-        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5)
+        // 30-day baseline: 60 bpm. Recent 7 days: 67 bpm (≥5 above baseline → fires).
+        // Baseline window sits *before* the recent 7 days so the two don't overlap.
+        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5, startDaysAgo: 7)
         let recent = makeReadings(days: 7, hrBase: 67, tempBase: 36.5)
         readings.append(contentsOf: recent)
 
@@ -124,9 +126,9 @@ final class WarningsEngineTests: XCTestCase {
 
     func test_fatigue_elevatedHR_lowHRV() {
         let profile = defaultProfile()
-        // Baseline: 60 bpm, RR [0.90, 0.92, 0.88] (RMSSD ≈ 20ms)
-        // Recent: 67 bpm (+12%), very regular RR → low HRV
-        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5)
+        // Baseline: 60 bpm, default RR (RMSSD ≈ 25ms), placed before the recent window.
+        // Recent: 67 bpm (+~9%), very regular RR → near-zero HRV.
+        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5, startDaysAgo: 7)
         // Add 7 days of high HR + very low HRV (regular RR → near-zero RMSSD)
         let now = Date()
         for day in 0..<7 {
@@ -158,10 +160,12 @@ final class WarningsEngineTests: XCTestCase {
 
     func test_warningHasExplanation() {
         let profile = defaultProfile()
-        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5)
+        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5, startDaysAgo: 7)
         readings.append(contentsOf: makeReadings(days: 7, hrBase: 67, tempBase: 36.5))
         let warnings = WarningsEngine.compute(readings: readings, profile: profile)
-        if let w = warnings.first(where: { $0.type == .gettingSick }) {
+        let sick = warnings.first(where: { $0.type == .gettingSick })
+        XCTAssertNotNil(sick, "gettingSick warning should fire for the elevated-HR scenario")
+        if let w = sick {
             XCTAssertFalse(w.context.explanation.isEmpty, "Warning should include explanation text")
             XCTAssertFalse(w.context.triggerValues.isEmpty, "Warning should include trigger values")
             XCTAssertFalse(w.context.baselineValues.isEmpty, "Warning should include baseline values")

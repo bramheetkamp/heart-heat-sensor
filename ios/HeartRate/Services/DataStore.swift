@@ -8,9 +8,9 @@ final class DataStore: ObservableObject {
 
     // MARK: - Init
 
-    init() {
+    init(inMemory: Bool = false) {
         let schema = Schema([Reading.self, UserProfile.self])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
         do {
             container = try ModelContainer(for: schema, configurations: [config])
         } catch {
@@ -32,6 +32,14 @@ final class DataStore: ObservableObject {
     /// Persist a new reading.
     func save(reading: Reading) throws {
         context.insert(reading)
+        try context.save()
+    }
+
+    /// Delete all readings recorded by a given device id (used to clear demo
+    /// data before re-seeding so scenarios don't accumulate or mix).
+    func deleteReadings(deviceId: String) throws {
+        let predicate = #Predicate<Reading> { $0.deviceId == deviceId }
+        try context.delete(model: Reading.self, where: predicate)
         try context.save()
     }
 

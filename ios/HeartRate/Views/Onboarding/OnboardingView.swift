@@ -11,6 +11,7 @@ struct OnboardingView: View {
     @State private var password = ""
     @State private var isSigningUp = false
     @State private var signupError: String?
+    @State private var isLoginMode = false
 
     enum OnboardingStep: Int, CaseIterable {
         case welcome = 0
@@ -49,7 +50,7 @@ struct OnboardingView: View {
                     case .welcome:       WelcomeStep()
                     case .whatItDoes:    WhatItDoesStep()
                     case .bluetoothPrimer: BluetoothPrimerStep()
-                    case .account:       AccountStep(email: $email, password: $password, error: $signupError)
+                    case .account:       AccountStep(email: $email, password: $password, error: $signupError, isLoginMode: $isLoginMode)
                     case .pairing:       PairingStep()
                     case .baselineExplainer: BaselineExplainerStep()
                     }
@@ -98,7 +99,7 @@ struct OnboardingView: View {
         case .welcome:        return "Let's go"
         case .whatItDoes:     return "Got it"
         case .bluetoothPrimer: return "Allow Bluetooth"
-        case .account:        return email.isEmpty ? "Skip for now" : "Create account"
+        case .account:        return email.isEmpty ? "Skip for now" : (isLoginMode ? "Log in" : "Create account")
         case .pairing:        return "Start scanning"
         case .baselineExplainer: return "Enter app"
         }
@@ -121,7 +122,7 @@ struct OnboardingView: View {
             nextStep()
         case .account:
             if !email.isEmpty && !password.isEmpty {
-                Task { await signUp() }
+                Task { await authenticate(isLogin: isLoginMode) }
             } else {
                 nextStep()
             }
@@ -162,18 +163,22 @@ struct OnboardingView: View {
         }
     }
 
-    private func signUp() async {
+    /// Authenticate against the backend, either logging into an existing
+    /// account or registering a new one, then persist the returned token.
+    private func authenticate(isLogin: Bool) async {
         isSigningUp = true
         defer { isSigningUp = false }
         do {
-            let token = try await env.syncService.register(email: email, password: password)
+            let token = isLogin
+                ? try await env.syncService.login(email: email, password: password)
+                : try await env.syncService.register(email: email, password: password)
             let profile = try env.dataStore.getOrCreateProfile()
             profile.email = email
             profile.backendToken = token
             try env.dataStore.container.mainContext.save()
             nextStep()
         } catch {
-            signupError = error.localizedDescription
+            signupError = authErrorMessage(error)
         }
     }
 
@@ -280,6 +285,7 @@ struct AccountStep: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var error: String?
+    @Binding var isLoginMode: Bool
 
     var body: some View {
         VStack(spacing: 24) {
@@ -289,9 +295,11 @@ struct AccountStep: View {
                 .foregroundColor(.orange)
 
             VStack(spacing: 10) {
-                Text("Create an account")
+                Text(isLoginMode ? "Log in" : "Create an account")
                     .font(.system(size: 26, weight: .bold))
-                Text("Sync across devices and keep your data safe. Totally optional — the app works great without one.")
+                Text(isLoginMode
+                     ? "Sign in to sync your existing data across devices."
+                     : "Sync across devices and keep your data safe. Totally optional — the app works great without one.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -301,6 +309,7 @@ struct AccountStep: View {
                 TextField("Email", text: $email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
+                    .textContentType(.emailAddress)
                     .padding()
                     .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 14))
 
@@ -313,6 +322,15 @@ struct AccountStep: View {
                         .font(.caption)
                         .foregroundColor(.red)
                 }
+            }
+
+            Button {
+                withAnimation { isLoginMode.toggle() }
+                error = nil
+            } label: {
+                Text(isLoginMode ? "Don't have an account? Create one" : "Already have an account? Log in")
+                    .font(.footnote.weight(.medium))
+                    .foregroundColor(.orange)
             }
 
             Spacer()
@@ -344,6 +362,11 @@ struct PairingStep: View {
             Spacer()
         }
         .padding(.horizontal, 32)
+        .task {
+            // Begin scanning whenever this screen appears (e.g. via the Pair
+            // shortcut). Idempotent — the transport ignores repeat scans.
+            if !env.bleService.isConnected { env.bleService.startScanning() }
+        }
         .onChange(of: env.bleService.isConnected) { connected in
             withAnimation { mascotState = connected ? .cheering : .scanning }
         }

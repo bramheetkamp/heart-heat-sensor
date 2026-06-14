@@ -43,7 +43,8 @@ final class Reading {
 
     // MARK: - Computed Properties
 
-    /// Root Mean Square of Successive Differences (RMSSD) from RR intervals.
+    /// Root Mean Square of Successive Differences (RMSSD) from RR intervals,
+    /// expressed in milliseconds (the standard HRV unit, as displayed in the UI).
     /// Returns nil if fewer than 2 intervals are available.
     var rmssd: Double? {
         guard rrIntervals.count >= 2 else { return nil }
@@ -53,6 +54,7 @@ final class Reading {
             sumSquaredDiffs += diff * diff
         }
         let mean = sumSquaredDiffs / Double(rrIntervals.count - 1)
-        return sqrt(mean)
+        // RR intervals are stored in seconds; convert RMSSD to milliseconds.
+        return sqrt(mean) * 1000.0
     }
 }

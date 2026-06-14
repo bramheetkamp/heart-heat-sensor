@@ -236,8 +236,8 @@ struct HistoryView: View {
         let readings = filteredReadings
         let maxPoints = 300
         guard readings.count > maxPoints else { return readings }
-        let stride = readings.count / maxPoints
-        return stride(from: 0, to: readings.count, by: stride).map { readings[$0] }
+        let step = readings.count / maxPoints
+        return stride(from: 0, to: readings.count, by: step).map { readings[$0] }
     }
 
     private func chartValue(_ reading: Reading) -> Double? {

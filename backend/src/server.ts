@@ -18,7 +18,7 @@ declare module 'fastify' {
   }
 }
 
-const PORT = parseInt(process.env.PORT ?? '3000', 10);
+const PORT = parseInt(process.env.PORT ?? '3100', 10);
 
 export interface RateLimitConfig {
   max: number;
