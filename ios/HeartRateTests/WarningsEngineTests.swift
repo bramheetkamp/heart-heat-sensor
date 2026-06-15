@@ -12,6 +12,7 @@ final class WarningsEngineTests: XCTestCase {
         rr: [Double] = [0.92, 0.90, 0.93],
         tempCore: Double? = 36.6,
         tempSkin: Double? = 36.0,
+        eda: Double? = nil,
         activity: Reading.ActivityLevel = .rest
     ) -> Reading {
         let r = Reading()
@@ -21,6 +22,7 @@ final class WarningsEngineTests: XCTestCase {
         r.rrIntervals = rr
         r.tempCore = tempCore
         r.tempSkin = tempSkin
+        r.eda = eda
         r.activity = activity
         r.deviceId = "test"
         r.synced = false
@@ -29,6 +31,7 @@ final class WarningsEngineTests: XCTestCase {
 
     private func makeReadings(days: Int, hrBase: Double, tempBase: Double,
                                hrDelta: Double = 0, tempDelta: Double = 0,
+                               eda: Double? = nil,
                                startDaysAgo: Int = 0) -> [Reading] {
         var readings: [Reading] = []
         let now = Date()
@@ -39,7 +42,8 @@ final class WarningsEngineTests: XCTestCase {
                 let reading = makeReading(
                     timestamp: t,
                     hr: Int(hrBase + hrDelta * dayFactor / Double(days)),
-                    tempCore: tempBase + tempDelta * dayFactor / Double(days)
+                    tempCore: tempBase + tempDelta * dayFactor / Double(days),
+                    eda: eda
                 )
                 readings.append(reading)
             }
@@ -170,6 +174,35 @@ final class WarningsEngineTests: XCTestCase {
             XCTAssertFalse(w.context.triggerValues.isEmpty, "Warning should include trigger values")
             XCTAssertFalse(w.context.baselineValues.isEmpty, "Warning should include baseline values")
         }
+    }
+
+    // MARK: - EDA as corroborating context
+
+    func test_gettingSick_includesEDAContextWhenPresent() {
+        let profile = defaultProfile()
+        // Baseline EDA ~5 µS; recent week elevated to ~9 µS (>1.2× baseline).
+        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5, eda: 5.0, startDaysAgo: 7)
+        readings.append(contentsOf: makeReadings(days: 7, hrBase: 67, tempBase: 36.5, eda: 9.0))
+
+        let sick = WarningsEngine.compute(readings: readings, profile: profile)
+            .first { $0.type == .gettingSick }
+        let w = try! XCTUnwrap(sick)
+        XCTAssertNotNil(w.context.triggerValues["avgEDA"], "EDA should be surfaced when present")
+        XCTAssertNotNil(w.context.baselineValues["edaBaseline"])
+        XCTAssertTrue(w.context.explanation.contains("conductance"),
+                      "Elevated EDA should be mentioned in the explanation")
+    }
+
+    func test_gettingSick_omitsEDAContextForHROnlyDevice() {
+        let profile = defaultProfile()
+        // No EDA at all (standard HR strap).
+        var readings = makeReadings(days: 23, hrBase: 60, tempBase: 36.5, startDaysAgo: 7)
+        readings.append(contentsOf: makeReadings(days: 7, hrBase: 67, tempBase: 36.5))
+
+        let sick = WarningsEngine.compute(readings: readings, profile: profile)
+            .first { $0.type == .gettingSick }
+        let w = try! XCTUnwrap(sick)
+        XCTAssertNil(w.context.triggerValues["avgEDA"], "No EDA key when device never reports it")
     }
 
     // MARK: - RMSSD

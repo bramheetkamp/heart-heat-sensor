@@ -8,6 +8,11 @@ struct HeartRateApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(env)
+                // Expose the router as its own observable so views that bind to
+                // router.path (the NavigationStack) re-render when it changes
+                // programmatically — deep links and router.navigate(). Without
+                // this, only NavigationLink(value:) taps would actually navigate.
+                .environmentObject(env.router)
                 // Force the user-selected appearance app-wide (defaults to dark).
                 // `.system` maps to nil, which lets the device setting through.
                 .preferredColorScheme(env.appearance.colorScheme)

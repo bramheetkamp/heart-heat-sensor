@@ -74,15 +74,20 @@ private struct AuthResponse: Decodable {
     let token: String
 }
 
+/// Wire format for `POST /readings/batch`. Field names, snake_case, the numeric
+/// (Unix-ms) timestamp, the site mapping, and the ms RR units all match the
+/// backend zod schema exactly — see backend/src/routes/readings.ts and
+/// docs/BLE_CONTRACT.md. Do not rename without updating the backend in lockstep.
 private struct ReadingPayload: Encodable {
     let id: String
-    let timestamp: String
-    let heartRate: Int?
-    let rrIntervals: [Double]
-    let tempCore: Double?
-    let tempSkin: Double?
-    let activity: String
-    let deviceId: String
+    let device_id: String
+    let timestamp: Int            // Unix milliseconds
+    let heart_rate: Int?
+    let rr_intervals: [Double]    // milliseconds (Reading stores seconds)
+    let temp_site1: Double?       // core
+    let temp_site2: Double?       // skin
+    let eda: Double?              // skin conductance, µS
+    let activity: String?         // "rest" | "active" | "sleep"; nil when unknown
 }
 
 private struct UploadBatchRequest: Encodable {
@@ -163,17 +168,20 @@ final class SyncService: ObservableObject {
         syncError = nil
         defer { isSyncing = false }
 
-        let iso = ISO8601DateFormatter()
         let payloads = readings.map { r in
-            ReadingPayload(
+            // Backend enum is rest|active|sleep; map .unknown → nil so temp-only
+            // BodyTempSensor readings still validate.
+            let activity: String? = (r.activity == .unknown) ? nil : r.activity.rawValue
+            return ReadingPayload(
                 id: r.id.uuidString,
-                timestamp: iso.string(from: r.timestamp),
-                heartRate: r.heartRate,
-                rrIntervals: r.rrIntervals,
-                tempCore: r.tempCore,
-                tempSkin: r.tempSkin,
-                activity: r.activity.rawValue,
-                deviceId: r.deviceId
+                device_id: r.deviceId.isEmpty ? "LIVE" : r.deviceId,
+                timestamp: Int((r.timestamp.timeIntervalSince1970 * 1000).rounded()),
+                heart_rate: r.heartRate,
+                rr_intervals: r.rrIntervals.map { $0 * 1000.0 },  // s → ms
+                temp_site1: r.tempCore,
+                temp_site2: r.tempSkin,
+                eda: r.eda,
+                activity: activity
             )
         }
 

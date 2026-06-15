@@ -9,6 +9,7 @@ final class Reading {
     var rrIntervals: [Double]    // seconds
     var tempCore: Double?        // Celsius, core site
     var tempSkin: Double?        // Celsius, skin site
+    var eda: Double?             // skin conductance, microsiemens (µS) — BodyTempSensor only
     var activity: ActivityLevel
     var deviceId: String
     var synced: Bool
@@ -20,6 +21,7 @@ final class Reading {
         rrIntervals: [Double] = [],
         tempCore: Double? = nil,
         tempSkin: Double? = nil,
+        eda: Double? = nil,
         activity: ActivityLevel = .unknown,
         deviceId: String = "",
         synced: Bool = false
@@ -30,6 +32,7 @@ final class Reading {
         self.rrIntervals = rrIntervals
         self.tempCore = tempCore
         self.tempSkin = tempSkin
+        self.eda = eda
         self.activity = activity
         self.deviceId = deviceId
         self.synced = synced

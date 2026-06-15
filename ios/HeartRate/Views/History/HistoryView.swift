@@ -6,13 +6,21 @@ struct HistoryView: View {
     @EnvironmentObject private var env: AppEnvironment
     let initialMetric: AppRoute.HistoryMetric
 
-    @Query(sort: \Reading.timestamp) private var allReadings: [Reading]
+    // Bounded fetch (newest first) so charts never load the entire growing
+    // table; the chart samples to ≤300 points anyway.
+    @Query private var allReadings: [Reading]
     @State private var selectedMetric: AppRoute.HistoryMetric
     @State private var selectedRange: TimeRange = .week
 
     init(metric: AppRoute.HistoryMetric) {
         self.initialMetric = metric
         self._selectedMetric = State(initialValue: metric)
+
+        var descriptor = FetchDescriptor<Reading>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        descriptor.fetchLimit = 5000
+        _allReadings = Query(descriptor)
     }
 
     enum TimeRange: String, CaseIterable {
@@ -26,8 +34,11 @@ struct HistoryView: View {
     }
 
     private var filteredReadings: [Reading] {
+        // allReadings is newest-first (bounded query); charts need ascending x.
         let cutoff = Calendar.current.date(byAdding: .day, value: -selectedRange.days, to: Date())!
-        return allReadings.filter { $0.timestamp >= cutoff }
+        return allReadings
+            .filter { $0.timestamp >= cutoff }
+            .sorted { $0.timestamp < $1.timestamp }
     }
 
     private var baselineReadings: [Reading] {
@@ -246,6 +257,7 @@ struct HistoryView: View {
         case .coreTemp:  return reading.tempCore
         case .skinTemp:  return reading.tempSkin
         case .hrv:       return reading.rmssd
+        case .eda:       return reading.eda
         }
     }
 
@@ -292,6 +304,7 @@ struct HistoryView: View {
         case .heartRate: return 5
         case .coreTemp, .skinTemp: return 0.3
         case .hrv: return 10
+        case .eda: return 3
         }
     }
 
@@ -299,6 +312,7 @@ struct HistoryView: View {
         switch selectedMetric {
         case .heartRate, .hrv: return String(format: "%.0f", v)
         case .coreTemp, .skinTemp: return String(format: "%.1f", v)
+        case .eda: return String(format: "%.1f", v)
         }
     }
 
@@ -328,6 +342,7 @@ extension AppRoute.HistoryMetric {
         case .coreTemp:  return "Core Temp"
         case .skinTemp:  return "Skin Temp"
         case .hrv:       return "HRV"
+        case .eda:       return "EDA"
         }
     }
 
@@ -336,6 +351,7 @@ extension AppRoute.HistoryMetric {
         case .heartRate: return "bpm"
         case .coreTemp, .skinTemp: return "°C"
         case .hrv: return "ms"
+        case .eda: return "µS"
         }
     }
 
@@ -345,10 +361,11 @@ extension AppRoute.HistoryMetric {
         case .coreTemp:  return .orange
         case .skinTemp:  return .yellow
         case .hrv:       return .purple
+        case .eda:       return .teal
         }
     }
 
-    static var allCases: [AppRoute.HistoryMetric] { [.heartRate, .coreTemp, .skinTemp, .hrv] }
+    static var allCases: [AppRoute.HistoryMetric] { [.heartRate, .coreTemp, .skinTemp, .hrv, .eda] }
 }
 
 // MARK: - Sub-components

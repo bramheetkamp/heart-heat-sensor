@@ -26,6 +26,10 @@ struct MascotView: View {
     @State private var pulseScale: CGFloat = 1.0
     @State private var cheersOffset: CGFloat = 0
     @State private var scanRotation: Double = 0
+    /// The blink loop runs as an async Task; we keep a handle so it can be
+    /// cancelled. Without this, every startAnimations() (each appear / state
+    /// change) leaked a new infinite Task that never stopped.
+    @State private var blinkTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
@@ -36,6 +40,7 @@ struct MascotView: View {
         .frame(width: size, height: size)
         .onAppear { startAnimations() }
         .onChange(of: state) { startAnimations() }
+        .onDisappear { blinkTask?.cancel(); blinkTask = nil }
     }
 
     // MARK: - Body
@@ -272,6 +277,8 @@ struct MascotView: View {
     }
 
     private func stopAnimations() {
+        blinkTask?.cancel()
+        blinkTask = nil
         bounceOffset = 0
         wiggleAngle = 0
         blinkOpacity = 1
@@ -289,9 +296,11 @@ struct MascotView: View {
     }
 
     private func startBlink(interval: Double = 3.0) {
-        Task {
-            while true {
+        blinkTask?.cancel()
+        blinkTask = Task { @MainActor in
+            while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+                if Task.isCancelled { break }
                 withAnimation(.easeInOut(duration: 0.08)) { blinkOpacity = 0.05 }
                 try? await Task.sleep(nanoseconds: 120_000_000)
                 withAnimation(.easeInOut(duration: 0.08)) { blinkOpacity = 1 }

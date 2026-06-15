@@ -12,6 +12,7 @@ final class BLEService: ObservableObject {
     @Published var connectionState: BLEConnectionState = .disconnected
     @Published var latestHR: HRMeasurement?
     @Published var latestTemp: [TemperatureSite: TemperatureMeasurement] = [:]
+    @Published var latestEDA: EDAMeasurement?
     @Published var isConnected: Bool = false
 
     // MARK: - Private
@@ -20,6 +21,12 @@ final class BLEService: ObservableObject {
     private let dataStore: DataStore?
     private var cancellables = Set<AnyCancellable>()
     private let hapticGenerator = UINotificationFeedbackGenerator()
+
+    /// Live-sample counter; we prune old rows every so often rather than on each
+    /// save to keep the hot path cheap. ~180 days kept (well past warning baselines).
+    private var liveSampleCount = 0
+    private static let pruneEveryNSamples = 240   // ≈ every 20 min at a 5 s cadence
+    private static let retentionDays = 180
 
     // MARK: - Init
 
@@ -87,6 +94,13 @@ final class BLEService: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+
+        transport.edaPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] measurement in
+                self?.latestEDA = measurement
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Live Persistence
@@ -94,21 +108,41 @@ final class BLEService: ObservableObject {
     /// Persist a combined snapshot of the latest live measurements as a Reading,
     /// so a connected device (real or, on the simulator, the mock) populates the
     /// data store that the dashboard and history read from.
+    ///
+    /// HR is optional: the BodyTempSensor (Profile B) streams temperature + EDA
+    /// only and has no heart-rate sensor, so a Reading is still persisted from
+    /// temperature/EDA alone. Activity can only be inferred when HR is present.
     private func persistLiveSample() {
-        guard let dataStore, isConnected, let hr = latestHR else { return }
+        guard let dataStore, isConnected else { return }
+
+        // Require at least one real signal so we never write empty rows.
+        let hr = latestHR
+        let tempCore = latestTemp[.core]?.value
+        let tempSkin = latestTemp[.skin]?.value
+        let eda = latestEDA?.conductance
+        guard hr != nil || tempCore != nil || tempSkin != nil || eda != nil else { return }
 
         let deviceName: String
         if case .connected(let name) = connectionState { deviceName = name } else { deviceName = "LIVE" }
 
+        let activity: Reading.ActivityLevel
+        if let hr { activity = hr.heartRate >= 100 ? .active : .rest } else { activity = .unknown }
+
         let reading = Reading(
             timestamp: Date(),
-            heartRate: hr.heartRate,
-            rrIntervals: hr.rrIntervals,
-            tempCore: latestTemp[.core]?.value,
-            tempSkin: latestTemp[.skin]?.value,
-            activity: hr.heartRate >= 100 ? .active : .rest,
+            heartRate: hr?.heartRate,
+            rrIntervals: hr?.rrIntervals ?? [],
+            tempCore: tempCore,
+            tempSkin: tempSkin,
+            eda: eda,
+            activity: activity,
             deviceId: deviceName
         )
         try? dataStore.save(reading: reading)
+
+        liveSampleCount += 1
+        if liveSampleCount % BLEService.pruneEveryNSamples == 0 {
+            try? dataStore.pruneReadings(olderThan: BLEService.retentionDays)
+        }
     }
 }

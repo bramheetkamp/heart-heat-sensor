@@ -213,6 +213,56 @@ describe('GET /readings', () => {
   });
 });
 
+// ─── 4b. EDA round-trip (BodyTempSensor) ──────────────────────────────────────
+describe('readings with EDA', () => {
+  it('accepts and returns the eda field, and a temp+EDA-only reading (no HR)', async () => {
+    const now = Date.now();
+    const post = await app.inject({
+      method: 'POST',
+      url: '/readings/batch',
+      headers: { authorization: `Bearer ${authToken}` },
+      payload: {
+        readings: [
+          // Profile B device: temperature + EDA, no heart rate, no activity.
+          {
+            device_id: 'BodyTempPoC',
+            timestamp: now - 500,
+            rr_intervals: [],
+            temp_site1: 37.2,
+            temp_site2: 36.1,
+            eda: 8.4,
+          },
+        ],
+      },
+    });
+    expect(post.statusCode).toBe(201);
+    expect(post.json<{ inserted: number }>().inserted).toBe(1);
+
+    const get = await app.inject({
+      method: 'GET',
+      url: `/readings?from=${now - 1000}&to=${now}`,
+      headers: { authorization: `Bearer ${authToken}` },
+    });
+    expect(get.statusCode).toBe(200);
+    const rows = get.json<{ readings: Array<{ eda: number | null; heart_rate: number | null }> }>().readings;
+    const row = rows.find((r) => r.eda === 8.4);
+    expect(row).toBeTruthy();
+    expect(row!.heart_rate).toBeNull();
+  });
+
+  it('rejects a negative eda value', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/readings/batch',
+      headers: { authorization: `Bearer ${authToken}` },
+      payload: {
+        readings: [{ device_id: 'x', timestamp: Date.now(), rr_intervals: [], eda: -1 }],
+      },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
 // ─── 5. GET /warnings ────────────────────────────────────────────────────────
 describe('GET /warnings', () => {
   it('returns an array (may be empty) for authenticated user', async () => {

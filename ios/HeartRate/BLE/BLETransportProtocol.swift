@@ -15,6 +15,12 @@ struct TemperatureMeasurement {
     let site: TemperatureSite
 }
 
+/// Electrodermal activity / skin conductance, streamed by the BodyTempSensor
+/// custom BLE service (characteristic `a0b40003-…`). Microsiemens (µS).
+struct EDAMeasurement {
+    let conductance: Double     // microsiemens (µS)
+}
+
 enum TemperatureSite: String, Codable {
     case skin = "Skin"
     case core = "Core"
@@ -63,6 +69,9 @@ protocol BLETransportProtocol: AnyObject {
     var connectionStatePublisher: AnyPublisher<BLEConnectionState, Never> { get }
     var hrMeasurementPublisher: AnyPublisher<HRMeasurement, Never> { get }
     var temperaturePublisher: AnyPublisher<TemperatureMeasurement, Never> { get }
+    /// Skin-conductance stream. Only emitted by devices implementing the
+    /// BodyTempSensor custom service (Profile B); standard HR straps never emit.
+    var edaPublisher: AnyPublisher<EDAMeasurement, Never> { get }
     func startScanning()
     func stopScanning()
     func disconnect()

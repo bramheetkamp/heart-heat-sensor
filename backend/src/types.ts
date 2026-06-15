@@ -15,8 +15,9 @@ export interface Reading {
   timestamp: number;       // Unix ms
   heart_rate: number | null;
   rr_intervals: number[];  // in ms
-  temp_site1: number | null;   // Celsius
-  temp_site2: number | null;
+  temp_site1: number | null;   // Celsius (core)
+  temp_site2: number | null;   // Celsius (skin)
+  eda: number | null;          // skin conductance, microsiemens (µS)
   activity: string | null;     // 'rest' | 'active' | 'sleep'
   created_at: number;
 }

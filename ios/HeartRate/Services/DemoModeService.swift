@@ -30,17 +30,22 @@ struct StreamConfig {
     var hrRange: ClosedRange<Double>
     var coreTemp: Double
     var skinTemp: Double
+    /// Baseline skin conductance in µS. Sympathetic arousal (stress, fever onset,
+    /// poor recovery) raises EDA, so scenarios that fire warnings use higher values.
+    var eda: Double
     var includeSpike: Bool
 
     init(
         hrRange: ClosedRange<Double> = 62...72,
         coreTemp: Double = 36.8,
         skinTemp: Double = 35.7,
+        eda: Double = 5.0,
         includeSpike: Bool = false
     ) {
         self.hrRange = hrRange
         self.coreTemp = coreTemp
         self.skinTemp = skinTemp
+        self.eda = eda
         self.includeSpike = includeSpike
     }
 }
@@ -58,13 +63,13 @@ final class DemoModeService: ObservableObject {
     func currentStreamConfig(for scenario: DemoScenario) -> StreamConfig {
         switch scenario {
         case .normalWeek:
-            return StreamConfig(hrRange: 62...72, coreTemp: 36.8, skinTemp: 35.7, includeSpike: false)
+            return StreamConfig(hrRange: 62...72, coreTemp: 36.8, skinTemp: 35.7, eda: 5.0, includeSpike: false)
         case .overheatWorkout:
-            return StreamConfig(hrRange: 100...155, coreTemp: 38.9, skinTemp: 37.5, includeSpike: true)
+            return StreamConfig(hrRange: 100...155, coreTemp: 38.9, skinTemp: 37.5, eda: 14.0, includeSpike: true)
         case .gettingSick:
-            return StreamConfig(hrRange: 68...80, coreTemp: 37.4, skinTemp: 36.2, includeSpike: false)
+            return StreamConfig(hrRange: 68...80, coreTemp: 37.4, skinTemp: 36.2, eda: 8.0, includeSpike: false)
         case .poorRecovery:
-            return StreamConfig(hrRange: 72...84, coreTemp: 37.1, skinTemp: 36.0, includeSpike: false)
+            return StreamConfig(hrRange: 72...84, coreTemp: 37.1, skinTemp: 36.0, eda: 9.5, includeSpike: false)
         }
     }
 
@@ -172,6 +177,7 @@ final class DemoModeService: ObservableObject {
             rrIntervals: rr,
             tempCore: Double.random(in: 36.6...37.0),
             tempSkin: Double.random(in: 35.5...35.9),
+            eda: Double.random(in: 4.0...6.5),
             activity: activity,
             deviceId: "DEMO"
         )
@@ -186,6 +192,7 @@ final class DemoModeService: ObservableObject {
             rrIntervals: rr,
             tempCore: Double.random(in: 38.6...39.2),
             tempSkin: Double.random(in: 37.4...37.9),
+            eda: Double.random(in: 12.0...16.0),
             activity: .active,
             deviceId: "DEMO"
         )
@@ -205,6 +212,7 @@ final class DemoModeService: ObservableObject {
             rrIntervals: rr,
             tempCore: tempBase,
             tempSkin: tempBase - Double.random(in: 0.9...1.1),
+            eda: elevated ? Double.random(in: 7.0...9.5) : Double.random(in: 4.0...6.5),
             activity: activity,
             deviceId: "DEMO"
         )
@@ -226,6 +234,7 @@ final class DemoModeService: ObservableObject {
             rrIntervals: rr,
             tempCore: Double.random(in: 36.8...37.2),
             tempSkin: Double.random(in: 35.7...36.0),
+            eda: Double.random(in: 8.5...11.0),
             activity: activity,
             deviceId: "DEMO"
         )

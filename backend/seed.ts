@@ -86,8 +86,8 @@ const READINGS_PER_DAY = 24; // one per hour
 
 const insertReading = db.prepare(`
   INSERT INTO readings (id, user_id, device_id, timestamp, heart_rate, rr_intervals,
-                        temp_site1, temp_site2, activity, created_at)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        temp_site1, temp_site2, eda, activity, created_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 const insertAll = db.transaction(() => {
@@ -186,6 +186,13 @@ const insertAll = db.transaction(() => {
 
       rrIntervals = generateRR(heartRate, rmssdTarget);
 
+      // EDA (skin conductance, µS): rises with sympathetic arousal — exertion,
+      // early illness, and poor recovery all push it up.
+      const edaBase = activity === 'active' ? randBetween(9, 14) : randBetween(4, 6.5);
+      const edaIllnessBump = dayIndex > 27 && dayIndex <= 30 ? randBetween(1.5, 3) : 0;
+      const edaFatigueBump = dayIndex >= 33 ? randBetween(2.5, 4) : 0;
+      const eda = Math.round((edaBase + edaIllnessBump + edaFatigueBump) * 100) / 100;
+
       insertReading.run(
         uuidv4(),
         userId,
@@ -195,6 +202,7 @@ const insertAll = db.transaction(() => {
         JSON.stringify(rrIntervals),
         Math.round(tempSite1 * 100) / 100,
         Math.round(tempSite2 * 100) / 100,
+        eda,
         activity,
         created_at
       );

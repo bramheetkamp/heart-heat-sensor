@@ -12,6 +12,7 @@ const readingSchema = z.object({
   rr_intervals: z.array(z.number().positive()).optional().default([]),
   temp_site1: z.number().nullable().optional(),
   temp_site2: z.number().nullable().optional(),
+  eda: z.number().nonnegative().nullable().optional(),
   activity: z.enum(['rest', 'active', 'sleep']).nullable().optional(),
 });
 
@@ -34,20 +35,31 @@ interface DbReading {
   rr_intervals: string;
   temp_site1: number | null;
   temp_site2: number | null;
+  eda: number | null;
   activity: string | null;
   created_at: number;
 }
 
 function dbRowToReading(row: DbReading): Reading {
+  // Defend against a malformed rr_intervals blob rather than 500-ing the whole
+  // history request because one row is corrupt.
+  let rr: number[] = [];
+  try {
+    const parsed = JSON.parse(row.rr_intervals);
+    if (Array.isArray(parsed)) rr = parsed as number[];
+  } catch {
+    rr = [];
+  }
   return {
     id: row.id,
     user_id: row.user_id,
     device_id: row.device_id,
     timestamp: row.timestamp,
     heart_rate: row.heart_rate,
-    rr_intervals: JSON.parse(row.rr_intervals) as number[],
+    rr_intervals: rr,
     temp_site1: row.temp_site1,
     temp_site2: row.temp_site2,
+    eda: row.eda,
     activity: row.activity,
     created_at: row.created_at,
   };
@@ -81,8 +93,8 @@ const readingsRoutes: FastifyPluginAsync<ReadingsPluginOptions> = async (fastify
     const now = Date.now();
 
     const upsert = db.prepare(`
-      INSERT INTO readings (id, user_id, device_id, timestamp, heart_rate, rr_intervals, temp_site1, temp_site2, activity, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO readings (id, user_id, device_id, timestamp, heart_rate, rr_intervals, temp_site1, temp_site2, eda, activity, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         device_id = excluded.device_id,
         timestamp = excluded.timestamp,
@@ -90,6 +102,7 @@ const readingsRoutes: FastifyPluginAsync<ReadingsPluginOptions> = async (fastify
         rr_intervals = excluded.rr_intervals,
         temp_site1 = excluded.temp_site1,
         temp_site2 = excluded.temp_site2,
+        eda = excluded.eda,
         activity = excluded.activity
     `);
 
@@ -103,6 +116,7 @@ const readingsRoutes: FastifyPluginAsync<ReadingsPluginOptions> = async (fastify
           JSON.stringify(r.rr_intervals ?? []),
           r.temp_site1 ?? null,
           r.temp_site2 ?? null,
+          r.eda ?? null,
           r.activity ?? null,
           now
         );

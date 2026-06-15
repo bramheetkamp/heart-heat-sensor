@@ -44,8 +44,15 @@ interface DbReading {
   rr_intervals: string; // JSON
   temp_site1: number | null;
   temp_site2: number | null;
+  eda: number | null;
   activity: string | null;
   created_at: number;
+}
+
+/** Mean of a column over rows where it is present and positive; null if none. */
+function meanEda(rows: DbReading[]): number | null {
+  const vals = rows.map((r) => r.eda).filter((v): v is number => v != null && v > 0);
+  return vals.length === 0 ? null : mean(vals);
 }
 
 interface DbWarning {
@@ -237,6 +244,17 @@ function checkGettingSick(
 
   if (triggerDay === null) return null;
 
+  // EDA is a corroborating signal when present (BodyTempSensor); HR-only
+  // devices leave it absent and behave exactly as before.
+  const triggerValues: Record<string, number> = { restingHR: lastDayHR, temp_site1: lastDayTemp };
+  const baselineValues: Record<string, number> = { restingHR: baselineHR, temp_site1: baselineTemp };
+  const baselineEda = meanEda(baseline30);
+  const recentEda = meanEda(recent7);
+  if (baselineEda !== null && recentEda !== null) {
+    triggerValues.eda = recentEda;
+    baselineValues.eda = baselineEda;
+  }
+
   return insertWarning(
     db,
     userId,
@@ -244,8 +262,8 @@ function checkGettingSick(
     'Possible Illness Developing',
     `Your resting heart rate (${lastDayHR.toFixed(0)} bpm) and/or temperature (${lastDayTemp.toFixed(2)}°C) have been elevated above your personal baseline for 2+ consecutive days.`,
     {
-      triggerValues: { restingHR: lastDayHR, temp_site1: lastDayTemp },
-      baselineValues: { restingHR: baselineHR, temp_site1: baselineTemp },
+      triggerValues,
+      baselineValues,
       trend: sortedDays.map((d) => {
         const dr = byDay.get(d)!;
         return mean(dr.map((r) => r.heart_rate ?? 0).filter((v) => v > 0));
@@ -326,6 +344,15 @@ function checkFatigueRecovery(
 
   if (triggerDay === null) return null;
 
+  const triggerValues: Record<string, number> = { restingHR: lastDayHR, hrv: lastDayHRV };
+  const baselineValues: Record<string, number> = { restingHR: baselineHR, hrv: baselineHRV };
+  const baselineEda = meanEda(baseline30);
+  const recentEda = meanEda(recent7);
+  if (baselineEda !== null && recentEda !== null) {
+    triggerValues.eda = recentEda;
+    baselineValues.eda = baselineEda;
+  }
+
   return insertWarning(
     db,
     userId,
@@ -333,8 +360,8 @@ function checkFatigueRecovery(
     'Poor Recovery / Fatigue Detected',
     `Your resting heart rate is elevated (${lastDayHR.toFixed(0)} bpm, +8% above baseline) and HRV is suppressed (${lastDayHRV.toFixed(1)} ms, ≤80% of baseline) for 2+ consecutive days. Consider extra rest.`,
     {
-      triggerValues: { restingHR: lastDayHR, hrv: lastDayHRV },
-      baselineValues: { restingHR: baselineHR, hrv: baselineHRV },
+      triggerValues,
+      baselineValues,
       trend: sortedDays.map((d) => {
         const dr = byDay.get(d)!;
         return mean(dr.map((r) => r.heart_rate ?? 0).filter((v) => v > 0));

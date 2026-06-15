@@ -43,6 +43,19 @@ final class DataStore: ObservableObject {
         try context.save()
     }
 
+    /// Drop readings older than `days` to bound on-device growth from a device
+    /// that streams continuously (~every 5 s). Retention is kept generous so the
+    /// 30-day warning baselines are never starved. Returns nothing; best-effort.
+    @discardableResult
+    func pruneReadings(olderThan days: Int) throws -> Bool {
+        guard days > 0 else { return false }
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+        let predicate = #Predicate<Reading> { $0.timestamp < cutoff }
+        try context.delete(model: Reading.self, where: predicate)
+        try context.save()
+        return true
+    }
+
     /// Fetch readings within an inclusive date range, sorted ascending.
     func readings(from startDate: Date, to endDate: Date) throws -> [Reading] {
         let predicate = #Predicate<Reading> { reading in

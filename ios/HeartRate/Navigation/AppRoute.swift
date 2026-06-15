@@ -14,6 +14,7 @@ enum AppRoute: Hashable {
         case coreTemp  = "core"
         case skinTemp  = "skin"
         case hrv       = "hrv"
+        case eda       = "eda"
     }
 
     // MARK: - URL Parsing

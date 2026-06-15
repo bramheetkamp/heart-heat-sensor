@@ -20,9 +20,14 @@ struct RootView: View {
 
 struct MainAppView: View {
     @EnvironmentObject private var env: AppEnvironment
+    // Observe the router directly so the NavigationStack re-renders when its
+    // path is changed programmatically (deep links, router.navigate). Binding
+    // through `env.router` alone doesn't, because AppEnvironment doesn't
+    // republish the router's changes.
+    @EnvironmentObject private var router: AppRouter
 
     var body: some View {
-        NavigationStack(path: $env.router.path) {
+        NavigationStack(path: $router.path) {
             DashboardView()
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
@@ -39,7 +44,7 @@ struct MainAppView: View {
                     }
                 }
         }
-        .sheet(item: $env.router.presentedSheet) { sheet in
+        .sheet(item: $router.presentedSheet) { sheet in
             switch sheet {
             case .onboarding:
                 OnboardingView()

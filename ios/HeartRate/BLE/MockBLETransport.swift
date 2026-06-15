@@ -12,6 +12,7 @@ final class MockBLETransport: BLETransportProtocol {
     private let connectionStateSubject  = PassthroughSubject<BLEConnectionState, Never>()
     private let hrMeasurementSubject    = PassthroughSubject<HRMeasurement, Never>()
     private let temperatureSubject      = PassthroughSubject<TemperatureMeasurement, Never>()
+    private let edaSubject              = PassthroughSubject<EDAMeasurement, Never>()
 
     var connectionStatePublisher: AnyPublisher<BLEConnectionState, Never> {
         connectionStateSubject.eraseToAnyPublisher()
@@ -21,6 +22,9 @@ final class MockBLETransport: BLETransportProtocol {
     }
     var temperaturePublisher: AnyPublisher<TemperatureMeasurement, Never> {
         temperatureSubject.eraseToAnyPublisher()
+    }
+    var edaPublisher: AnyPublisher<EDAMeasurement, Never> {
+        edaSubject.eraseToAnyPublisher()
     }
 
     // MARK: - Private State
@@ -74,6 +78,11 @@ final class MockBLETransport: BLETransportProtocol {
             site: site
         )
         temperatureSubject.send(measurement)
+    }
+
+    /// Inject a specific EDA / skin-conductance value (used in unit tests).
+    func injectEDA(_ microsiemens: Double) {
+        edaSubject.send(EDAMeasurement(conductance: microsiemens))
     }
 
     // MARK: - BLETransportProtocol
@@ -189,6 +198,10 @@ final class MockBLETransport: BLETransportProtocol {
 
         temperatureSubject.send(coreReading)
         temperatureSubject.send(skinReading)
+
+        // EDA tracks the scenario baseline with a little sympathetic-tone noise.
+        let edaValue = max(0, streamConfig.eda + Double.random(in: -0.6...0.6))
+        edaSubject.send(EDAMeasurement(conductance: edaValue))
     }
 
     /// Smoothly drift a value within [low, high] by at most maxStep per tick.

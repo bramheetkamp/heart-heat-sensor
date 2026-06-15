@@ -29,6 +29,7 @@ export function createDatabase(dbPath: string): DB {
       rr_intervals TEXT NOT NULL DEFAULT '[]',
       temp_site1 REAL,
       temp_site2 REAL,
+      eda REAL,
       activity TEXT,
       created_at INTEGER NOT NULL
     );
@@ -50,5 +51,20 @@ export function createDatabase(dbPath: string): DB {
     CREATE INDEX IF NOT EXISTS idx_warnings_user ON warnings(user_id, fired_at);
   `);
 
+  migrate(db);
+
   return db;
+}
+
+/**
+ * Idempotent, additive migrations for databases created before a column existed.
+ * `CREATE TABLE IF NOT EXISTS` never alters an existing table, so new columns
+ * must be added explicitly here. Safe to run on every startup.
+ */
+function migrate(db: DB): void {
+  const cols = db.prepare(`PRAGMA table_info(readings)`).all() as { name: string }[];
+  const hasEda = cols.some((c) => c.name === 'eda');
+  if (!hasEda) {
+    db.exec(`ALTER TABLE readings ADD COLUMN eda REAL`);
+  }
 }

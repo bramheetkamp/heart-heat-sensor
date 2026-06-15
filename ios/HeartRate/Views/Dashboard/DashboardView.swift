@@ -3,12 +3,23 @@ import SwiftData
 
 struct DashboardView: View {
     @EnvironmentObject private var env: AppEnvironment
-    @Query(sort: \Reading.timestamp, order: .reverse) private var recentReadings: [Reading]
+    // Bounded fetch: the newest N readings only. Without a limit this loads the
+    // entire (continuously growing) table on every store change, which makes the
+    // whole UI crawl. 5000 covers the warning baselines for realistic data.
+    @Query private var recentReadings: [Reading]
     @State private var warnings: [HealthWarning] = []
-    @State private var isRefreshing = false
     @State private var showScenarioPicker = false
 
+    init() {
+        var descriptor = FetchDescriptor<Reading>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        descriptor.fetchLimit = 5000
+        _recentReadings = Query(descriptor)
+    }
+
     private var latestReading: Reading? { recentReadings.first }
+    private var activeWarnings: [HealthWarning] { warnings.filter { $0.resolvedAt == nil } }
     private var mascotState: MascotState {
         if let top = topWarning {
             switch top.type {
@@ -40,20 +51,17 @@ struct DashboardView: View {
         // to env.router.path. A nested stack would swallow router pushes and
         // leave the toolbar's value-based NavigationLink with no destination.
         ScrollView {
-            RefreshControl(isRefreshing: $isRefreshing) {
-                await refresh()
-            }
-
             VStack(spacing: 20) {
                 mascotStatusCard
                 metricsGrid
-                if !warnings.filter({ $0.resolvedAt == nil }).isEmpty {
+                if !activeWarnings.isEmpty {
                     activeWarningsSection
                 }
                 quickNavRow
             }
             .padding()
         }
+        .refreshable { await refresh() }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Today")
         .navigationBarTitleDisplayMode(.large)
@@ -133,6 +141,7 @@ struct DashboardView: View {
             coreTemperatureCard
             skinTemperatureCard
             hrvCard
+            edaCard
         }
     }
 
@@ -207,6 +216,24 @@ struct DashboardView: View {
         }
     }
 
+    private var edaCard: some View {
+        MetricCard(
+            title: "EDA",
+            icon: "drop.fill",
+            iconColor: .teal
+        ) {
+            MetricDisplay(
+                value: latestReading?.eda,
+                format: "%.1f",
+                unit: "µS",
+                color: .teal
+            )
+        }
+        .onTapGesture {
+            env.router.navigate(to: .history(metric: .eda))
+        }
+    }
+
     // MARK: - Active Warnings
 
     private var activeWarningsSection: some View {
@@ -215,14 +242,14 @@ struct DashboardView: View {
                 .font(.headline)
                 .padding(.horizontal, 4)
 
-            ForEach(warnings.filter { $0.resolvedAt == nil }.prefix(3)) { warning in
+            ForEach(activeWarnings.prefix(3)) { warning in
                 WarningRowCard(warning: warning)
                     .onTapGesture {
                         env.router.navigate(to: .warningDetail(id: warning.id))
                     }
             }
 
-            if warnings.filter({ $0.resolvedAt == nil }).count > 3 {
+            if activeWarnings.count > 3 {
                 Button("See all warnings") {
                     env.router.navigate(to: .warningDetail(id: warnings.first!.id))
                 }
@@ -246,7 +273,7 @@ struct DashboardView: View {
             QuickNavButton(
                 icon: "exclamationmark.triangle.fill",
                 label: "Alerts",
-                badge: warnings.filter { $0.resolvedAt == nil }.count
+                badge: activeWarnings.count
             ) {
                 if let first = warnings.first {
                     env.router.navigate(to: .warningDetail(id: first.id))
@@ -264,13 +291,11 @@ struct DashboardView: View {
     // MARK: - Actions
 
     private func refresh() async {
-        isRefreshing = true
         warnings = WarningsEngine.compute(
-            readings: Array(recentReadings.prefix(5000)),
+            readings: Array(recentReadings),
             profile: (try? env.dataStore.getOrCreateProfile()) ?? UserProfile()
         )
         await env.notifications.notifyIfNeeded(for: warnings)
-        isRefreshing = false
     }
 }
 
@@ -369,25 +394,6 @@ private struct QuickNavButton: View {
             .background(.background, in: RoundedRectangle(cornerRadius: 16))
         }
         .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
-    }
-}
-
-// MARK: - Refresh Control
-
-private struct RefreshControl: View {
-    @Binding var isRefreshing: Bool
-    let action: () async -> Void
-
-    var body: some View {
-        GeometryReader { geo in
-            if geo.frame(in: .global).minY > 50 && !isRefreshing {
-                Spacer()
-                    .onAppear {
-                        Task { await action() }
-                    }
-            }
-        }
-        .frame(height: 0)
     }
 }
 

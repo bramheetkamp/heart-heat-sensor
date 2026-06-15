@@ -144,6 +144,22 @@ struct WarningsEngine {
         let recentHR   = rollingAverage(readings: resting, days: 7, keyPath: \.heartRateDouble) ?? hrBaseline
         let recentTemp = rollingAverage(readings: resting, days: 7, keyPath: \.tempCore) ?? tmpBaseline
 
+        // EDA (skin conductance) is a corroborating signal when the device
+        // provides it — sympathetic arousal often rises ahead of illness. It is
+        // surfaced in the context (not used to gate firing) so HR-only devices
+        // behave exactly as before.
+        var trigger: [String: Double] = ["avgHR": recentHR, "avgTemp": recentTemp, "elevatedDays": Double(elevatedDays)]
+        var baseline: [String: Double] = ["hrBaseline": hrBaseline, "tempBaseline": tmpBaseline]
+        var explanation = "Sustained elevation of resting heart rate and temperature relative to your personal 30-day baseline is an early indicator of illness."
+        if let edaBaseline = rollingAverage(readings: resting, days: 30, keyPath: \.eda),
+           let recentEDA = rollingAverage(readings: resting, days: 7, keyPath: \.eda) {
+            trigger["avgEDA"] = recentEDA
+            baseline["edaBaseline"] = edaBaseline
+            if recentEDA > edaBaseline * 1.2 {
+                explanation += " Skin conductance is also elevated, consistent with early sympathetic stress."
+            }
+        }
+
         return HealthWarning(
             id: stableID(for: "getting-sick"),
             type: .gettingSick,
@@ -152,10 +168,10 @@ struct WarningsEngine {
             title: "You May Be Getting Sick",
             message: "Your resting heart rate and temperature have been elevated for \(elevatedDays) days compared to your 30-day baseline.",
             context: HealthWarning.WarningContext(
-                triggerValues: ["avgHR": recentHR, "avgTemp": recentTemp, "elevatedDays": Double(elevatedDays)],
-                baselineValues: ["hrBaseline": hrBaseline, "tempBaseline": tmpBaseline],
+                triggerValues: trigger,
+                baselineValues: baseline,
                 trendValues: resting.suffix(14).compactMap(\.heartRateDouble),
-                explanation: "Sustained elevation of resting heart rate and temperature relative to your personal 30-day baseline is an early indicator of illness."
+                explanation: explanation
             ),
             deepLinkPath: "/warnings/getting-sick"
         )
@@ -191,6 +207,26 @@ struct WarningsEngine {
 
         guard hrFatigued && hrvFatigued else { return nil }
 
+        var trigger: [String: Double] = [
+            "recentHR":  recentHR,
+            "recentHRV": recentHRV,
+            "hrElevatedPct":  hrElevatedFraction  * 100,
+            "hrvDepressedPct": hrvDepressedFraction * 100
+        ]
+        var baseline: [String: Double] = [
+            "hrBaseline":  hrBaseline,
+            "hrvBaseline": hrvBaseline
+        ]
+        var explanation = "Elevated resting HR combined with depressed HRV (RMSSD) indicates incomplete physiological recovery."
+        if let edaBaseline = rollingAverage(readings: resting, days: 30, keyPath: \.eda),
+           let recentEDA = rollingAverage(readings: resting, days: 7, keyPath: \.eda) {
+            trigger["avgEDA"] = recentEDA
+            baseline["edaBaseline"] = edaBaseline
+            if recentEDA > edaBaseline * 1.2 {
+                explanation += " Elevated skin conductance corroborates heightened sympathetic load."
+            }
+        }
+
         return HealthWarning(
             id: stableID(for: "fatigue"),
             type: .fatigueRecovery,
@@ -203,18 +239,10 @@ struct WarningsEngine {
                 hrvDepressedFraction * 100
             ),
             context: HealthWarning.WarningContext(
-                triggerValues: [
-                    "recentHR":  recentHR,
-                    "recentHRV": recentHRV,
-                    "hrElevatedPct":  hrElevatedFraction  * 100,
-                    "hrvDepressedPct": hrvDepressedFraction * 100
-                ],
-                baselineValues: [
-                    "hrBaseline":  hrBaseline,
-                    "hrvBaseline": hrvBaseline
-                ],
+                triggerValues: trigger,
+                baselineValues: baseline,
                 trendValues: resting.suffix(14).compactMap(\.rmssd),
-                explanation: "Elevated resting HR combined with depressed HRV (RMSSD) indicates incomplete physiological recovery."
+                explanation: explanation
             ),
             deepLinkPath: "/warnings/fatigue"
         )
