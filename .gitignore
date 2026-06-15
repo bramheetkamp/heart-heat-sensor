@@ -1,0 +1,25 @@
+# Backend
+backend/node_modules/
+backend/dist/
+backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
+backend/.env
+
+# iOS
+ios/HeartRate.xcodeproj/
+ios/HeartRate.xcworkspace/
+ios/build/
+ios/DerivedData/
+ios/.build/
+*.xcuserstate
+*.xcuserdata
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Xcode
+xcuserdata/
+*.xccheckout
+*.moved-aside
