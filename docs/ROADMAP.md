@@ -1,6 +1,6 @@
 # Pulse — Development Roadmap
 
-**STATUS: PROJECT COMPLETE (2026-06-13)** — all items checked; `develop` merged → `main`.
+**STATUS: PROJECT COMPLETE (2026-06-15)** — all items checked; `develop` merged → `main`.
 
 Derived from the product spec and codebase audit. Each item must be complete
 (no placeholders, no stubs) before being checked. Garmin integration is the
@@ -13,12 +13,17 @@ only intentionally deferred item.
 - [x] `BLETransportProtocol` — mock and real transport interchangeable
 - [x] `CoreBluetoothTransport` — production CoreBluetooth with scan / connect / notify
 - [x] `MockBLETransport` — scenario-driven simulation through the same protocol
-- [x] Auto-reconnect with exponential backoff
+- [x] Auto-reconnect with exponential backoff + jitter, 10 s connect timeout, direct reconnect to last peripheral
 - [x] HR characteristic 0x2A37 — 8-bit and 16-bit value parsing
 - [x] HR characteristic 0x2A37 — RR interval extraction (1/1024 s units)
 - [x] Temperature characteristic 0x2A1C — IEEE-11073 32-bit float decoding
 - [x] Two named temperature streams (site1 / site2)
 - [x] Parser unit tests with byte-level fixtures (`HRMeasurementParserTests`, `TemperatureMeasurementParserTests`)
+- [x] **BodyTempSensor custom GATT profile** — auto-detected alongside standard GATT; skin + core + EDA float32 LE chars
+- [x] `BodyTempFrameParser` — decodes float32 LE scalars from custom service chars
+- [x] `BodyTempFrameParserTests` — unit tests with byte fixtures
+- [x] `docs/BLE_CONTRACT.md` — shared BLE contract used by firmware and iOS app
+- [x] Persist temperature/EDA-only readings (no HR) for BodyTempSensor device
 
 ---
 
@@ -71,12 +76,25 @@ only intentionally deferred item.
 
 ---
 
+## EDA Metric
+
+- [x] `Reading.eda` field — persisted in SwiftData and synced to backend
+- [x] EDA tile on Dashboard — live value display
+- [x] EDA history chart — line/area chart in History view with metric picker
+- [x] EDA in warnings context — surfaced in `WarningsEngine` trigger values
+- [x] Backend `eda` column with idempotent `migrate()` (never drops existing tables)
+- [x] Backend migration tests (`migration.test.ts`, 2 tests)
+- [x] Sync upload contract fixed — snake_case keys, ms timestamps, RR in ms, `eda` field, `activity` nil for unknown
+
+---
+
 ## Persistence & Sync
 
 - [x] SwiftData persistence for `Reading` and `HealthWarning` models
 - [x] `DataStore` — save / fetch / mark-synced helpers
-- [x] `SyncService` — register, login, batch upload, warnings fetch
+- [x] `SyncService` — register, login, batch upload, warnings fetch; upload contract matches backend zod schema
 - [x] Garmin Health API extension point — clearly marked commented stub (intentionally unimplemented)
+- [x] Bounded 180-day reading retention prune (on-device storage bound)
 
 ---
 
@@ -103,7 +121,7 @@ only intentionally deferred item.
 
 ## Quality Gates (must all pass before PROJECT COMPLETE)
 
-- [x] Backend tests passing (`npm test` → 50/50 after Apple JWKS work)
+- [x] Backend tests passing (`npm test` → 54/54 after BodyTempSensor + EDA + migration work)
 - [x] Seed script fires all 3 expected warnings (verified)
 - [x] All ROADMAP items above checked (except Garmin)
 - [x] No remaining TODOs / placeholder stubs in source (except marked Garmin stub)
