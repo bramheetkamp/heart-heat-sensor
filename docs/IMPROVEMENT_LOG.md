@@ -298,3 +298,47 @@ broke the loop by merging the most recent of those branches (`festive-bell-up9km
 **If a future run finds this log**
 The project is complete. `develop` and `main` are in sync. Run `cd backend && npm test` to
 confirm 50/50 still passes. If tests are green, there is nothing more to do.
+
+---
+
+## 2026-06-15 — BodyTempSensor BLE profile, EDA metric, and develop → main sync
+
+**Context**
+A significant feature commit (`fbdf55f`) was pushed directly to `main` by the previous session
+(co-authored by Claude Opus 4.8 1M context) AFTER the PROJECT COMPLETE declaration. It was also
+present on `develop` via merge. The ROADMAP and this log had not been updated to reflect it.
+This run updates the documentation, checks the quality gates, and re-merges develop → main.
+
+**What was already built (now documented)**
+- **BodyTempSensor BLE profile** — `CoreBluetoothTransport` auto-detects the custom GATT service
+  (`a0b40000-…`) alongside standard 0x180D/0x1809; subscribes to skin + core + EDA float32 LE chars
+- **`BodyTempFrameParser`** — decodes each scalar from the custom service; unit-tested in
+  `BodyTempFrameParserTests.swift` with byte-level fixtures
+- **`docs/BLE_CONTRACT.md`** — shared BLE contract (firmware + iOS) source of truth
+- **EDA as first-class metric** — `Reading.eda` (µS), Dashboard tile, History chart (`eda` picker),
+  warnings context, backend `eda` column with idempotent migration
+- **Sync upload contract fix** — `SyncService.ReadingPayload` now uses snake_case, ms timestamps,
+  RR in ms, `eda` field, `activity = nil` for unknown; every batch was 400'ing before this fix
+- **Reliability fixes** — exponential backoff with jitter (1 s base, 30 s cap), 10 s connect timeout,
+  direct reconnect to last peripheral; 180-day reading retention prune
+- **Performance / navigation fixes** — native `.refreshable` (no runaway loop), `@Query` fetchLimit,
+  `MascotView` blink task cancellation, `AppRouter` observation fix so `navigate()` / deep links work
+- **Backend hardening** — `rr_intervals` JSON parse guard, `eda` zod validation
+- **Backend migration tests** — `migration.test.ts` (2 tests), total backend tests now **54/54**
+
+**Verification this run**
+- `cd backend && npm test` → **54/54 passing** (up from 50 at prior PROJECT COMPLETE)
+- `origin/main..origin/develop`: 6 documentation/merge commits only — no unreported code changes
+- ROADMAP.md: updated with new BLE, EDA, persistence, and quality-gate items; PROJECT COMPLETE
+  date corrected to 2026-06-15
+- `develop` merged → `main` (fast-forward)
+
+**Not verifiable on Linux (requires Xcode)**
+- `BodyTempFrameParserTests.swift` and updated `WarningsEngineTests.swift` compile and pass
+- EDA tile, History EDA chart, and BodyTempSensor device pairing flow work in the Simulator
+- CoreBluetoothTransport auto-detection, reconnect backoff, and direct-reconnect behaviour are
+  runtime paths that require a device or the BLE stack
+
+**If a future run finds this log**
+The project is complete. `develop` and `main` are in sync. Run `cd backend && npm test` to
+confirm 54/54 still passes. If tests are green, there is nothing more to do.
