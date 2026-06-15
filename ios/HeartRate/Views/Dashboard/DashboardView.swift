@@ -53,6 +53,7 @@ struct DashboardView: View {
         ScrollView {
             VStack(spacing: 20) {
                 mascotStatusCard
+                HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
                 metricsGrid
                 if !activeWarnings.isEmpty {
                     activeWarningsSection

@@ -5,6 +5,41 @@ and exact instructions for the next run.
 
 ---
 
+## 2026-06-15 — On-device AI health summary (Foundation Models)
+
+**Built (iOS)**
+- `feat(ios)`: on-device wellness summary using Apple's **Foundation Models**
+  framework (the Apple Intelligence on-device LLM). Generates a 2–3 sentence,
+  wellness-framed status summary **entirely on-device** — never touches
+  `SyncService`/the backend, works fully offline.
+  - `Services/HealthSummaryService.swift` — `@MainActor` service. `availability`
+    maps `SystemLanguageModel.default.availability` → user-facing reasons; pure,
+    `nonisolated`, FoundationModels-free `snapshot(...)`/`buildPrompt(...)` build a
+    compact numeric context (latest reading + resting 7d/30d baselines reused from
+    `WarningsEngine.rollingAverage` + active warnings). All model usage gated by
+    `#if canImport(FoundationModels)` + `if #available(iOS 26.0, *)`.
+  - `Views/Dashboard/HealthSummaryCard.swift` — renders **nothing** unless the
+    on-device model is available (progressive enhancement; **no template
+    fallback** by design — "new/capable devices get it, otherwise don't").
+    Regenerates via `.task(id:)` keyed on active-warning set + newest timestamp.
+  - Wired `healthSummary` into `AppEnvironment`; card inserted on the Dashboard
+    under the mascot status card.
+  - System instructions enforce the project's wellness-only framing (no diagnosis).
+
+**Verification**
+- `xcodebuild build` (iPhone 17 sim, Xcode 26.5 / iOS 26 SDK): **BUILD SUCCEEDED**
+  — compiles against the real FoundationModels framework.
+- Tests: **47/47 passing** (42 prior + 5 new `HealthSummaryServiceTests` covering
+  snapshot derivation + prompt construction + the no-diagnosis instruction guardrail).
+
+**Known issues / notes**
+- The Foundation Models *generation* path isn't unit-tested (needs the on-device
+  model at runtime); only the pure prompt/snapshot inputs are covered.
+- Simulator availability of the model varies; on a device without Apple
+  Intelligence the card is correctly hidden.
+
+---
+
 ## 2026-06-12 — Orientation run
 
 **Branch state**
