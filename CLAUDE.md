@@ -206,6 +206,9 @@ Universal Links require deploying the backend over HTTPS, editing
 
 ## Conventions
 
+- **Branching:** `develop` is the default/working branch (branch features off it,
+  PR into it); `main` is the release branch. `develop` is protected — no deletion
+  or force-push. Merge `develop` → `main` for releases.
 - iOS: dependencies flow through `AppEnvironment`; keep `WarningsEngine` pure and
   SwiftData-free; new screens get an `AppRoute` case + router handling so they're
   deep-linkable. Localized strings live in `Resources/{en,nl}.lproj`.

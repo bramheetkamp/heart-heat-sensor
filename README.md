@@ -6,6 +6,14 @@ The hardware doesn't exist yet — everything works end-to-end against simulated
 
 ---
 
+## Branching
+
+- **`develop`** is the **default / working branch** — branch your features off it and open PRs into it.
+- **`main`** is the release branch (production-ready history).
+- `develop` is protected: it can't be deleted or force-pushed. Day-to-day work happens on `develop`; merge into `main` for releases.
+
+---
+
 ## Project layout
 
 ```
