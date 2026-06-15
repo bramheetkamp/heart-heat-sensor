@@ -5,6 +5,70 @@ and exact instructions for the next run.
 
 ---
 
+## 2026-06-15 — Orientation: Foundation Models sync and develop → main merge
+
+**Context**
+Previous run built the Foundation Models iOS health summary feature and committed it to `develop`
+but did not merge `develop` → `main`, leaving them out of sync. This run verified the feature,
+ran backend tests, and completed the merge.
+
+**Verified this run**
+- `cd backend && npm test` → **54/54 passing** — no regressions
+- iOS read-through of `HealthSummaryService.swift` + `HealthSummaryCard.swift` + tests:
+  - Correct `#if canImport(FoundationModels)` + `if #available(iOS 26.0, *)` guards
+  - `rollingAverage(readings:days:keyPath:)` and `restingReadings(_:)` both exist on `WarningsEngine` with matching signatures
+  - `heartRateForSummary: Double?` private extension on `Reading` correctly bridges `Int?` → `Double?` for the key-path
+  - `HealthSummaryCard` renders nothing when model unavailable (progressive enhancement, no fallback)
+  - `HealthSummaryServiceTests.swift`: 5 tests covering snapshot derivation, active/resolved warning filtering, prompt content, and the wellness-only instruction guardrail
+- `claude/festive-bell-8zmmwa` and `claude/festive-bell-9lbgj6`: doc-sync-only commits, nothing to merge
+- `develop` merged → `main`
+
+**Not verifiable on Linux (requires Xcode)**
+- `HealthSummaryServiceTests` compile and 47/47 iOS tests pass
+- `LanguageModelSession.respond(to:options:)` path works on Apple Intelligence-capable device
+- Dashboard card renders and regenerates correctly on device/simulator
+
+**If a future run finds this log**
+The project is complete. `develop` and `main` are in sync. Run `cd backend && npm test` to
+confirm 54/54 still passes. If tests are green, there is nothing more to do.
+
+---
+
+## 2026-06-15 — On-device AI health summary (Foundation Models)
+
+**Built (iOS)**
+- `feat(ios)`: on-device wellness summary using Apple's **Foundation Models**
+  framework (the Apple Intelligence on-device LLM). Generates a 2–3 sentence,
+  wellness-framed status summary **entirely on-device** — never touches
+  `SyncService`/the backend, works fully offline.
+  - `Services/HealthSummaryService.swift` — `@MainActor` service. `availability`
+    maps `SystemLanguageModel.default.availability` → user-facing reasons; pure,
+    `nonisolated`, FoundationModels-free `snapshot(...)`/`buildPrompt(...)` build a
+    compact numeric context (latest reading + resting 7d/30d baselines reused from
+    `WarningsEngine.rollingAverage` + active warnings). All model usage gated by
+    `#if canImport(FoundationModels)` + `if #available(iOS 26.0, *)`.
+  - `Views/Dashboard/HealthSummaryCard.swift` — renders **nothing** unless the
+    on-device model is available (progressive enhancement; **no template
+    fallback** by design — "new/capable devices get it, otherwise don't").
+    Regenerates via `.task(id:)` keyed on active-warning set + newest timestamp.
+  - Wired `healthSummary` into `AppEnvironment`; card inserted on the Dashboard
+    under the mascot status card.
+  - System instructions enforce the project's wellness-only framing (no diagnosis).
+
+**Verification**
+- `xcodebuild build` (iPhone 17 sim, Xcode 26.5 / iOS 26 SDK): **BUILD SUCCEEDED**
+  — compiles against the real FoundationModels framework.
+- Tests: **47/47 passing** (42 prior + 5 new `HealthSummaryServiceTests` covering
+  snapshot derivation + prompt construction + the no-diagnosis instruction guardrail).
+
+**Known issues / notes**
+- The Foundation Models *generation* path isn't unit-tested (needs the on-device
+  model at runtime); only the pure prompt/snapshot inputs are covered.
+- Simulator availability of the model varies; on a device without Apple
+  Intelligence the card is correctly hidden.
+
+---
+
 ## 2026-06-12 — Orientation run
 
 **Branch state**

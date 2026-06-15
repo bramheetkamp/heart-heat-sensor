@@ -44,6 +44,7 @@ final class AppEnvironment: ObservableObject {
     let demoMode: DemoModeService
     let syncService: SyncService
     let notifications: NotificationService
+    let healthSummary: HealthSummaryService
     var router: AppRouter
 
     @Published var isDemoMode: Bool {
@@ -88,6 +89,7 @@ final class AppEnvironment: ObservableObject {
 
         self.bleService = BLEService(transport: transport, dataStore: dataStore)
         self.syncService = SyncService()
+        self.healthSummary = HealthSummaryService()
 
         let router = AppRouter()
         self.router = router
