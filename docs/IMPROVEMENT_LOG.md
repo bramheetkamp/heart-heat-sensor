@@ -210,3 +210,91 @@ and exact instructions for the next run.
    - Add "PROJECT COMPLETE" log entry summarising everything built and anything
      unverifiable on Linux (iOS compile-correctness).
 5. Push docs update to `develop` (and `main` after merge).
+
+---
+
+## 2026-06-13 — PROJECT COMPLETE
+
+**Merged this run**
+- `claude/work-final-quality-gates` → `develop`
+  - iOS test fixes: `ParseError.tooShort` scope (no `HRMeasurementParser` prefix) in
+    `HRMeasurementParserTests.swift` lines 72 & 80
+  - iOS test fix: `fatigueHRThreshold = 0.08` / `fatigueHRVThreshold = 0.80` (ratios,
+    not raw percentages) in `WarningsEngineTests.swift` lines 56–57
+  - README: test count updated 19 → 50; `APPLE_CLIENT_ID` added to env table
+  - `.env.example`: `APPLE_TEAM_ID` and `APPLE_BUNDLE_ID` added (used by `wellknown.ts`)
+  - ROADMAP.md: all 4 remaining quality gate checkboxes checked
+
+**Final audit results**
+- Backend: **50/50 tests passing**, zero TypeScript errors (`tsc --noEmit`)
+- Seed script: **3/3 warnings fire** (OVERHEATING + GETTING_SICK + FATIGUE_RECOVERY)
+- TODO/stub scan: only 2 hits — both legitimate (synthetic Apple placeholder email in
+  `auth.ts`, and UI `placeholderText` property in `AnimatedNumber.swift`)
+- README: all commands verified accurate against `package.json` scripts
+- ROADMAP: all items checked (Garmin remains the only intentionally deferred item)
+
+**Everything built across all runs**
+1. `docs/ROADMAP.md` + `docs/IMPROVEMENT_LOG.md` — project memory
+2. OVERHEATING lookback window 24 h → 48 h so seed workout data fires correctly
+3. `backend/tests/warningsEngine.test.ts` — 17 direct unit tests for all 3 warning rules
+4. `@fastify/rate-limit@9` — auth (5/10 per 15 min) + readings (100/min) + global (200/min)
+5. `backend/tests/rateLimit.test.ts` — 4 integration tests for rate limit headers/429s
+6. `backend/src/services/appleAuth.ts` — RS256 JWKS verification via `jose@5.x`;
+   `makeLocalJWKS` / `makeAppleJWKS` / `verifyAppleToken`; `APPLE_CLIENT_ID` wired through
+   `BuildServerOptions`; `APPLE_TEAM_ID` / `APPLE_BUNDLE_ID` in `.env.example`
+7. `backend/tests/appleAuth.test.ts` — 10 tests (valid flows + 6 rejection cases)
+8. iOS test fixes (ParseError scope, fatigue threshold units)
+9. `develop` merged → `main`
+
+**Not verifiable on Linux (requires Xcode)**
+- iOS parser tests compile and pass: `HRMeasurementParserTests`, `TemperatureMeasurementParserTests`
+- iOS warnings engine tests compile and pass (especially `test_fatigue_elevatedHR_lowHRV`
+  now that threshold ratios are correct)
+- All SwiftUI views render without crashes in the Simulator
+- BLE auto-reconnect, CoreBluetoothTransport, and demo-mode scenario switching are
+  runtime behaviours that cannot be exercised on Linux
+
+**If a future run finds this log**
+The project is complete. Run `cd backend && npm test` to confirm 50/50 still passes.
+If tests are still green, there is nothing more to do.
+
+---
+
+## 2026-06-14 — Orientation: iOS post-completion improvements merged into develop
+
+**Context**
+Three previous runs (`claude/festive-bell-cj7yrm`, `np4pn5`, `up9kmf`) each found that
+`develop` was behind `main` and created doc-sync branches, but none got merged. This run
+broke the loop by merging the most recent of those branches (`festive-bell-up9kmf`) into
+`develop`, which also brought in all the post-PROJECT COMPLETE iOS work from main.
+
+**Merged this run**
+- `claude/festive-bell-up9kmf` → `develop`
+  - Backend port 3000 → 3100 (`server.ts`, `docker-compose.yml`, `.env.example`, `README.md`)
+  - `fix(ios)`: resolve build/runtime bugs so app builds, runs, and tests pass
+  - `feat(ios)`: add log-in option to onboarding account step (`OnboardingView.swift`)
+  - `fix(ios)`: repair in-app navigation + localized auth error messages (`AppEnvironment.swift`,
+    `SyncService.swift`)
+  - `fix(ios)`: show queried data (incl. demo) + health-warning notifications — new
+    `NotificationService.swift` (101 lines); updated `DashboardView.swift`, `BLEService.swift`
+  - `feat(ios)`: enable pairing flow on simulator + persist live device readings
+    (`AppEnvironment.swift`, `DataStore.swift`, `BLEService.swift`)
+  - `feat(ios)`: dark mode with appearance setting (`SettingsView.swift`, `HeartRateApp.swift`)
+  - New `ios/HeartRateTests/BLEServiceTests.swift` test file
+  - Localizable.strings added (en + nl locales)
+  - Docs sync: ROADMAP.md restored STATUS: PROJECT COMPLETE header; IMPROVEMENT_LOG brought
+    up to date with the PROJECT COMPLETE entry from develop
+
+**Verification**
+- Backend: **50/50 tests passing** before and after merge (`npm test`)
+- `develop` is now aligned with `main`
+- ROADMAP.md has `STATUS: PROJECT COMPLETE`
+
+**Known issues / not verified on Linux**
+- iOS changes cannot be compiled on Linux. All post-completion iOS work was committed directly
+  to `main` by a prior session and is presumed to have been tested in the Simulator at that time.
+- BLEServiceTests.swift was added but its correctness can only be confirmed in Xcode.
+
+**If a future run finds this log**
+The project is complete. `develop` and `main` are in sync. Run `cd backend && npm test` to
+confirm 50/50 still passes. If tests are green, there is nothing more to do.
