@@ -16,6 +16,7 @@ enum MascotState {
 
 struct MascotView: View {
     let state: MascotState
+    var character: MascotCharacter = .blob
     var size: CGFloat = 80
 
     @State private var bounceOffset: CGFloat = 0
@@ -33,6 +34,7 @@ struct MascotView: View {
 
     var body: some View {
         ZStack {
+            characterEars     // Behind body so ears "merge" into head
             bodyShape
             faceLayer
             stateAccessories
@@ -40,7 +42,71 @@ struct MascotView: View {
         .frame(width: size, height: size)
         .onAppear { startAnimations() }
         .onChange(of: state) { startAnimations() }
+        .onChange(of: character) { startAnimations() }
         .onDisappear { blinkTask?.cancel(); blinkTask = nil }
+    }
+
+    // MARK: - Character Ears / Head Features
+
+    @ViewBuilder
+    private var characterEars: some View {
+        switch character {
+        case .blob:
+            EmptyView()
+        case .bear:
+            bearEars
+        case .owl:
+            owlTufts
+        case .fox:
+            foxEars
+        }
+    }
+
+    private var bearEars: some View {
+        ZStack {
+            bearEar(atX: -size * 0.27)
+            bearEar(atX:  size * 0.27)
+        }
+    }
+
+    private func bearEar(atX x: CGFloat) -> some View {
+        Circle()
+            .fill(bodyGradient)
+            .overlay(Circle().stroke(bodyStrokeColor, lineWidth: size * 0.025))
+            .frame(width: size * 0.32, height: size * 0.32)
+            .offset(x: x, y: -size * 0.42 + bounceOffset)
+    }
+
+    private var owlTufts: some View {
+        ZStack {
+            owlTuft(atX: -size * 0.18, rotation: -15)
+            owlTuft(atX:  size * 0.18, rotation:  15)
+        }
+    }
+
+    private func owlTuft(atX x: CGFloat, rotation: Double) -> some View {
+        RoundedRectangle(cornerRadius: size * 0.05)
+            .fill(bodyGradient)
+            .overlay(RoundedRectangle(cornerRadius: size * 0.05).stroke(bodyStrokeColor, lineWidth: size * 0.02))
+            .frame(width: size * 0.14, height: size * 0.24)
+            .rotationEffect(.degrees(rotation))
+            .offset(x: x, y: -size * 0.47 + bounceOffset)
+    }
+
+    private var foxEars: some View {
+        ZStack {
+            foxEar(atX: -size * 0.26, rotation: -18)
+            foxEar(atX:  size * 0.26, rotation:  18)
+        }
+    }
+
+    private func foxEar(atX x: CGFloat, rotation: Double) -> some View {
+        FoxEarShape()
+            .fill(bodyGradient)
+            .overlay(FoxEarShape().stroke(bodyStrokeColor, lineWidth: size * 0.025))
+            .frame(width: size * 0.22, height: size * 0.3)
+            .rotationEffect(.degrees(rotation))
+            .offset(x: x, y: -size * 0.44 + bounceOffset)
     }
 
     // MARK: - Body
@@ -67,12 +133,19 @@ struct MascotView: View {
 
     private var bodyBaseColor: Color {
         switch state {
-        case .happy, .cheering: return Color(red: 1.0, green: 0.75, blue: 0.2)
-        case .sweating:          return Color(red: 1.0, green: 0.45, blue: 0.2)
-        case .worried:           return Color(red: 1.0, green: 0.65, blue: 0.3)
-        case .sleepy:            return Color(red: 0.7, green: 0.7, blue: 0.9)
-        case .scanning:          return Color(red: 0.4, green: 0.8, blue: 1.0)
-        case .neutral:           return Color(red: 1.0, green: 0.82, blue: 0.4)
+        case .happy, .neutral:
+            // Character-specific base color for calm states
+            switch character {
+            case .blob:  return Color(red: 1.0,  green: 0.75, blue: 0.2)   // golden yellow
+            case .bear:  return Color(red: 0.72, green: 0.45, blue: 0.2)   // warm brown
+            case .owl:   return Color(red: 0.55, green: 0.5,  blue: 0.78)  // lavender
+            case .fox:   return Color(red: 0.95, green: 0.45, blue: 0.15)  // burnt orange
+            }
+        case .cheering: return Color(red: 1.0, green: 0.75, blue: 0.2)
+        case .sweating: return Color(red: 1.0, green: 0.45, blue: 0.2)
+        case .worried:  return Color(red: 1.0, green: 0.65, blue: 0.3)
+        case .sleepy:   return Color(red: 0.7, green: 0.7,  blue: 0.9)
+        case .scanning: return Color(red: 0.4, green: 0.8,  blue: 1.0)
         }
     }
 
@@ -90,18 +163,25 @@ struct MascotView: View {
     }
 
     private var eyes: some View {
-        HStack(spacing: size * 0.15) {
+        HStack(spacing: eyeSpacing) {
             eyeShape
             eyeShape
         }
         .offset(y: -size * 0.08)
     }
 
+    private var eyeSpacing: CGFloat {
+        character == .owl ? size * 0.18 : size * 0.15
+    }
+
     private var eyeShape: some View {
-        ZStack {
+        let width  = character == .owl ? size * 0.19 : size * 0.17
+        let height = character == .owl ? size * 0.22 : size * 0.2
+
+        return ZStack {
             Capsule()
                 .fill(Color.white)
-                .frame(width: size * 0.17, height: size * 0.2 * blinkOpacity)
+                .frame(width: width, height: height * blinkOpacity)
             Circle()
                 .fill(Color(red: 0.15, green: 0.1, blue: 0.05))
                 .frame(width: size * 0.09, height: size * 0.09 * blinkOpacity)
@@ -415,11 +495,22 @@ private struct SparkleShape: Shape {
     }
 }
 
+/// Pointed triangular ear shape for the fox character.
+private struct FoxEarShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.midX, y: 0))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
+}
+
 // MARK: - Color Extension
 
 private extension Color {
     func blended(with other: Color, fraction: Double) -> Color {
-        // Approximate blend for the highlight
         return other.opacity(fraction)
     }
 }
@@ -427,35 +518,39 @@ private extension Color {
 // MARK: - Preview
 
 #Preview {
-    VStack(spacing: 24) {
-        HStack(spacing: 16) {
-            VStack {
-                MascotView(state: .happy, size: 70)
-                Text("Happy").font(.caption)
+    ScrollView {
+        VStack(spacing: 32) {
+            // All states for default blob character
+            Text("Blobby (default)").font(.headline)
+            HStack(spacing: 16) {
+                ForEach([MascotState.happy, .sweating, .worried], id: \.hashValue) { s in
+                    MascotView(state: s, character: .blob, size: 60)
+                }
             }
-            VStack {
-                MascotView(state: .sweating, size: 70)
-                Text("Sweating").font(.caption)
+
+            Divider()
+
+            // All characters in happy state
+            Text("Characters").font(.headline)
+            HStack(spacing: 20) {
+                ForEach(MascotCharacter.allCases, id: \.rawValue) { c in
+                    VStack(spacing: 6) {
+                        MascotView(state: .happy, character: c, size: 70)
+                        Text(c.displayName).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
             }
-            VStack {
-                MascotView(state: .worried, size: 70)
-                Text("Worried").font(.caption)
+
+            Divider()
+
+            // Emotional states for bear
+            Text("Bruno (Bear)").font(.headline)
+            HStack(spacing: 16) {
+                ForEach([MascotState.happy, .sweating, .sleepy], id: \.hashValue) { s in
+                    MascotView(state: s, character: .bear, size: 60)
+                }
             }
         }
-        HStack(spacing: 16) {
-            VStack {
-                MascotView(state: .sleepy, size: 70)
-                Text("Sleepy").font(.caption)
-            }
-            VStack {
-                MascotView(state: .cheering, size: 70)
-                Text("Cheering").font(.caption)
-            }
-            VStack {
-                MascotView(state: .scanning, size: 70)
-                Text("Scanning").font(.caption)
-            }
-        }
+        .padding()
     }
-    .padding()
 }
