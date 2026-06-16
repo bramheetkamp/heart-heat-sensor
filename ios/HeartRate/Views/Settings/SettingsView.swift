@@ -10,6 +10,7 @@ struct SettingsView: View {
 
     var body: some View {
         List {
+            companionSection
             appearanceSection
             demoSection
             thresholdsSection
@@ -22,6 +23,31 @@ struct SettingsView: View {
     }
 
     // MARK: - Sections
+
+    private var companionSection: some View {
+        Section {
+            NavigationLink {
+                CharacterGalleryView()
+                    .environmentObject(env)
+            } label: {
+                HStack(spacing: 14) {
+                    MascotView(state: .happy, character: env.selectedCharacter, size: 40)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(env.selectedCharacter.displayName)
+                            .font(.system(size: 15, weight: .semibold))
+                        Text("Tap to change companion or AI tone")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        } header: {
+            Text("Companion")
+        } footer: {
+            Text("Unlock new companions by recording more health data. Customize how your AI talks to you.")
+        }
+    }
 
     private var appearanceSection: some View {
         Section {
