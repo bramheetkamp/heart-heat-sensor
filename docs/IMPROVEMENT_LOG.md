@@ -1,5 +1,66 @@
 # Pulse — Improvement Log
 
+---
+
+## 2026-06-17 — Weekly trends, sleep quality, recovery share sheet, morning briefing, sleep-aware BLE
+
+**Context**
+Continuing "NEVER STOP IMPROVING" directive. This run focused on dashboard depth and data richness.
+
+**What was built**
+
+- **`RecoveryScoreCard`** — 0-100 recovery score ring (HRV 60% + resting HR 40% vs 30-day baseline).
+  Shows animated ring, delta badges, and a **share sheet** that renders a branded PNG card via
+  `ImageRenderer` at 3× scale. `RecoveryShareCard` is a self-contained SwiftUI view (no
+  `@EnvironmentObject`) voiced by the active companion character.
+
+- **`WeeklyTrendCard`** — 7-day resting HRV and resting HR sparklines (Swift Charts, `.catmullRom`
+  area+line). Shows today's value in large text and a delta badge vs. the prior 6-day average.
+  Graceful "Not enough data" placeholder.
+
+- **`SleepQualityCard`** — 0-100 sleep quality score from the past 16 hours of `.sleep` readings.
+  Three components: HR vs. resting baseline (0.3w), HRV vs. baseline (0.5w), duration triangle
+  centred on 7.5 h (0.2w). Animated ring identical to RecoveryScoreCard's style. Labels:
+  POOR / FAIR / GOOD / GREAT in red / orange / blue / indigo.
+
+- **`DashboardSection`** — two new cases: `.weeklyTrend` and `.sleepQuality`, safely appended
+  by `DashboardLayoutService.init()` so existing saved preferences are preserved.
+
+- **`DashboardView`** — handles the two new section cases; `refresh()` re-schedules morning
+  briefing with the latest recovery score on every pull-to-refresh.
+
+- **`NotificationService`** — `scheduleMorningBriefing(score:character:)` fires daily at 8 AM
+  with recovery score voiced by the active character (12 unique messages: 4 chars × 3 score tiers).
+  Guarded by `morningBriefingEnabled` UserDefaults key; removes+replaces the pending request each call.
+
+- **`SettingsView`** — Notifications section: status badge, "Enable Notifications" button, and
+  "Morning Briefing" toggle. Toggle is disabled when notifications aren't authorized.
+
+- **`BLEService`** — sleep-aware activity classification: readings between 22:00–07:00 with
+  HR < 65 bpm are tagged `.sleep` so `SleepQualityCard` (and future sleep analysis) has real data.
+  HR ≥ 100 → `.active`; else during day → `.rest`; no HR → `.unknown`.
+
+**Verification**
+- All 29 changed iOS files pushed to `origin/claude/awesome-brown-p11pvo`
+- Backend unchanged: 54/54 tests still passing
+
+**Not verifiable on Linux (requires Xcode)**
+- `ImageRenderer` PNG output and `ShareLink` sheet presentation
+- `SleepQualityCard` `.sleep` activity readings (requires overnight device use or demo scenario update)
+- Morning briefing notification scheduling and banner display
+- Swift Charts sparklines render correctly at various data densities
+
+**Next run instructions**
+1. Continue "NEVER STOP IMPROVING" — candidates:
+   - **WidgetKit homescreen widget** — small/medium widget showing latest HR + recovery score
+   - **Live Activities / Dynamic Island** — real-time HR ticker during active sessions
+   - **Confetti animation** on excellent recovery score (score ≥ 82)
+   - **`DemoModeService` sleep scenario** — backfill `.sleep` readings in demo so SleepQualityCard
+     shows data without overnight wait (currently the "Poor Recovery" scenario would benefit from this)
+   - **`MetricDisplay` animated number** — already exists as `AnimatedNumber` component; wire it up
+     to HR/temp tiles for smoother live updates
+
+
 Append an entry each run: date, what was merged, what was built, known issues,
 and exact instructions for the next run.
 

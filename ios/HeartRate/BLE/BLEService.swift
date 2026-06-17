@@ -127,7 +127,17 @@ final class BLEService: ObservableObject {
         if case .connected(let name) = connectionState { deviceName = name } else { deviceName = "LIVE" }
 
         let activity: Reading.ActivityLevel
-        if let hr { activity = hr.heartRate >= 100 ? .active : .rest } else { activity = .unknown }
+        if let hr {
+            let hour = Calendar.current.component(.hour, from: Date())
+            let isLikelySleeping = (hour >= 22 || hour < 7) && hr.heartRate < 65
+            if hr.heartRate >= 100 {
+                activity = .active
+            } else if isLikelySleeping {
+                activity = .sleep
+            } else {
+                activity = .rest
+            }
+        } else { activity = .unknown }
 
         let reading = Reading(
             timestamp: Date(),
