@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var profile: UserProfile?
     @State private var showDemoConfirm = false
     @State private var showResetConfirm = false
+    @State private var showExport = false
     @State private var backendURL = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? "http://localhost:3100"
 
     var body: some View {
@@ -215,6 +216,15 @@ struct SettingsView: View {
             Link(destination: URL(string: "https://github.com/bramheetkamp/heart-heat-sensor")!) {
                 Label("GitHub", systemImage: "link")
             }
+            Button {
+                showExport = true
+            } label: {
+                Label("Export Data as CSV", systemImage: "square.and.arrow.up")
+            }
+            .sheet(isPresented: $showExport) {
+                ExportDataView()
+            }
+
             Button(role: .destructive) {
                 showResetConfirm = true
             } label: {
@@ -234,6 +244,86 @@ struct SettingsView: View {
 }
 
 // MARK: - Supporting Views
+
+// MARK: - Export Data View
+
+private struct ExportDataView: View {
+    @Query(sort: \Reading.timestamp, order: .reverse)
+    private var readings: [Reading]
+    @Environment(\.dismiss) private var dismiss
+    @State private var csvURL: URL?
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 28) {
+                Spacer()
+
+                VStack(spacing: 12) {
+                    Image(systemName: "waveform.path.ecg.rectangle.fill")
+                        .font(.system(size: 52))
+                        .foregroundStyle(.orange)
+                    Text("\(readings.count) readings ready")
+                        .font(.title2.bold())
+                    Text("Export your full health history as a comma-separated file you can open in any spreadsheet app.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(3)
+                }
+                .padding(.horizontal, 24)
+
+                if let url = csvURL {
+                    ShareLink(
+                        item: url,
+                        preview: SharePreview("pulse_health_data.csv", image: Image(systemName: "waveform.path.ecg"))
+                    ) {
+                        Label("Share CSV File", systemImage: "square.and.arrow.up")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(Color.orange, in: RoundedRectangle(cornerRadius: 16))
+                    }
+                    .padding(.horizontal, 24)
+                } else {
+                    ProgressView("Generating export…")
+                        .tint(.orange)
+                }
+
+                Spacer()
+            }
+            .navigationTitle("Export Data")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }.fontWeight(.semibold)
+                }
+            }
+        }
+        .task { csvURL = generateCSV() }
+    }
+
+    private func generateCSV() -> URL? {
+        let header = "timestamp,heart_rate_bpm,core_temp_c,skin_temp_c,hrv_rmssd_ms,eda_us,activity\n"
+        let iso = ISO8601DateFormatter()
+        let rows = readings.map { r -> String in
+            let ts   = iso.string(from: r.timestamp)
+            let hr   = r.heartRate.map(String.init) ?? ""
+            let core = r.tempCore.map  { String(format: "%.2f", $0) } ?? ""
+            let skin = r.tempSkin.map  { String(format: "%.2f", $0) } ?? ""
+            let hrv  = r.rmssd.map    { String(format: "%.1f",  $0) } ?? ""
+            let eda  = r.eda.map      { String(format: "%.2f", $0) } ?? ""
+            return "\(ts),\(hr),\(core),\(skin),\(hrv),\(eda),\(r.activity.rawValue)"
+        }.joined(separator: "\n")
+
+        let csv = header + rows
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("pulse_health_data.csv")
+        guard (try? csv.write(to: url, atomically: true, encoding: .utf8)) != nil else { return nil }
+        return url
+    }
+}
+
+// MARK: - Threshold Row
 
 private struct ThresholdRow: View {
     let label: String
