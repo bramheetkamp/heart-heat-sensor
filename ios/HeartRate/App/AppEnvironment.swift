@@ -55,6 +55,12 @@ final class AppEnvironment: ObservableObject {
         didSet { UserDefaults.standard.set(appearance.rawValue, forKey: "appearanceMode") }
     }
 
+    /// The currently selected companion character. Persisted to UserDefaults for
+    /// instant access without an async profile load on each view render.
+    @Published var selectedCharacter: MascotCharacter {
+        didSet { UserDefaults.standard.set(selectedCharacter.rawValue, forKey: "selectedCharacter") }
+    }
+
     init() {
         let isDemoMode = UserDefaults.standard.bool(forKey: "isDemoMode")
         self.isDemoMode = isDemoMode
@@ -62,6 +68,9 @@ final class AppEnvironment: ObservableObject {
         // Default to dark; `.system` only applies if the user explicitly picks it.
         let storedAppearance = UserDefaults.standard.string(forKey: "appearanceMode")
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .dark
+
+        let storedCharacter = UserDefaults.standard.string(forKey: "selectedCharacter")
+        self.selectedCharacter = storedCharacter.flatMap(MascotCharacter.init(rawValue:)) ?? .blob
 
         let dataStore = DataStore()
         self.dataStore = dataStore
