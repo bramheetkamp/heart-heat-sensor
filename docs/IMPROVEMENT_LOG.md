@@ -5,6 +5,69 @@ and exact instructions for the next run.
 
 ---
 
+## 2026-06-17 — Personalized onboarding v2, streak card, character voices, dashboard customization
+
+**Context**
+Continuing the "NEVER STOP IMPROVING" directive. Merged the onboarding + streak work from prior branches,
+cherry-picked the character voice feature, and now implementing dashboard customization.
+
+**Merged this run**
+- `claude/work-character-system` → `develop` (companion characters + AI tone)
+- `claude/work-onboarding-v2` → `develop` (personalized onboarding, streak card)
+- Cherry-picked `6268904` (character-voiced status messages) from `work-character-voice`
+
+**What was built**
+- **`MascotCharacter.statusMessage(for: MascotState) -> String`** — 28-line switch giving each
+  character (Blobby/Bruno/Hoot/Ember) a distinct voice across 7 emotional states. Blobby is warm
+  and simple; Bruno is nurturing with dad-energy; Hoot is analytical/formal; Ember is sharp/sassy.
+- **`DashboardView`** mascot status card now shows `env.selectedCharacter.displayName` label
+  and routes to `statusMessage(for: mascotState)` instead of a generic text string. Animated
+  with `.contentTransition(.opacity)` when character or state changes.
+- **`CharacterGalleryView`** header shows character voice preview: `statusMessage(for: .cheering)`
+  in italic orange — animates with `.contentTransition(.opacity)` when switching character.
+- **Onboarding step 6 `ChooseMascotStep`** shows each character's cheering voice quote below the
+  mascot preview so users know what they're choosing before committing.
+- **`OnboardingView`** expanded to 8 steps: welcome → chooseName → whatItDoes → bluetoothPrimer
+  → account → pairing → chooseMascot → baselineExplainer. New `ChooseNameStep` collects first
+  name (optional); new `ChooseMascotStep` shows all 4 characters (owl+fox locked with progress bar
+  overlay). `BaselineExplainerStep` now accepts `character` + `name` and shows chosen mascot +
+  "Almost there, [name]!" personalized title.
+- **Dashboard streak card** — counts consecutive days with readings back from today. Shows flame
+  icon (filled/empty by streak status), day count, next-milestone ring (arc progress between
+  milestones: 7→14→30→60→90→180). Subtitle references character unlocks: "One week — Hoot the
+  Owl is unlocked! 🦉"
+- **Personalized greeting** — `navigationTitle` shows "Good morning/afternoon/evening, [name]"
+  (or just greeting if no name was set during onboarding).
+- **`AppEnvironment`** — `@Published var selectedCharacter: MascotCharacter` persisted to
+  UserDefaults `"selectedCharacter"` key for instant read without DataStore async load.
+- **`UserProfile`** — `selectedCharacterRaw: String?` + `aiToneRaw: String?` with computed typed
+  accessors; optional storage ensures zero SwiftData migration friction.
+- **`HealthSummaryService`** — `instructions` static var → `static func instructions(for: AISummaryTone)`;
+  4 distinct system prompts; backward-compat static var delegates to `.encouraging`.
+
+**Verification**
+- Backend: **54/54 tests passing** — no regressions (iOS-only changes)
+
+**Not verifiable on Linux (requires Xcode)**
+- All SwiftUI views compile and render correctly
+- SwiftData migration for existing UserProfile rows (new optional String? fields → nil → defaults)
+- Character selection + tone selection persist across app restarts
+- Onboarding 8-step flow end-to-end (name persisted, character applied, demo mode)
+- Streak card milestone ring animation
+- Character voice animated transitions in dashboard and gallery
+
+**Next run instructions**
+1. `git fetch --all` — pull remote state
+2. Phase 1: verify develop is in sync at origin
+3. Phase 2 — next improvement: **Dashboard customization**
+   - `DashboardSection` enum (streak, aiSummary, metrics, warnings, quickNav)
+   - `DashboardLayoutService` — persists `[DashboardSection]` order + visibility to UserDefaults as JSON
+   - `CustomizeDashboardView` — drag-to-reorder List with toggle per section + fixed Companion Status row
+   - `DashboardView` — render sections via `env.dashboardLayout.visibleSections` ForEach + Customize toolbar button
+   - Settings > Dashboard section linking to CustomizeDashboardView
+
+---
+
 ## 2026-06-16 — Companion character system + AI tone customization
 
 **Context**
