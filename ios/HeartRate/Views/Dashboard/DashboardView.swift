@@ -9,6 +9,7 @@ struct DashboardView: View {
     @Query private var recentReadings: [Reading]
     @State private var warnings: [HealthWarning] = []
     @State private var showScenarioPicker = false
+    @State private var showCustomize = false
     @State private var profileName = ""
 
     init() {
@@ -83,13 +84,20 @@ struct DashboardView: View {
         ScrollView {
             VStack(spacing: 20) {
                 mascotStatusCard
-                streakCard
-                HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
-                metricsGrid
-                if !activeWarnings.isEmpty {
-                    activeWarningsSection
+                ForEach(env.dashboardLayout.visibleSections) { section in
+                    switch section {
+                    case .aiSummary:
+                        HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                    case .streak:
+                        streakCard
+                    case .metrics:
+                        metricsGrid
+                    case .warnings:
+                        if !activeWarnings.isEmpty { activeWarningsSection }
+                    case .quickNav:
+                        quickNavRow
+                    }
                 }
-                quickNavRow
             }
             .padding()
         }
@@ -112,6 +120,12 @@ struct DashboardView: View {
                                 .foregroundColor(.orange)
                         }
                     }
+                    Button {
+                        showCustomize = true
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                            .foregroundColor(.secondary)
+                    }
                     NavigationLink(value: AppRoute.settings) {
                         Image(systemName: "gearshape.fill")
                             .foregroundColor(.secondary)
@@ -125,6 +139,12 @@ struct DashboardView: View {
         .sheet(isPresented: $showScenarioPicker) {
             ScenarioPickerSheet()
                 .environmentObject(env)
+        }
+        .sheet(isPresented: $showCustomize) {
+            NavigationStack {
+                CustomizeDashboardView()
+                    .environmentObject(env)
+            }
         }
         .task {
             // Load profile name for personalized greeting.

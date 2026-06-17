@@ -11,6 +11,7 @@ struct SettingsView: View {
     var body: some View {
         List {
             companionSection
+            dashboardSection
             appearanceSection
             demoSection
             thresholdsSection
@@ -46,6 +47,21 @@ struct SettingsView: View {
             Text("Companion")
         } footer: {
             Text("Unlock new companions by recording more health data. Customize how your AI talks to you.")
+        }
+    }
+
+    private var dashboardSection: some View {
+        Section {
+            NavigationLink {
+                CustomizeDashboardView()
+                    .environmentObject(env)
+            } label: {
+                Label("Customize Dashboard", systemImage: "slider.horizontal.3")
+            }
+        } header: {
+            Text("Dashboard")
+        } footer: {
+            Text("Choose which sections to show and drag them into your preferred order.")
         }
     }
 
