@@ -131,6 +131,7 @@ struct HistoryView: View {
     @ViewBuilder
     private var mainChart: some View {
         Chart {
+            // Raw readings as a faint area + thin line
             ForEach(sampledReadings, id: \.id) { reading in
                 if let value = chartValue(reading) {
                     AreaMark(
@@ -139,7 +140,7 @@ struct HistoryView: View {
                     )
                     .foregroundStyle(
                         .linearGradient(
-                            colors: [selectedMetric.color.opacity(0.3), selectedMetric.color.opacity(0.02)],
+                            colors: [selectedMetric.color.opacity(0.18), selectedMetric.color.opacity(0.01)],
                             startPoint: .top, endPoint: .bottom
                         )
                     )
@@ -147,9 +148,22 @@ struct HistoryView: View {
                         x: .value("Time", reading.timestamp),
                         y: .value(selectedMetric.displayName, value)
                     )
-                    .foregroundStyle(selectedMetric.color)
-                    .lineStyle(StrokeStyle(lineWidth: 2))
+                    .foregroundStyle(selectedMetric.color.opacity(0.4))
+                    .lineStyle(StrokeStyle(lineWidth: 1.5))
                 }
+            }
+
+            // Daily average trend line — smooth curve over the raw scatter
+            ForEach(dailyAverages, id: \.date) { pt in
+                LineMark(
+                    x: .value("Day", pt.date),
+                    y: .value("Daily Avg", pt.value)
+                )
+                .foregroundStyle(selectedMetric.color)
+                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+                .interpolationMethod(.catmullRom)
+                .symbol(.circle)
+                .symbolSize(18)
             }
 
             // Baseline reference line
@@ -249,6 +263,19 @@ struct HistoryView: View {
         guard readings.count > maxPoints else { return readings }
         let step = readings.count / maxPoints
         return stride(from: 0, to: readings.count, by: step).map { readings[$0] }
+    }
+
+    /// Daily averages for the selected metric, used as a smooth trend overlay.
+    private var dailyAverages: [(date: Date, value: Double)] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: filteredReadings) {
+            calendar.startOfDay(for: $0.timestamp)
+        }
+        return grouped.compactMap { day, readings -> (date: Date, value: Double)? in
+            let vals = readings.compactMap { chartValue($0) }
+            guard !vals.isEmpty else { return nil }
+            return (day, vals.reduce(0, +) / Double(vals.count))
+        }.sorted { $0.date < $1.date }
     }
 
     private func chartValue(_ reading: Reading) -> Double? {

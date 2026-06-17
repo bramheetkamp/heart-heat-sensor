@@ -449,6 +449,7 @@ struct DashboardView: View {
             profile: (try? env.dataStore.getOrCreateProfile()) ?? UserProfile()
         )
         await env.notifications.notifyIfNeeded(for: warnings)
+        await env.notifications.checkAndNotifyStreak(days: streakDays, character: env.selectedCharacter)
     }
 }
 
