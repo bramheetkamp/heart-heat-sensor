@@ -15,9 +15,27 @@ final class UserProfile {
     var fatigueHRThreshold: Double      // default 8% above baseline resting HR
     var fatigueHRVThreshold: Double     // default 80% of baseline HRV (RMSSD)
 
+    // Companion character and AI tone — stored as optional Strings so that
+    // existing SwiftData rows (nil) migrate cleanly; computed properties
+    // return the default when nil.
+    var selectedCharacterRaw: String?
+    var aiToneRaw: String?
+
     // Backend sync credentials
     var backendToken: String?
     var backendUserId: String?
+
+    // MARK: - Typed accessors
+
+    var selectedCharacter: MascotCharacter {
+        get { MascotCharacter(rawValue: selectedCharacterRaw ?? "") ?? .blob }
+        set { selectedCharacterRaw = newValue.rawValue }
+    }
+
+    var aiTone: AISummaryTone {
+        get { AISummaryTone(rawValue: aiToneRaw ?? "") ?? .encouraging }
+        set { aiToneRaw = newValue.rawValue }
+    }
 
     init(
         id: UUID = UUID(),
@@ -29,6 +47,8 @@ final class UserProfile {
         sickTempThreshold: Double = 0.3,
         fatigueHRThreshold: Double = 0.08,
         fatigueHRVThreshold: Double = 0.80,
+        selectedCharacter: MascotCharacter = .blob,
+        aiTone: AISummaryTone = .encouraging,
         backendToken: String? = nil,
         backendUserId: String? = nil
     ) {
@@ -41,6 +61,8 @@ final class UserProfile {
         self.sickTempThreshold = sickTempThreshold
         self.fatigueHRThreshold = fatigueHRThreshold
         self.fatigueHRVThreshold = fatigueHRVThreshold
+        self.selectedCharacterRaw = selectedCharacter.rawValue
+        self.aiToneRaw = aiTone.rawValue
         self.backendToken = backendToken
         self.backendUserId = backendUserId
     }

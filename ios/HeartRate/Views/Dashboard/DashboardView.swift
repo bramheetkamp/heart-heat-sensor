@@ -109,7 +109,7 @@ struct DashboardView: View {
 
     private var mascotStatusCard: some View {
         HStack(spacing: 20) {
-            MascotView(state: mascotState, size: 80)
+            MascotView(state: mascotState, character: env.selectedCharacter, size: 80)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(overallStatus.text)
