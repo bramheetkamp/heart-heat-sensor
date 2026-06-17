@@ -72,6 +72,30 @@ final class BLEServiceTests: XCTestCase {
         XCTAssertEqual(service.latestEDA?.conductance ?? 0, 11.2, accuracy: 0.001)
     }
 
+    /// Live samples drive the always-on heat-strain monitor: streaming a hot
+    /// core temperature updates `heatAssessment` to critical without any in-app
+    /// workout being started. (Regression for "switching scenario / live data
+    /// doesn't update anything".)
+    func test_liveStream_updatesHeatAssessment() async throws {
+        let store = DataStore(inMemory: true)
+        let mock = MockBLETransport()
+        let service = BLEService(transport: mock, dataStore: store)
+
+        mock.startScanning()
+        try await Task.sleep(nanoseconds: 700_000_000)
+        XCTAssertEqual(service.heatAssessment.level, .nominal, "Starts nominal before any hot data")
+
+        // Simulate an overheating workout: active HR + a dangerously high core temp.
+        mock.injectHR(150, rrIntervals: [0.40, 0.41])
+        mock.injectTemperature(36.5, site: .skin)
+        mock.injectTemperature(40.5, site: .core)   // core arrival drives assessment
+        try await Task.sleep(nanoseconds: 300_000_000)
+
+        XCTAssertEqual(service.latestHR?.heartRate, 150, "Live HR is published")
+        XCTAssertEqual(service.heatAssessment.level, .critical, "Hot core temp escalates to critical")
+        XCTAssertFalse(service.heatTrend.isEmpty, "Trend buffer captured the sample")
+    }
+
     /// With no connection, injected measurements must not be persisted.
     func test_measurementsWithoutConnection_areNotPersisted() async throws {
         let store = DataStore(inMemory: true)

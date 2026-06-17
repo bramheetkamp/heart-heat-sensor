@@ -57,6 +57,10 @@ struct DashboardView: View {
     }
 
     private var mascotState: MascotState {
+        // React live to heat strain first so the character visibly changes during
+        // a workout / overheat scenario, not only when a computed warning fires.
+        let heat = env.bleService.heatAssessment.level
+        if heat >= .serious { return .sweating }
         if let top = topWarning {
             switch top.type {
             case .overheating:     return .sweating
@@ -64,6 +68,7 @@ struct DashboardView: View {
             case .fatigueRecovery: return .sleepy
             }
         }
+        if heat == .elevated { return .sweating }
         return .happy
     }
 
@@ -72,14 +77,19 @@ struct DashboardView: View {
     }
 
     private var overallStatus: (text: String, color: Color) {
-        guard let w = topWarning else {
-            return ("All good", .green)
+        let heat = env.bleService.heatAssessment.level
+        if heat >= .serious {
+            return (heat == .critical ? "Stop now — overheating" : "Slow down — getting hot", heat.color)
         }
-        switch w.type {
-        case .overheating:     return ("You're running hot", .red)
-        case .gettingSick:     return ("Signs you may be fighting something", .orange)
-        case .fatigueRecovery: return ("Recovery needed", .blue)
+        if let w = topWarning {
+            switch w.type {
+            case .overheating:     return ("You're running hot", .red)
+            case .gettingSick:     return ("Signs you may be fighting something", .orange)
+            case .fatigueRecovery: return ("Recovery needed", .blue)
+            }
         }
+        if heat == .elevated { return ("You're warming up", heat.color) }
+        return ("All good", .green)
     }
 
     var body: some View {
@@ -239,7 +249,8 @@ struct DashboardView: View {
             iconColor: .red
         ) {
             MetricDisplay(
-                value: latestReading?.heartRate.map(Double.init),
+                value: env.bleService.latestHR.map { Double($0.heartRate) }
+                    ?? latestReading?.heartRate.map(Double.init),
                 unit: "bpm",
                 color: .red
             )
@@ -256,7 +267,7 @@ struct DashboardView: View {
             iconColor: .orange
         ) {
             MetricDisplay(
-                value: latestReading?.tempCore,
+                value: env.bleService.latestTemp[.core]?.value ?? latestReading?.tempCore,
                 format: "%.1f",
                 unit: "°C",
                 color: .orange
@@ -274,7 +285,7 @@ struct DashboardView: View {
             iconColor: .yellow
         ) {
             MetricDisplay(
-                value: latestReading?.tempSkin,
+                value: env.bleService.latestTemp[.skin]?.value ?? latestReading?.tempSkin,
                 format: "%.1f",
                 unit: "°C",
                 color: .yellow
@@ -292,7 +303,8 @@ struct DashboardView: View {
             iconColor: .purple
         ) {
             MetricDisplay(
-                value: latestReading?.rmssd,
+                value: env.bleService.latestHR.flatMap { WarningsEngine.rmssd(from: $0.rrIntervals) }
+                    ?? latestReading?.rmssd,
                 format: "%.0f",
                 unit: "ms",
                 color: .purple
@@ -310,7 +322,7 @@ struct DashboardView: View {
             iconColor: .teal
         ) {
             MetricDisplay(
-                value: latestReading?.eda,
+                value: env.bleService.latestEDA?.conductance ?? latestReading?.eda,
                 format: "%.1f",
                 unit: "µS",
                 color: .teal

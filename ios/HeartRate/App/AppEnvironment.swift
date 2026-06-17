@@ -60,6 +60,9 @@ final class AppEnvironment: ObservableObject {
             UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode")
             // Don't write demo/mock readings to Apple Health.
             bleService.healthKit = isDemoMode ? nil : healthKit
+            // Begin streaming immediately when Demo Mode is switched on so data
+            // flows without a manual pairing step.
+            if isDemoMode, !bleService.isConnected { bleService.startScanning() }
         }
     }
 
@@ -129,16 +132,30 @@ final class AppEnvironment: ObservableObject {
         // Let the always-on heat-strain monitor post background alerts.
         bleService.notifications = notifications
 
-        // `dashboardLayout` and `demoMode` are nested ObservableObjects. SwiftUI's
-        // @EnvironmentObject only observes *this* object's own @Published props, so
-        // without re-broadcasting their changes a dashboard reorder/hide or a
-        // scenario switch would not re-render views bound to `env`.
+        // `dashboardLayout`, `demoMode`, and `bleService` are nested
+        // ObservableObjects. SwiftUI's @EnvironmentObject only observes *this*
+        // object's own @Published props, so without re-broadcasting their changes
+        // a dashboard reorder/hide, a scenario switch, or — crucially — a live
+        // HR/temp/heat update would not re-render views bound to `env`.
         dashboardLayout.objectWillChange
             .sink { [weak self] in self?.objectWillChange.send() }
             .store(in: &cancellables)
         demoMode.objectWillChange
             .sink { [weak self] in self?.objectWillChange.send() }
             .store(in: &cancellables)
+        bleService.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+
+        // Start the continuous live stream up front. On the simulator the
+        // transport is always the mock, and in Demo Mode on device it's the mock
+        // too — either way we want it streaming from launch so the dashboard is
+        // live without the user having to walk through pairing first.
+        #if targetEnvironment(simulator)
+        bleService.startScanning()
+        #else
+        if isDemoMode { bleService.startScanning() }
+        #endif
     }
 
     // MARK: - Demo Scenario
@@ -149,6 +166,9 @@ final class AppEnvironment: ObservableObject {
     func applyDemoScenario(_ scenario: DemoScenario) async {
         demoMode.activeScenario = scenario
         bleService.applyDemoScenario(scenario)
+        // Make sure the live stream is actually running so the new scenario
+        // streams continuously (it may not be if the user never paired).
+        if !bleService.isConnected { bleService.startScanning() }
         try? await demoMode.seedReadings(scenario: scenario, into: dataStore)
         demoDataReloadToken = UUID()
     }
