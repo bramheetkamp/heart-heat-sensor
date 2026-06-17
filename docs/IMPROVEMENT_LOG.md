@@ -5,6 +5,68 @@ and exact instructions for the next run.
 
 ---
 
+## 2026-06-17 — Character voices + onboarding v2 merged
+
+**Merged this run**
+- `claude/work-character-system` → `develop`
+  - `MascotCharacter.swift`: 4 unlockable companions (Blobby/Bruno/Hoot/Ember), `AISummaryTone` enum
+  - `MascotView`: per-character visual shapes (bear ears, owl tufts, fox triangle ears)
+  - `UserProfile`: `selectedCharacterRaw`/`aiToneRaw` optional String fields (clean SwiftData migration)
+  - `AppEnvironment`: `@Published selectedCharacter` persisted to UserDefaults
+  - `HealthSummaryService`: `instructions(for:)` → 4 distinct tone prompts; backward-compat var kept
+  - `CharacterGalleryView`: 2-column grid + unlock progress + AI tone picker
+  - `SettingsView`: Companion section with mini mascot preview
+- `claude/work-onboarding-v2` → `develop`
+  - `OnboardingView`: 8-step personalized flow (name entry, mascot picker, baseline explainer);
+    character chosen in onboarding is applied to `env.selectedCharacter` on completion
+  - `DashboardView`: personalized greeting title, streak card (flame icon + milestone ring
+    counting toward next unlock), character name label on mascot card
+
+**What was built this run**
+- Branch `claude/work-character-voice` (NOT yet merged — next run reviews it):
+  - `MascotCharacter.statusMessage(for:)` — 28 rule-based voice lines (4 chars × 7 states).
+    Each companion has a distinct personality: Blobby warm+simple, Bruno nurturing/dad-energy,
+    Hoot analytical+slightly formal, Ember sharp with a hint of sass.
+  - `DashboardView` mascot card: replaces generic "Everything looks normal today." subtext with
+    the character's in-voice status line; animates on state/character change via `.contentTransition`.
+  - `CharacterGalleryView` header: shows the character's `.cheering` line in italic orange as a
+    voice preview so users know the personality before committing to a character.
+  - `OnboardingView` mascot picker: replaces static tagline with the character's cheering voice
+    in quotes so users get a taste of personality during onboarding.
+
+**Verification this run**
+- `cd backend && npm test` → **54/54 passing** before and after merges
+
+**Not verifiable on Linux (requires Xcode)**
+- Character shapes and animations render correctly in the Simulator
+- Onboarding 8-step flow navigates correctly; character applied on completion
+- Streak card counts correctly against seeded demo data (35 days → 35-day streak on first launch)
+- Character voice messages display and animate correctly as mascot state changes
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-character-voice`.
+   - `cd backend && npm install && npm test` — must show **54/54 passing** (iOS-only change).
+   - Swift read-through: verify `statusMessage(for:)` switch is exhaustive (4 chars × 7 states = 28);
+     verify `MascotState` is accessible from `MascotCharacter.swift` (same module, no import needed);
+     verify `contentTransition(.opacity)` usage in DashboardView compiles (iOS 16+, available);
+     verify string interpolation in CharacterGalleryView header card.
+   - Merge into `develop` once clean.
+3. Phase 2 — next improvements (user wants to keep improving; pick ONE per run):
+   a. **Unlock notification** — when `streakDays` crosses 7 or 30, fire a local notification
+      "You unlocked Hoot the Owl! 🦉" with a deep link to `heartrate://settings` (or character
+      gallery via a new AppRoute case). Integrate into `NotificationService.swift`.
+   b. **Dashboard tile customization** — let users show/hide metric cards via a drag-to-reorder
+      edit mode. Persist order as `[String]` in UserDefaults. Add an "Edit" button to the dashboard
+      toolbar; enter edit mode shows a list with drag handles and toggle switches.
+   c. **Onboarding completeness check** — after onboarding, if `recentReadings.isEmpty` AND demo
+      mode is off, nudge the user with a banner on the Dashboard ("No sensor connected — pair your
+      device or try Demo Mode").
+   d. **More character unlocks** — add a 5th character (rabbit? dragon?) unlocked at 60 days.
+      Announce it on the streak card when 60 days is passed.
+
+---
+
 ## 2026-06-16 — Companion character system + AI tone customization
 
 **Context**
