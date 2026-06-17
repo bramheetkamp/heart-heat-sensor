@@ -141,15 +141,3 @@ struct InsightsEngine {
         Set(readings.map { Calendar.current.startOfDay(for: $0.timestamp) }).count
     }
 }
-
-// MARK: - WarningType bridge (icon access without SwiftUI import)
-
-private extension HealthWarning.WarningType {
-    var icon: String {
-        switch self {
-        case .overheating:     return "flame.fill"
-        case .gettingSick:     return "cross.circle.fill"
-        case .fatigueRecovery: return "moon.zzz.fill"
-        }
-    }
-}

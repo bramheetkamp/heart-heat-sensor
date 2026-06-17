@@ -38,7 +38,7 @@ struct CustomizeDashboardView: View {
                     HStack(spacing: 14) {
                         Image(systemName: section.icon)
                             .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(env.dashboardLayout.hiddenSections.contains(section.rawValue) ? .secondary : .orange)
+                            .foregroundStyle(env.dashboardLayout.hiddenSections.contains(section.rawValue) ? AnyShapeStyle(.secondary) : AnyShapeStyle(Color.orange))
                             .frame(width: 30)
 
                         Text(section.title)

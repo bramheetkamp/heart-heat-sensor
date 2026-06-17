@@ -49,7 +49,7 @@ struct CharacterGalleryView: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 // Voice preview — the character's cheering line
-                Text(""" + env.selectedCharacter.statusMessage(for: .cheering) + """)
+                Text("\u{201C}" + env.selectedCharacter.statusMessage(for: .cheering) + "\u{201D}")
                     .font(.footnote.italic())
                     .foregroundStyle(.orange.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)

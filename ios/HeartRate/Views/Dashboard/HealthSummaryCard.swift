@@ -75,7 +75,7 @@ struct HealthSummaryCard: View {
 
     private var insightsCard: some View {
         let insights = InsightsEngine.generate(readings: readings, warnings: warnings)
-        return cardShell(title: "Insights", icon: "chart.line.uptrend.xyaxis", tinted: false) {
+        return cardShell(title: "Insights", icon: "chart.line.uptrend.xyaxis", tinted: false, content: {
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(insights) { insight in
                     HStack(alignment: .top, spacing: 10) {
@@ -90,7 +90,7 @@ struct HealthSummaryCard: View {
                     }
                 }
             }
-        } refreshAction: nil isLoading: { false }
+        }, refreshAction: nil, isLoading: { false })
     }
 
     // MARK: - Shared shell

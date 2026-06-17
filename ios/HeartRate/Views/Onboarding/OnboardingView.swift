@@ -508,7 +508,7 @@ struct ChooseMascotStep: View {
                 MascotView(state: .cheering, character: chosen, size: 80)
                     .animation(.spring(response: 0.4, dampingFraction: 0.7), value: chosen)
                 // Show the character's own voice so users know what they're picking
-                Text(""\(chosen.statusMessage(for: .cheering))"")
+                Text("\u{201C}\(chosen.statusMessage(for: .cheering))\u{201D}")
                     .font(.footnote.italic())
                     .foregroundStyle(.orange.opacity(0.9))
                     .multilineTextAlignment(.center)
