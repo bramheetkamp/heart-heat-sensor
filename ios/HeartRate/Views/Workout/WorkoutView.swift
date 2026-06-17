@@ -1,12 +1,14 @@
 import SwiftUI
 import Charts
+import ActivityKit
 
 // MARK: - WorkoutView
 
 /// Live view of the **always-on** heat-strain monitor. Heat warnings fire from
 /// `BLEService` whenever the sensor is connected — even with the app closed and
 /// no session started — so this screen is a *window* onto that monitoring, not
-/// the on/off switch. It adds an optional session timer for convenience.
+/// the on/off switch. It adds an optional session timer and, on iPhone 14 Pro+,
+/// a Live Activity in the Dynamic Island that persists after leaving this screen.
 ///
 /// The view polls `BLEService` once a second via a ticker rather than observing
 /// the nested object directly (it isn't re-broadcast through `AppEnvironment`).
@@ -16,6 +18,7 @@ struct WorkoutView: View {
     @State private var sessionStart: Date?
     @State private var now = Date()
     @State private var caution: Double = 38.5
+    @State private var currentActivity: Activity<HeartRateLiveActivityAttributes>?
 
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -31,6 +34,7 @@ struct WorkoutView: View {
                 statsRow
                 if !trend.isEmpty { trendCard }
                 sessionButton
+                liveActivityHint
                 Label("Monitoring is always on while your sensor is connected — even with Pulse closed.",
                       systemImage: "bolt.shield.fill")
                     .font(.footnote)
@@ -50,6 +54,10 @@ struct WorkoutView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onReceive(ticker) { _ in now = Date() }
         .onAppear { caution = (try? env.dataStore.getOrCreateProfile().overheatingThreshold) ?? 38.5 }
+        .onDisappear { if sessionStart != nil { endLiveActivity() } }
+        .onChange(of: liveHR) { updateLiveActivity() }
+        .onChange(of: liveCore) { updateLiveActivity() }
+        .onChange(of: assessment.level) { updateLiveActivity() }
     }
 
     // MARK: - Heat banner
@@ -158,22 +166,113 @@ struct WorkoutView: View {
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(.quaternary, lineWidth: 1))
     }
 
-    // MARK: - Optional session timer
+    // MARK: - Session timer + Live Activity
 
     private var sessionButton: some View {
         Button {
-            if sessionStart == nil { sessionStart = Date(); now = Date() } else { sessionStart = nil }
+            if sessionStart == nil {
+                sessionStart = Date()
+                now = Date()
+                startLiveActivity()
+            } else {
+                endLiveActivity()
+                sessionStart = nil
+            }
         } label: {
-            Label(sessionStart == nil ? "Start Session Timer" : "End Session",
-                  systemImage: sessionStart == nil ? "play.fill" : "stop.fill")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+            HStack(spacing: 8) {
+                Image(systemName: sessionStart == nil ? "play.fill" : "stop.fill")
+                Text(sessionStart == nil ? "Start Session" : "End Session")
+                if sessionStart != nil, currentActivity != nil {
+                    // Show Dynamic Island indicator when live activity is running
+                    Image(systemName: "circle.fill")
+                        .font(.system(size: 7))
+                        .foregroundStyle(.white.opacity(0.7))
+                    Image(systemName: "dot.radiowaves.left.and.right")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.white.opacity(0.8))
+                }
+            }
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
         }
         .background(sessionStart == nil ? AnyShapeStyle(Color.orange) : AnyShapeStyle(.red),
                     in: RoundedRectangle(cornerRadius: 16))
         .foregroundStyle(.white)
+        .animation(.easeInOut(duration: 0.2), value: currentActivity != nil)
     }
+
+    @ViewBuilder
+    private var liveActivityHint: some View {
+        if sessionStart != nil && currentActivity != nil {
+            HStack(spacing: 6) {
+                Image(systemName: "dot.radiowaves.left.and.right")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.purple)
+                Text("Live Activity running — check your Dynamic Island or Lock Screen")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(.purple.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+
+    // MARK: - Live Activity management
+
+    private func startLiveActivity() {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        guard currentActivity == nil else { return }
+
+        let attributes = HeartRateLiveActivityAttributes(
+            startDate: sessionStart ?? Date(),
+            characterName: env.selectedCharacter.displayName
+        )
+        let state = HeartRateLiveActivityAttributes.ContentState(
+            heartRate: liveHR,
+            coreTemp: liveCore,
+            heatLevelRaw: assessment.level.rawValue,
+            isWarning: assessment.level >= .serious
+        )
+        currentActivity = try? Activity<HeartRateLiveActivityAttributes>.request(
+            attributes: attributes,
+            content: ActivityContent(state: state, staleDate: nil),
+            pushType: nil
+        )
+    }
+
+    private func endLiveActivity() {
+        guard let activity = currentActivity else { return }
+        let finalState = HeartRateLiveActivityAttributes.ContentState(
+            heartRate: liveHR,
+            coreTemp: liveCore,
+            heatLevelRaw: 0,
+            isWarning: false
+        )
+        Task {
+            await activity.end(
+                ActivityContent(state: finalState, staleDate: nil),
+                dismissalPolicy: .default
+            )
+        }
+        currentActivity = nil
+    }
+
+    private func updateLiveActivity() {
+        guard let activity = currentActivity, sessionStart != nil else { return }
+        let state = HeartRateLiveActivityAttributes.ContentState(
+            heartRate: liveHR,
+            coreTemp: liveCore,
+            heatLevelRaw: assessment.level.rawValue,
+            isWarning: assessment.level >= .serious
+        )
+        Task {
+            await activity.update(ActivityContent(state: state, staleDate: nil))
+        }
+    }
+
+    // MARK: - Helpers
 
     private var elapsedString: String {
         guard let sessionStart else { return "—" }

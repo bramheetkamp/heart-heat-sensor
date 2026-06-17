@@ -272,5 +272,6 @@ struct PulseWidget: Widget {
 struct PulseWidgetBundle: WidgetBundle {
     var body: some Widget {
         PulseWidget()
+        PulseLiveActivity()
     }
 }

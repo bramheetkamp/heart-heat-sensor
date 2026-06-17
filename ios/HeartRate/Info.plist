@@ -60,6 +60,12 @@
         <string>bluetooth-central</string>
     </array>
 
+    <!-- Live Activities — Dynamic Island and Lock Screen during workout sessions -->
+    <key>NSSupportsLiveActivities</key>
+    <true/>
+    <key>NSSupportsLiveActivitiesFrequentUpdates</key>
+    <true/>
+
     <key>UILaunchScreen</key>
     <dict/>
 

@@ -26,6 +26,7 @@ targets:
           - "**/*.md"
     dependencies:
       - sdk: HealthKit.framework
+      - sdk: ActivityKit.framework
       - target: PulseWidget
         embed: true
     settings:
@@ -46,9 +47,11 @@ targets:
       - path: PulseWidget
         excludes:
           - "**/*.md"
+      - path: HeartRate/Shared
     dependencies:
       - sdk: WidgetKit.framework
       - sdk: SwiftUI.framework
+      - sdk: ActivityKit.framework
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.app.widget
