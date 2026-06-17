@@ -158,16 +158,13 @@ struct DashboardView: View {
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(overallStatus.color)
 
-                if let w = topWarning {
-                    Text(w.message)
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                } else {
-                    Text("Everything looks normal today.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                }
+                Text(env.selectedCharacter.statusMessage(for: mascotState))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut(duration: 0.3), value: mascotState)
+                    .animation(.easeInOut(duration: 0.3), value: env.selectedCharacter)
             }
             Spacer()
         }

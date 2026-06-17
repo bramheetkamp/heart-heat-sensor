@@ -40,13 +40,21 @@ struct CharacterGalleryView: View {
         HStack(spacing: 20) {
             MascotView(state: .cheering, character: env.selectedCharacter, size: 72)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(env.selectedCharacter.displayName)
                     .font(.title2.bold())
                 Text(env.selectedCharacter.tagline)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                // Voice preview — the character's cheering line
+                Text(""" + env.selectedCharacter.statusMessage(for: .cheering) + """)
+                    .font(.footnote.italic())
+                    .foregroundStyle(.orange.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut(duration: 0.25), value: env.selectedCharacter)
             }
             Spacer()
         }

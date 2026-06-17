@@ -507,11 +507,13 @@ struct ChooseMascotStep: View {
             VStack(spacing: 6) {
                 MascotView(state: .cheering, character: chosen, size: 80)
                     .animation(.spring(response: 0.4, dampingFraction: 0.7), value: chosen)
-                Text(chosen.tagline)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                // Show the character's own voice so users know what they're picking
+                Text(""\(chosen.statusMessage(for: .cheering))"")
+                    .font(.footnote.italic())
+                    .foregroundStyle(.orange.opacity(0.9))
                     .multilineTextAlignment(.center)
-                    .frame(height: 36)
+                    .frame(minHeight: 36)
+                    .contentTransition(.opacity)
                     .animation(.easeOut(duration: 0.2), value: chosen)
             }
             .padding(.vertical, 4)
