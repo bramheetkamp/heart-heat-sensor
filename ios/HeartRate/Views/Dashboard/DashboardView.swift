@@ -93,19 +93,19 @@ struct DashboardView: View {
                     ForEach(env.dashboardLayout.visibleSections) { section in
                         switch section {
                         case .aiSummary:
-                            HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                            HealthSummaryCard(readings: recentReadings, warnings: warnings)
                         case .eventCountdown:
                             EventCountdownCard(eventName: eventName, eventDate: eventDate)
                         case .insights:
-                            InsightsCard(readings: Array(recentReadings), warnings: warnings)
+                            InsightsCard(readings: recentReadings, warnings: warnings)
                         case .streak:
-                            streakCard
+                            StreakCard(streakDays: streakDays)
                         case .recovery:
-                            RecoveryScoreCard(readings: Array(recentReadings))
+                            RecoveryScoreCard(readings: recentReadings)
                         case .weeklyTrend:
-                            WeeklyTrendCard(readings: Array(recentReadings))
+                            WeeklyTrendCard(readings: recentReadings)
                         case .sleepQuality:
-                            SleepQualityCard(readings: Array(recentReadings))
+                            SleepQualityCard(readings: recentReadings)
                         case .metrics:
                             metricsGrid
                         case .warnings:
@@ -218,99 +218,6 @@ struct DashboardView: View {
         .padding()
         .background(.background, in: RoundedRectangle(cornerRadius: 20))
         .shadow(color: .black.opacity(0.04), radius: 8, y: 3)
-    }
-
-    // MARK: - Streak Card
-
-    private var streakCard: some View {
-        HStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .fill(streakDays > 0 ? Color.orange.opacity(0.12) : Color(.systemGray6))
-                    .frame(width: 50, height: 50)
-                Image(systemName: streakDays > 0 ? "flame.fill" : "flame")
-                    .font(.system(size: 22))
-                    .foregroundStyle(streakDays > 0 ? .orange : Color(.systemGray3))
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                if streakDays > 0 {
-                    Text("\(streakDays) day\(streakDays == 1 ? "" : "s") in a row")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text(streakSubtitle(for: streakDays))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Start your streak")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Wear your sensor today to begin.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-
-            if streakDays > 0 {
-                streakMilestoneRing
-            }
-        }
-        .padding()
-        .background(.background, in: RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
-    }
-
-    private var streakMilestoneRing: some View {
-        let milestone = nextStreakMilestone(from: streakDays)
-        let base = previousStreakMilestone(from: streakDays)
-        let span = max(milestone - base, 1)
-        let progress = Double(streakDays - base) / Double(span)
-
-        return VStack(spacing: 3) {
-            ZStack {
-                Circle()
-                    .stroke(Color(.systemGray5), lineWidth: 3.5)
-                Circle()
-                    .trim(from: 0, to: min(progress, 1.0))
-                    .stroke(Color.orange, style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration: 0.6), value: streakDays)
-                VStack(spacing: 0) {
-                    Text("\(milestone)")
-                        .font(.system(size: 11, weight: .bold))
-                        .monospacedDigit()
-                    Text("d")
-                        .font(.system(size: 8))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .frame(width: 40, height: 40)
-            Text("goal")
-                .font(.system(size: 9))
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private func nextStreakMilestone(from days: Int) -> Int {
-        [7, 14, 30, 60, 90, 180].first { $0 > days } ?? 180
-    }
-
-    private func previousStreakMilestone(from days: Int) -> Int {
-        ([0, 7, 14, 30, 60, 90] as [Int]).last { $0 <= days } ?? 0
-    }
-
-    private func streakSubtitle(for days: Int) -> String {
-        let next = nextStreakMilestone(from: days)
-        switch days {
-        case 7:  return "One week — Hoot the Owl is unlocked! 🦉"
-        case 14: return "Two weeks — your baseline is forming nicely."
-        case 30: return "A month! Ember the Fox is unlocked 🦊"
-        default:
-            let remaining = next - days
-            if days < 7  { return "\(remaining) more day\(remaining == 1 ? "" : "s") to unlock Hoot the Owl." }
-            if days < 30 { return "\(remaining) day\(remaining == 1 ? "" : "s") to unlock Ember the Fox." }
-            return "\(remaining) day\(remaining == 1 ? "" : "s") to your next milestone."
-        }
     }
 
     // MARK: - Metrics Grid
@@ -478,7 +385,7 @@ struct DashboardView: View {
 
     private func refresh() async {
         warnings = WarningsEngine.compute(
-            readings: Array(recentReadings),
+            readings: recentReadings,
             profile: (try? env.dataStore.getOrCreateProfile()) ?? UserProfile()
         )
         await env.notifications.notifyIfNeeded(for: warnings)
@@ -486,7 +393,7 @@ struct DashboardView: View {
 
         // Re-schedule morning briefing with the latest recovery score so the
         // notification content stays fresh even if the user's baseline shifts.
-        let recoveryResult = RecoveryScoreCard.compute(readings: Array(recentReadings))
+        let recoveryResult = RecoveryScoreCard.compute(readings: recentReadings)
         let recoveryScore: Int? = { if case .score(let s, _, _) = recoveryResult { return s }; return nil }()
         await env.notifications.scheduleMorningBriefing(score: recoveryScore, character: env.selectedCharacter)
 
@@ -499,136 +406,6 @@ struct DashboardView: View {
         if let score = recoveryScore, score >= 82, confettiTriggeredForScore != score {
             confettiTriggeredForScore = score
             showConfetti = true
-        }
-    }
-}
-
-// MARK: - Supporting Components
-
-struct MetricCard<Content: View>: View {
-    let title: String
-    let icon: String
-    let iconColor: Color
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(iconColor)
-                Text(title)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-            content()
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background, in: RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
-    }
-}
-
-struct WarningRowCard: View {
-    let warning: HealthWarning
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: warning.type.icon)
-                .font(.system(size: 20))
-                .foregroundColor(warning.type.color)
-                .frame(width: 36, height: 36)
-                .background(warning.type.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(warning.title)
-                    .font(.system(size: 15, weight: .semibold))
-                Text(warning.message)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .padding()
-        .background(.background, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(warning.type.color.opacity(0.2), lineWidth: 1)
-        )
-    }
-}
-
-private struct QuickNavButton: View {
-    let icon: String
-    let label: String
-    var badge: Int = 0
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
-                ZStack(alignment: .topTrailing) {
-                    Image(systemName: icon)
-                        .font(.system(size: 22))
-                        .foregroundColor(.orange)
-                        .frame(width: 44, height: 44)
-                        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
-
-                    if badge > 0 {
-                        Text("\(badge)")
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(3)
-                            .background(Color.red, in: Circle())
-                            .offset(x: 6, y: -6)
-                    }
-                }
-                Text(label)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(.background, in: RoundedRectangle(cornerRadius: 16))
-        }
-        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
-    }
-}
-
-// MARK: - Scenario Picker Sheet
-
-struct ScenarioPickerSheet: View {
-    @EnvironmentObject private var env: AppEnvironment
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List(DemoScenario.allCases) { scenario in
-                Button {
-                    Task {
-                        await env.applyDemoScenario(scenario)
-                        dismiss()
-                    }
-                } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(scenario.rawValue).font(.headline)
-                        Text(scenario.description).font(.footnote).foregroundColor(.secondary)
-                    }
-                }
-            }
-            .navigationTitle("Demo Scenario")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                }
-            }
         }
     }
 }
