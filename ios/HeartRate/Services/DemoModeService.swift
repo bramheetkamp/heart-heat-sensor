@@ -104,10 +104,9 @@ final class DemoModeService: ObservableObject {
             }
         }
 
-        // Insert in chronological order
-        for reading in readings.sorted(by: { $0.timestamp < $1.timestamp }) {
-            try store.save(reading: reading)
-        }
+        // Insert in chronological order, in a single transaction so the
+        // dashboard's @Query refreshes once rather than once per row.
+        try store.save(readings: readings.sorted(by: { $0.timestamp < $1.timestamp }))
     }
 
     // MARK: - Private Helpers

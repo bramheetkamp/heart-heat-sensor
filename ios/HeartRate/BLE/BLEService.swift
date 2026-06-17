@@ -55,6 +55,13 @@ final class BLEService: ObservableObject {
         transport.disconnect()
     }
 
+    /// Re-point the live demo stream at a new scenario so the on-screen metric
+    /// cards (driven by the newest persisted Reading) reflect the picked scenario
+    /// immediately. No-op for a real `CoreBluetoothTransport`.
+    func applyDemoScenario(_ scenario: DemoScenario) {
+        (transport as? MockBLETransport)?.applyScenario(scenario)
+    }
+
     // MARK: - Private Binding
 
     private func bindTransport() {

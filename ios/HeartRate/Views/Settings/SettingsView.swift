@@ -13,6 +13,7 @@ struct SettingsView: View {
     var body: some View {
         List {
             companionSection
+            eventSection
             dashboardSection
             appearanceSection
             demoSection
@@ -244,17 +245,61 @@ struct SettingsView: View {
         }
     }
 
+    private var eventSection: some View {
+        Section {
+            if let p = profile {
+                TextField("Event name (e.g. City Marathon)",
+                          text: Binding(
+                            get: { p.eventName ?? "" },
+                            set: { p.eventName = $0.isEmpty ? nil : $0 }))
+
+                Toggle("Set a date", isOn: Binding(
+                    get: { p.eventDate != nil },
+                    set: { on in
+                        if on {
+                            if p.eventDate == nil {
+                                p.eventDate = Calendar.current.date(byAdding: .day, value: 30, to: Date())
+                            }
+                        } else {
+                            p.eventDate = nil
+                        }
+                    }))
+
+                if p.eventDate != nil {
+                    DatePicker("Event date",
+                               selection: Binding(
+                                get: { p.eventDate ?? Date() },
+                                set: { p.eventDate = $0 }),
+                               in: Date()...,
+                               displayedComponents: .date)
+                }
+            } else {
+                ProgressView()
+            }
+        } header: {
+            Text("Target Event")
+        } footer: {
+            Text("Shown as a countdown on your dashboard. Add the Event Countdown card via Customize Dashboard.")
+        }
+    }
+
     private var thresholdsSection: some View {
         Section("Alert Thresholds") {
             if let p = profile {
                 ThresholdRow(
-                    label: "Overheating (core temp)",
+                    label: "Heat caution (core temp)",
                     value: Binding(get: { p.overheatingThreshold }, set: { p.overheatingThreshold = $0 }),
                     unit: "°C",
                     range: 37.5...40.0,
                     step: 0.1,
                     format: "%.1f"
                 )
+                Text(String(format: "Workout alerts escalate at caution %.1f → serious %.1f → STOP %.1f °C.",
+                            p.overheatingThreshold,
+                            HeatStrainEngine.seriousThreshold(caution: p.overheatingThreshold),
+                            HeatStrainEngine.criticalThreshold(caution: p.overheatingThreshold)))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                 ThresholdRow(
                     label: "Sick: HR above baseline",
                     value: Binding(get: { p.sickHRThreshold }, set: { p.sickHRThreshold = $0 }),

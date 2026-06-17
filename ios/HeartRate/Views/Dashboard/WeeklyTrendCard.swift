@@ -137,6 +137,11 @@ struct WeeklyTrendCard: View {
             .chartYAxis(.hidden)
             .chartYScale(domain: (minV - pad)...(maxV + pad))
             .frame(height: 56)
+            // catmullRom interpolation can overshoot the Y-domain, and a Chart
+            // doesn't clip to its frame by default — without this the area fill
+            // (e.g. the red Resting-HR mark) spills outside the card and draws
+            // over the metric grid below it.
+            .clipped()
         }
         .frame(maxWidth: .infinity)
     }

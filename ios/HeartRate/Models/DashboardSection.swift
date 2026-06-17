@@ -3,43 +3,46 @@ import Foundation
 /// Identifiable sections that appear on the Dashboard.
 /// The order and visibility of these sections can be customized by the user.
 enum DashboardSection: String, CaseIterable, Codable, Identifiable {
-    case aiSummary    = "aiSummary"
-    case insights     = "insights"
-    case streak       = "streak"
-    case recovery     = "recovery"
-    case weeklyTrend  = "weeklyTrend"
-    case sleepQuality = "sleepQuality"
-    case metrics      = "metrics"
-    case warnings     = "warnings"
-    case quickNav     = "quickNav"
+    case aiSummary      = "aiSummary"
+    case eventCountdown = "eventCountdown"
+    case insights       = "insights"
+    case streak         = "streak"
+    case recovery       = "recovery"
+    case weeklyTrend    = "weeklyTrend"
+    case sleepQuality   = "sleepQuality"
+    case metrics        = "metrics"
+    case warnings       = "warnings"
+    case quickNav       = "quickNav"
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .aiSummary:    return "AI Summary"
-        case .insights:     return "Insights"
-        case .streak:       return "Streak"
-        case .recovery:     return "Recovery Score"
-        case .weeklyTrend:  return "Weekly Trends"
-        case .sleepQuality: return "Sleep Quality"
-        case .metrics:      return "Metrics"
-        case .warnings:     return "Active Alerts"
-        case .quickNav:     return "Quick Navigation"
+        case .aiSummary:      return "AI Summary"
+        case .eventCountdown: return "Event Countdown"
+        case .insights:       return "Insights"
+        case .streak:         return "Streak"
+        case .recovery:       return "Recovery Score"
+        case .weeklyTrend:    return "Weekly Trends"
+        case .sleepQuality:   return "Sleep Quality"
+        case .metrics:        return "Metrics"
+        case .warnings:       return "Active Alerts"
+        case .quickNav:       return "Quick Navigation"
         }
     }
 
     var icon: String {
         switch self {
-        case .aiSummary:    return "sparkles"
-        case .insights:     return "lightbulb.fill"
-        case .streak:       return "flame.fill"
-        case .recovery:     return "bolt.heart.fill"
-        case .weeklyTrend:  return "chart.line.uptrend.xyaxis"
-        case .sleepQuality: return "moon.stars.fill"
-        case .metrics:      return "grid.circle.fill"
-        case .warnings:     return "exclamationmark.triangle.fill"
-        case .quickNav:     return "arrow.right.circle.fill"
+        case .aiSummary:      return "sparkles"
+        case .eventCountdown: return "flag.checkered"
+        case .insights:       return "lightbulb.fill"
+        case .streak:         return "flame.fill"
+        case .recovery:       return "bolt.heart.fill"
+        case .weeklyTrend:    return "chart.line.uptrend.xyaxis"
+        case .sleepQuality:   return "moon.stars.fill"
+        case .metrics:        return "grid.circle.fill"
+        case .warnings:       return "exclamationmark.triangle.fill"
+        case .quickNav:       return "arrow.right.circle.fill"
         }
     }
 }

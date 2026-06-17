@@ -104,11 +104,11 @@ BLE transport ──► BLEService ──► (parsers already applied) ──►
 - `App/` — `HeartRateApp` (`@main`, `onOpenURL` deep-link entry), `AppEnvironment`, `RootView`
 - `Navigation/` — `AppRouter` (push/sheet/`handle(url:)`), `AppRoute` (+ `HistoryMetric`, URL parser)
 - `Models/` — `Reading` (`@Model`; `rrIntervals` in **seconds**; `eda` µS optional; computed `rmssd` in ms; `ActivityLevel`), `HealthWarning` (Codable; `WarningType` + `WarningContext`), `UserProfile` (`@Model`; thresholds + backend token + `aiTone`), `MascotCharacter` (companion roster + per-character voice lines + `AISummaryTone`), `DashboardSection` (dashboard layout enum + `DashboardLayoutService`)
-- `Services/` — `DataStore`, `DemoModeService`, `SyncService`, `NotificationService`, `HealthKitService` (write HR/temp/HRV to Apple Health), `InsightsEngine` (pure rule-based insights, fallback for all iOS 17+ devices), `HealthSummaryService` (on-device Foundation Models summary), `DashboardLayoutService`
+- `Services/` — `DataStore`, `DemoModeService`, `SyncService`, `NotificationService`, `HealthKitService` (write HR/temp/HRV to Apple Health), `InsightsEngine` (pure rule-based insights, fallback for all iOS 17+ devices), `HealthSummaryService` (on-device Foundation Models summary), `DashboardLayoutService`, `HeatStrainEngine` (pure, graded live workout heat assessment)
 - `Parsing/` — `HRMeasurementParser`, `TemperatureMeasurementParser`, `BodyTempFrameParser` (custom-service float32 LE)
 - `BLE/` — `BLETransportProtocol`, `MockBLETransport`, `CoreBluetoothTransport`
 - `Intents/` — `GetHeartRateIntent`, `GetWellnessStatusIntent`, `PulseShortcuts` (Siri "Hey Siri, what's my heart rate?")
-- `Views/` — `Dashboard/` (incl. `RecoveryScoreCard`, `WeeklyTrendCard`, `SleepQualityCard`, `InsightsCard`, `HealthSummaryCard`, `CustomizeDashboardView`), `History/`, `Warnings/`, `Onboarding/`, `Settings/` (incl. `CharacterGalleryView`)
+- `Views/` — `Dashboard/` (incl. `RecoveryScoreCard`, `WeeklyTrendCard`, `SleepQualityCard`, `InsightsCard`, `HealthSummaryCard`, `EventCountdownCard`, `CustomizeDashboardView`), `Workout/` (`WorkoutView` live session), `History/`, `Warnings/`, `Onboarding/`, `Settings/` (incl. `CharacterGalleryView`)
 - `Components/` — `MascotView` (8 emotional states × selectable character), `AnimatedNumber`, `ConnectionStatusView`, `ConfettiView` (excellent-recovery celebration)
 - `PulseWidget/` — `PulseWidget.swift` WidgetKit home-screen widget (separate target/extension)
 
@@ -212,6 +212,21 @@ contract, the warnings rules, or the backend wire format.
   recovery score, weekly trends, sleep quality, metrics, active alerts, quick nav.
 - **Rule-based `InsightsEngine`** — a pure, SwiftData-free struct (like
   `WarningsEngine`); the always-available fallback when Foundation Models isn't.
+- **Workout / live heat-strain (sport focus).** `HeatStrainEngine` (pure,
+  testable — `HeatStrainEngineTests`) grades core-temp strain in real time:
+  `nominal → elevated → serious → critical`, escalating on absolute core temp
+  *and* rate-of-rise while active. Thresholds anchor to `profile.overheatingThreshold`
+  (caution); serious = caution + 0.8 °C, critical = caution + 1.5 °C (defaults
+  38.5 / 39.3 / 40.0 °C); a rise ≥ 0.6 °C/10 min while active escalates one level.
+  `WorkoutView` (route `heartrate://workout`) is the live session: start/stop
+  timer, live HR + core temp, a Swift Charts core-temp trend with the rise rate,
+  and a full-bleed escalating banner with **harsh** copy at the top ("STOP. Your
+  core temperature is dangerously high…"). Crossing into serious/critical fires
+  strong haptics and `NotificationService.notifyHeatStrain` (time-sensitive /
+  critical interruption level, self-throttled to only re-fire on a higher level).
+- **Event countdown.** `UserProfile.eventName`/`eventDate` drive the
+  `EventCountdownCard` dashboard section (a race-day countdown), editable in
+  Settings → Target Event.
 - **Apple Health** (`HealthKitService`): writes HR, body temperature, and HRV
   from live readings. Wired through `BLEService.healthKit`, which `AppEnvironment`
   detaches in Demo Mode so synthetic data never lands in Health.
@@ -236,7 +251,7 @@ contract, the warnings rules, or the backend wire format.
 
 Custom scheme `heartrate://` and Universal Links (`https://<domain>/...`) parse
 to the same `AppRoute`:
-`dashboard`, `history/hr|core|skin|hrv|eda`, `warnings/<uuid>`, `settings`, `pair`.
+`dashboard`, `history/hr|core|skin|hrv|eda`, `warnings/<uuid>`, `settings`, `pair`, `workout`.
 Test in simulator: `xcrun simctl openurl booted "heartrate://dashboard"`.
 Universal Links require deploying the backend over HTTPS, editing
 `HeartRate.entitlements` with the real domain, and setting `APPLE_TEAM_ID`.

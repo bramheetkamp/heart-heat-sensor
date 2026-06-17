@@ -49,6 +49,12 @@ final class AppEnvironment: ObservableObject {
     let dashboardLayout: DashboardLayoutService
     var router: AppRouter
 
+    /// Bumped whenever demo data is reseeded so views can recompute derived state
+    /// (warnings, recovery) that isn't already driven by SwiftData's `@Query`.
+    @Published var demoDataReloadToken = UUID()
+
+    private var cancellables = Set<AnyCancellable>()
+
     @Published var isDemoMode: Bool {
         didSet {
             UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode")
@@ -120,5 +126,28 @@ final class AppEnvironment: ObservableObject {
         let notifications = NotificationService()
         notifications.router = router
         self.notifications = notifications
+
+        // `dashboardLayout` and `demoMode` are nested ObservableObjects. SwiftUI's
+        // @EnvironmentObject only observes *this* object's own @Published props, so
+        // without re-broadcasting their changes a dashboard reorder/hide or a
+        // scenario switch would not re-render views bound to `env`.
+        dashboardLayout.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+        demoMode.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Demo Scenario
+
+    /// Switch the active demo scenario end-to-end: re-point the live mock stream
+    /// (so the metric cards change immediately), reseed the historical data in one
+    /// transaction, and bump the reload token so derived state recomputes.
+    func applyDemoScenario(_ scenario: DemoScenario) async {
+        demoMode.activeScenario = scenario
+        bleService.applyDemoScenario(scenario)
+        try? await demoMode.seedReadings(scenario: scenario, into: dataStore)
+        demoDataReloadToken = UUID()
     }
 }

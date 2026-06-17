@@ -6,6 +6,7 @@ enum AppRoute: Hashable {
     case warningDetail(id: UUID)
     case settings
     case pair
+    case workout
 
     // MARK: - History Metric
 
@@ -84,6 +85,9 @@ enum AppRoute: Hashable {
 
         case "pair":
             return .pair
+
+        case "workout":
+            return .workout
 
         default:
             return nil
