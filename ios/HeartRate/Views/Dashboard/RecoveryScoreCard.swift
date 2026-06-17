@@ -11,15 +11,39 @@ import SwiftUI
 struct RecoveryScoreCard: View {
     let readings: [Reading]
 
+    @EnvironmentObject private var env: AppEnvironment
     @State private var animatedScore: Double = 0
+    @State private var shareURL: URL?
 
     private var result: RecoveryResult { RecoveryScoreCard.compute(readings: readings) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Label("Recovery Score", systemImage: "bolt.heart.fill")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.purple)
+            HStack {
+                Label("Recovery Score", systemImage: "bolt.heart.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.purple)
+                Spacer()
+                if case .score(let s, _, _) = result {
+                    if let url = shareURL {
+                        ShareLink(
+                            item: url,
+                            preview: SharePreview(
+                                "Recovery \(s) — Pulse",
+                                image: Image(systemName: "bolt.heart.fill")
+                            )
+                        ) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.secondary.opacity(0.4))
+                    }
+                }
+            }
 
             switch result {
             case .noBaseline:
@@ -36,12 +60,34 @@ struct RecoveryScoreCard: View {
             if case .score(let s, _, _) = new {
                 withAnimation(.easeOut(duration: 1.0)) { animatedScore = Double(s) }
             }
+            generateShareURL()
         }
         .onAppear {
             if case .score(let s, _, _) = result {
                 withAnimation(.easeOut(duration: 1.0).delay(0.2)) { animatedScore = Double(s) }
             }
+            generateShareURL()
         }
+    }
+
+    // MARK: - Share card rendering
+
+    @MainActor
+    private func generateShareURL() {
+        guard case .score(let s, _, _) = result else { shareURL = nil; return }
+        let card = RecoveryShareCard(
+            score: s,
+            label: scoreLabel(s),
+            color: scoreColor(s),
+            character: env.selectedCharacter
+        )
+        let renderer = ImageRenderer(content: card)
+        renderer.scale = 3.0
+        guard let uiImg = renderer.uiImage, let data = uiImg.pngData() else { return }
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("pulse_recovery_\(s).png")
+        try? data.write(to: url)
+        shareURL = url
     }
 
     // MARK: - Score view
@@ -234,5 +280,83 @@ struct RecoveryScoreCard: View {
         let vals = readings.filter { $0.timestamp >= cutoff }.compactMap { $0.heartRate.map(Double.init) }
         guard !vals.isEmpty else { return nil }
         return vals.reduce(0, +) / Double(vals.count)
+    }
+}
+
+// MARK: - Shareable card rendered by ImageRenderer
+
+/// A self-contained view that ImageRenderer uses to produce the share image.
+/// Must not depend on the environment — all values are passed in directly.
+struct RecoveryShareCard: View {
+    let score: Int
+    let label: String
+    let color: Color
+    let character: MascotCharacter
+
+    private let dateString: String = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .none
+        return f.string(from: Date())
+    }()
+
+    var body: some View {
+        VStack(spacing: 20) {
+            // Header
+            HStack {
+                Image(systemName: "bolt.heart.fill")
+                    .foregroundStyle(.purple)
+                Text("Pulse")
+                    .font(.system(size: 16, weight: .bold))
+                Spacer()
+                Text(dateString)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Score ring
+            ZStack {
+                Circle()
+                    .stroke(Color(.systemGray5), lineWidth: 14)
+                Circle()
+                    .trim(from: 0, to: CGFloat(score) / 100)
+                    .stroke(
+                        LinearGradient(
+                            colors: [color.opacity(0.7), color],
+                            startPoint: .topLeading, endPoint: .bottomTrailing
+                        ),
+                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+
+                VStack(spacing: 2) {
+                    Text("\(score)")
+                        .font(.system(size: 52, weight: .bold, design: .rounded))
+                        .foregroundStyle(color)
+                    Text(label)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.secondary)
+                        .tracking(0.8)
+                    Text("Recovery Score")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 160, height: 160)
+
+            // Mascot line
+            HStack(spacing: 6) {
+                Text(character.emoji)
+                    .font(.title2)
+                Text(character.statusMessage(for: score >= 65 ? .happy : .worried))
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, 8)
+        }
+        .padding(24)
+        .background(Color(.systemBackground))
+        .frame(width: 320)
     }
 }

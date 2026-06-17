@@ -92,6 +92,10 @@ struct DashboardView: View {
                         streakCard
                     case .recovery:
                         RecoveryScoreCard(readings: Array(recentReadings))
+                    case .weeklyTrend:
+                        WeeklyTrendCard(readings: Array(recentReadings))
+                    case .sleepQuality:
+                        SleepQualityCard(readings: Array(recentReadings))
                     case .metrics:
                         metricsGrid
                     case .warnings:
