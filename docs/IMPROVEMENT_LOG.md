@@ -5,6 +5,69 @@ and exact instructions for the next run.
 
 ---
 
+## 2026-06-16 — Companion character system + AI tone customization
+
+**Context**
+Project was marked complete. User explicitly asked for continuous improvement beyond the
+roadmap. Built a companion character system and AI tone customization feature.
+
+**What was built this run**
+- Branch `claude/work-character-system` (NOT yet merged — next run reviews it):
+  - **`MascotCharacter.swift`** — `MascotCharacter` enum (4 chars: Blobby/Bruno/Hoot/Ember)
+    and `AISummaryTone` enum (Encouraging/Analytical/Playful/Direct) with metadata
+  - **`MascotView`** — new `character: MascotCharacter = .blob` parameter (default keeps
+    all existing callers working). Each character gets unique visual ear/tuft shapes drawn
+    behind the body circle: Bear=round ear bumps, Owl=rotated rounded-rect tufts, Fox=
+    triangular `FoxEarShape`. Calm states use character-specific base colors (brown/lavender/
+    burnt-orange); emotional state colors still override so health feedback is never ambiguous.
+    `onChange(of: character)` restarts animations when character changes.
+  - **`UserProfile`** — `selectedCharacterRaw: String?` + `aiToneRaw: String?` with typed
+    computed accessors. Optional storage ensures zero migration friction for existing SwiftData
+    stores; accessors fall back to `.blob` / `.encouraging` when nil.
+  - **`AppEnvironment`** — `@Published var selectedCharacter: MascotCharacter` persisted to
+    UserDefaults (same pattern as `appearance`/`isDemoMode`) for instant read without DataStore.
+  - **`HealthSummaryService`** — `instructions` becomes `static func instructions(for: AISummaryTone)`
+    with four distinct system instruction strings. Backward-compat `static var instructions`
+    delegates to `.encouraging`. `summary()` now passes `profile.aiTone` to pick the tone.
+    Existing `HealthSummaryServiceTests` still pass unchanged.
+  - **`CharacterGalleryView`** — 2-column grid showing all characters with unlock progress;
+    AI tone picker with icon/description/checkmark; reached from Settings > Companion.
+  - **`SettingsView`** — new Companion section at the top with a mini mascot preview + name
+    that navigates to CharacterGalleryView.
+  - **`DashboardView`** — mascot status card passes `env.selectedCharacter` to MascotView.
+
+**Verification**
+- Backend: **54/54 tests passing** — no regressions (iOS-only change)
+
+**Not verifiable on Linux (requires Xcode)**
+- MascotView character shapes render correctly at various sizes
+- SwiftData migration succeeds for existing `UserProfile` records (String? fields should
+  auto-migrate to nil, computed accessors return defaults)
+- CharacterGalleryView @Query + unlock progress calculation
+- Character selection persists across app restarts (UserDefaults + SwiftData)
+- AI tone changes affect the Foundation Models system instructions on iOS 26+
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-character-system`.
+   - `cd backend && npm install && npm test` — must show **54/54 passing** (no backend changes).
+   - Swift read-through: verify `MascotCharacter` + `AISummaryTone` enums, `UserProfile` optional
+     fields, `MascotView` character parameter usage, `CharacterGalleryView` @ViewBuilder closures.
+   - Merge into `develop` once clean.
+3. Update ROADMAP.md to note the character system and AI tone improvements.
+4. Phase 2 — next improvements (pick ONE per run):
+   a. **Dashboard customization** — let users reorder or show/hide metric cards (persisted to
+      UserDefaults as an ordered `[String]` of card IDs). Drag-to-reorder with SwiftUI's
+      `.onMove` in a list overlay, then save.
+   b. **Better onboarding** — add a "Meet your companion" step between welcome and whatItDoes
+      showing the 4 characters with unlock requirements, so users know what to work toward.
+   c. **Streak/achievement system** — count consecutive days of data, show streak on dashboard
+      with a flame icon. This naturally drives character unlocks (owl at 7, fox at 30).
+   d. **Notification for new unlock** — when the day count crosses an unlock threshold, fire a
+      local notification: "You unlocked Hoot the Owl!" Deep-link to CharacterGalleryView.
+
+---
+
 ## 2026-06-15 — Orientation: Foundation Models sync and develop → main merge
 
 **Context**
