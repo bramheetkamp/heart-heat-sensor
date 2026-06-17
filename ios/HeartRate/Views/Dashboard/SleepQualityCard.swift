@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Dashboard card showing a 0-100 sleep quality score derived from last night's
-/// sleep readings (activity == .sleep, within the past 16 hours).
+/// sleep readings (activity == .sleep, within the past 24 hours).
 ///
 /// Score algorithm (weighted average of available components):
 ///   HR component   = clamp(rest_baseline_hr / sleep_hr, 0.7, 1.3)   — lower sleep HR = better
@@ -163,12 +163,12 @@ struct SleepQualityCard: View {
     }
 
     static func compute(readings: [Reading]) -> SleepResult {
-        let cutoff = Date().addingTimeInterval(-16 * 3600)
+        let cutoff = Date().addingTimeInterval(-24 * 3600)
         let sleepReadings = readings
             .filter { $0.activity == .sleep && $0.timestamp >= cutoff }
             .sorted { $0.timestamp < $1.timestamp }
 
-        guard sleepReadings.count >= 6 else { return .noData }
+        guard sleepReadings.count >= 4 else { return .noData }
 
         let avgHR: Double? = {
             let vals = sleepReadings.compactMap { $0.heartRate.map(Double.init) }

@@ -11,6 +11,8 @@ struct DashboardView: View {
     @State private var showScenarioPicker = false
     @State private var showCustomize = false
     @State private var profileName = ""
+    @State private var showConfetti = false
+    @State private var confettiTriggeredForScore: Int? = nil
 
     init() {
         var descriptor = FetchDescriptor<Reading>(
@@ -81,34 +83,39 @@ struct DashboardView: View {
         // NOTE: no NavigationStack here — MainAppView already provides one bound
         // to env.router.path. A nested stack would swallow router pushes and
         // leave the toolbar's value-based NavigationLink with no destination.
-        ScrollView {
-            VStack(spacing: 20) {
-                mascotStatusCard
-                ForEach(env.dashboardLayout.visibleSections) { section in
-                    switch section {
-                    case .aiSummary:
-                        HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
-                    case .streak:
-                        streakCard
-                    case .recovery:
-                        RecoveryScoreCard(readings: Array(recentReadings))
-                    case .weeklyTrend:
-                        WeeklyTrendCard(readings: Array(recentReadings))
-                    case .sleepQuality:
-                        SleepQualityCard(readings: Array(recentReadings))
-                    case .metrics:
-                        metricsGrid
-                    case .warnings:
-                        if !activeWarnings.isEmpty { activeWarningsSection }
-                    case .quickNav:
-                        quickNavRow
+        ZStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    mascotStatusCard
+                    ForEach(env.dashboardLayout.visibleSections) { section in
+                        switch section {
+                        case .aiSummary:
+                            HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                        case .streak:
+                            streakCard
+                        case .recovery:
+                            RecoveryScoreCard(readings: Array(recentReadings))
+                        case .weeklyTrend:
+                            WeeklyTrendCard(readings: Array(recentReadings))
+                        case .sleepQuality:
+                            SleepQualityCard(readings: Array(recentReadings))
+                        case .metrics:
+                            metricsGrid
+                        case .warnings:
+                            if !activeWarnings.isEmpty { activeWarningsSection }
+                        case .quickNav:
+                            quickNavRow
+                        }
                     }
                 }
+                .padding()
             }
-            .padding()
+            .refreshable { await refresh() }
+            .background(Color(.systemGroupedBackground))
+
+            ConfettiOverlay(isActive: $showConfetti)
+                .ignoresSafeArea()
         }
-        .refreshable { await refresh() }
-        .background(Color(.systemGroupedBackground))
         .navigationTitle(personalizedTitle)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -462,6 +469,12 @@ struct DashboardView: View {
         let recoveryResult = RecoveryScoreCard.compute(readings: Array(recentReadings))
         let recoveryScore: Int? = { if case .score(let s, _, _) = recoveryResult { return s }; return nil }()
         await env.notifications.scheduleMorningBriefing(score: recoveryScore, character: env.selectedCharacter)
+
+        // Fire confetti once per unique excellent score so it doesn't repeat on every refresh.
+        if let score = recoveryScore, score >= 82, confettiTriggeredForScore != score {
+            confettiTriggeredForScore = score
+            showConfetti = true
+        }
     }
 }
 

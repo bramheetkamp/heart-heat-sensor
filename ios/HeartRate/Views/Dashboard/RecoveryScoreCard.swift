@@ -14,6 +14,7 @@ struct RecoveryScoreCard: View {
     @EnvironmentObject private var env: AppEnvironment
     @State private var animatedScore: Double = 0
     @State private var shareURL: URL?
+    @State private var haptic = UINotificationFeedbackGenerator()
 
     private var result: RecoveryResult { RecoveryScoreCard.compute(readings: readings) }
 
@@ -59,10 +60,15 @@ struct RecoveryScoreCard: View {
         .onChange(of: result) { _, new in
             if case .score(let s, _, _) = new {
                 withAnimation(.easeOut(duration: 1.0)) { animatedScore = Double(s) }
+                if s >= 82 {
+                    haptic.prepare()
+                    haptic.notificationOccurred(.success)
+                }
             }
             generateShareURL()
         }
         .onAppear {
+            haptic.prepare()
             if case .score(let s, _, _) = result {
                 withAnimation(.easeOut(duration: 1.0).delay(0.2)) { animatedScore = Double(s) }
             }

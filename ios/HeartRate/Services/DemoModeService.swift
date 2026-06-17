@@ -114,18 +114,27 @@ final class DemoModeService: ObservableObject {
 
     private func dailyReadingSchedule(for day: Date) -> [(Date, Reading.ActivityLevel)] {
         let calendar = Calendar.current
+        let now = Date()
         var schedule: [(Date, Reading.ActivityLevel)] = []
 
-        // Resting readings: 02:00, 06:00, 12:00, 22:00
-        for hour in [2, 6, 12, 22] {
-            if let t = calendar.date(bySettingHour: hour, minute: Int.random(in: 0...59), second: 0, of: day) {
-                schedule.append((t, hour < 5 ? .sleep : .rest))
+        // Sleep block: 8 readings ~90 min apart from 22:00 to 06:30.
+        // Filtering future timestamps ensures demo data never contains readings
+        // that haven't "happened" yet relative to when the app is opened.
+        for (hour, minute) in [(22,0),(23,30),(1,0),(2,30),(4,0),(5,0),(6,0),(6,30)] {
+            if let t = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: day),
+               t <= now {
+                schedule.append((t, .sleep))
             }
         }
-        // Active readings: 08:00, 18:00
-        for hour in [8, 18] {
-            if let t = calendar.date(bySettingHour: hour, minute: Int.random(in: 0...59), second: 0, of: day) {
-                schedule.append((t, .active))
+        // Daytime: morning active, midday rest, evening active
+        for (hour, minute, activity): (Int, Int, Reading.ActivityLevel) in [
+            (8,  Int.random(in: 0...59), .active),
+            (12, Int.random(in: 0...59), .rest),
+            (18, Int.random(in: 0...59), .active)
+        ] {
+            if let t = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: day),
+               t <= now {
+                schedule.append((t, activity))
             }
         }
         return schedule
@@ -169,7 +178,12 @@ final class DemoModeService: ObservableObject {
     // MARK: - Scenario-Specific Reading Builders
 
     private func normalReading(timestamp: Date, activity: Reading.ActivityLevel) -> Reading {
-        let hrBase: Double = activity == .active ? Double.random(in: 95...130) : Double.random(in: 62...72)
+        let hrBase: Double
+        switch activity {
+        case .active: hrBase = Double.random(in: 95...130)
+        case .sleep:  hrBase = Double.random(in: 52...62)
+        default:      hrBase = Double.random(in: 62...72)
+        }
         let rr = rrIntervals(fromBPM: hrBase)
         return Reading(
             timestamp: timestamp,
@@ -199,9 +213,20 @@ final class DemoModeService: ObservableObject {
     }
 
     private func sickReading(timestamp: Date, activity: Reading.ActivityLevel, elevated: Bool) -> Reading {
-        let hrBase: Double = elevated
-            ? Double.random(in: 75...85)
-            : Double.random(in: 62...72)
+        let hrBase: Double
+        if elevated {
+            switch activity {
+            case .active: hrBase = Double.random(in: 100...115)
+            case .sleep:  hrBase = Double.random(in: 65...73)
+            default:      hrBase = Double.random(in: 75...85)
+            }
+        } else {
+            switch activity {
+            case .active: hrBase = Double.random(in: 95...130)
+            case .sleep:  hrBase = Double.random(in: 52...62)
+            default:      hrBase = Double.random(in: 62...72)
+            }
+        }
         let tempBase: Double = elevated
             ? Double.random(in: 37.3...37.8)
             : Double.random(in: 36.6...37.0)
@@ -219,10 +244,13 @@ final class DemoModeService: ObservableObject {
     }
 
     private func fatigueReading(timestamp: Date, activity: Reading.ActivityLevel) -> Reading {
-        // Elevated resting HR + suppressed HRV (tighter RR intervals)
-        let hrBase: Double = activity == .active
-            ? Double.random(in: 120...145)
-            : Double.random(in: 75...88)
+        // Elevated resting + sleep HR, suppressed HRV (tight RR intervals) — signs of poor recovery.
+        let hrBase: Double
+        switch activity {
+        case .active: hrBase = Double.random(in: 120...145)
+        case .sleep:  hrBase = Double.random(in: 62...72)  // elevated vs. normal 52-62
+        default:      hrBase = Double.random(in: 75...88)  // chronically elevated resting HR
+        }
 
         // Suppressed HRV: very uniform RR intervals (low variation)
         let baseRR = 60.0 / hrBase
