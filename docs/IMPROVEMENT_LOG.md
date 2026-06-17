@@ -2,6 +2,74 @@
 
 ---
 
+## 2026-06-17 — WidgetKit homescreen widget, sleep demo data fix, confetti + haptic on excellent recovery
+
+**Context**
+Continuing "NEVER STOP IMPROVING" directive.
+
+**What was built**
+
+- **`PulseWidget` (WidgetKit extension)** — small and medium homescreen widgets showing the
+  user's latest heart rate, core temperature, and recovery score. Reads from an App Group
+  shared `UserDefaults` suite (`group.com.heartrate.app`) so no SwiftData/process bridge is
+  needed. Tapping either widget deep-links to `heartrate://dashboard`.
+  - Small widget: animated recovery score ring + number + label + HR row
+  - Medium widget: full recovery ring on the left; HR, core temp, and relative "last updated"
+    timestamp on the right
+  - `PulseProvider` refreshes every 30 minutes; `BLEService` also calls
+    `WidgetCenter.shared.reloadAllTimelines()` on every new live reading for near-real-time updates
+  - `PulseEntry.fromSharedDefaults()` safely handles nil/zero values from UserDefaults
+  - `containerBackground(.fill.tertiary, for: .widget)` for correct iOS 17 widget rendering
+
+- **App Group shared UserDefaults** — `BLEService.persistLiveSample()` now writes
+  `cachedHR`, `cachedCoreTemp`, `cachedReadingAt` to `group.com.heartrate.app` (was
+  `UserDefaults.standard`). `DashboardView.refresh()` adds `cachedRecoveryScore` to the same
+  suite and triggers `WidgetCenter.shared.reloadAllTimelines()` after each computation.
+
+- **`HeartRate.entitlements`** — added `com.apple.security.application-groups` with
+  `group.com.heartrate.app`. Widget extension has its own `PulseWidget.entitlements` with
+  the same group.
+
+- **`project.yml`** — added `PulseWidget` app-extension target (`com.heartrate.app.widget`),
+  embedded into the `HeartRate` app target. `SKIP_INSTALL: YES` and correct
+  `LD_RUNPATH_SEARCH_PATHS` set.
+
+- **Demo sleep data fix** — `DemoModeService.dailyReadingSchedule` now seeds 8 sleep
+  readings per night (22:00–06:30 at ~90-min intervals) in addition to the existing active +
+  rest readings. HR ranges are now activity-specific in all four scenario builders.
+  `SleepQualityCard` window extended from 16 h → 24 h and minimum reading count lowered
+  from 6 → 4 so the card shows data all day after an overnight session.
+
+- **Confetti animation on excellent recovery** — `ConfettiOverlay` (pure SwiftUI, 90
+  coloured pieces, 2–3.5 s fall duration) fires once per unique excellent score (≥ 82)
+  in `DashboardView`. A `confettiTriggeredForScore` guard prevents repeat bursts on
+  repeated `refresh()` calls for the same score.
+
+- **Haptic feedback on excellent recovery** — `RecoveryScoreCard` fires
+  `UINotificationFeedbackGenerator.notificationOccurred(.success)` when the score first
+  reaches ≥ 82, using `UINotificationFeedbackGenerator` prepared in `.onAppear`.
+
+**Verification**
+- 8 files changed / 3 new files pushed to `origin/claude/awesome-brown-p11pvo`
+- Backend unchanged: 54/54 tests still passing
+
+**Not verifiable on Linux (requires Xcode)**
+- Widget layout renders correctly in Widget Gallery at all supported sizes
+- App Group entitlement is provisioned and shared data flows between app and widget
+- `WidgetCenter.reloadAllTimelines()` triggers live widget refresh when a new reading arrives
+- Confetti physics animation timing
+- Haptic `.success` pattern on supported devices
+
+**Next run candidates**
+1. **Live Activities / Dynamic Island** — real-time HR ticker during active workout session
+2. **Streak unlock notifications** — push when Hoot (7d) or Ember (30d) are newly unlocked
+3. **Insights Engine v2** — show `InsightsEngine` cards on the dashboard (it exists as a
+   service but isn't wired to any UI yet)
+4. **Onboarding demo preview** — let users preview a live (mock) reading stream during
+   onboarding so they understand what the app will look like before buying the device
+
+---
+
 ## 2026-06-17 — Weekly trends, sleep quality, recovery share sheet, morning briefing, sleep-aware BLE
 
 **Context**

@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct DashboardView: View {
     @EnvironmentObject private var env: AppEnvironment
@@ -91,6 +92,8 @@ struct DashboardView: View {
                         switch section {
                         case .aiSummary:
                             HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                        case .insights:
+                            InsightsCard(readings: Array(recentReadings), warnings: warnings)
                         case .streak:
                             streakCard
                         case .recovery:
@@ -469,6 +472,11 @@ struct DashboardView: View {
         let recoveryResult = RecoveryScoreCard.compute(readings: Array(recentReadings))
         let recoveryScore: Int? = { if case .score(let s, _, _) = recoveryResult { return s }; return nil }()
         await env.notifications.scheduleMorningBriefing(score: recoveryScore, character: env.selectedCharacter)
+
+        // Persist recovery score to App Group so the homescreen widget stays current.
+        let ud = UserDefaults(suiteName: "group.com.heartrate.app") ?? .standard
+        if let score = recoveryScore { ud.set(score, forKey: "cachedRecoveryScore") }
+        WidgetCenter.shared.reloadAllTimelines()
 
         // Fire confetti once per unique excellent score so it doesn't repeat on every refresh.
         if let score = recoveryScore, score >= 82, confettiTriggeredForScore != score {

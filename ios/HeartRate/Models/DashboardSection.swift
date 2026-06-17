@@ -4,6 +4,7 @@ import Foundation
 /// The order and visibility of these sections can be customized by the user.
 enum DashboardSection: String, CaseIterable, Codable, Identifiable {
     case aiSummary    = "aiSummary"
+    case insights     = "insights"
     case streak       = "streak"
     case recovery     = "recovery"
     case weeklyTrend  = "weeklyTrend"
@@ -17,6 +18,7 @@ enum DashboardSection: String, CaseIterable, Codable, Identifiable {
     var title: String {
         switch self {
         case .aiSummary:    return "AI Summary"
+        case .insights:     return "Insights"
         case .streak:       return "Streak"
         case .recovery:     return "Recovery Score"
         case .weeklyTrend:  return "Weekly Trends"
@@ -30,6 +32,7 @@ enum DashboardSection: String, CaseIterable, Codable, Identifiable {
     var icon: String {
         switch self {
         case .aiSummary:    return "sparkles"
+        case .insights:     return "lightbulb.fill"
         case .streak:       return "flame.fill"
         case .recovery:     return "bolt.heart.fill"
         case .weeklyTrend:  return "chart.line.uptrend.xyaxis"
