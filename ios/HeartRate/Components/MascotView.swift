@@ -154,54 +154,269 @@ struct MascotView: View {
 
     // MARK: - Face
 
+    /// Faces are built from character-specific features (muzzle, nose/beak,
+    /// eye shape & colour) layered over shared, state-driven expression pieces
+    /// (mouth, eyebrows, cheeks). The result reads as a distinct animal rather
+    /// than one generic face recoloured per character.
     private var faceLayer: some View {
         ZStack {
-            eyes
+            muzzle           // tan/white snout patch or owl facial disc
+            cheeks           // soft blush, behind the features
             mouth
+            noseFeature      // bear/fox nose or owl beak, on top of the muzzle
+            eyes
+            eyebrows         // above the eyes, carries most of the emotion
         }
         .offset(y: bounceOffset)
     }
+
+    // MARK: Muzzle / facial disc
+
+    @ViewBuilder
+    private var muzzle: some View {
+        switch character {
+        case .bear:
+            Ellipse()
+                .fill(Color(red: 0.93, green: 0.8, blue: 0.62))
+                .frame(width: size * 0.44, height: size * 0.36)
+                .offset(y: size * 0.15)
+        case .fox:
+            Ellipse()
+                .fill(Color.white.opacity(0.95))
+                .frame(width: size * 0.34, height: size * 0.42)
+                .offset(y: size * 0.17)
+        case .owl:
+            // Two overlapping feathered discs framing the big eyes.
+            ZStack {
+                Ellipse()
+                    .fill(Color.white.opacity(0.16))
+                    .frame(width: size * 0.72, height: size * 0.64)
+                Ellipse()
+                    .stroke(Color.white.opacity(0.25), lineWidth: size * 0.012)
+                    .frame(width: size * 0.5, height: size * 0.5)
+            }
+            .offset(y: -size * 0.02)
+        case .blob:
+            EmptyView()
+        }
+    }
+
+    // MARK: Nose / beak
+
+    @ViewBuilder
+    private var noseFeature: some View {
+        switch character {
+        case .bear:
+            Ellipse()
+                .fill(Color(red: 0.2, green: 0.12, blue: 0.1))
+                .overlay(
+                    Ellipse()
+                        .fill(Color.white.opacity(0.35))
+                        .frame(width: size * 0.04, height: size * 0.03)
+                        .offset(x: -size * 0.02, y: -size * 0.018)
+                )
+                .frame(width: size * 0.14, height: size * 0.1)
+                .offset(y: size * 0.045)
+        case .fox:
+            FoxNoseShape()
+                .fill(Color(red: 0.12, green: 0.08, blue: 0.07))
+                .frame(width: size * 0.13, height: size * 0.11)
+                .offset(y: size * 0.07)
+        case .owl:
+            beak
+        case .blob:
+            EmptyView()
+        }
+    }
+
+    private var beak: some View {
+        BeakShape()
+            .fill(
+                LinearGradient(
+                    colors: [Color(red: 1.0, green: 0.82, blue: 0.32),
+                             Color(red: 0.92, green: 0.55, blue: 0.12)],
+                    startPoint: .top, endPoint: .bottom
+                )
+            )
+            .frame(width: size * 0.16, height: size * 0.2)
+            .offset(y: size * 0.1)
+    }
+
+    // MARK: Cheeks
+
+    @ViewBuilder
+    private var cheeks: some View {
+        if character != .owl {
+            HStack(spacing: size * 0.36) {
+                cheek
+                cheek
+            }
+            .offset(y: size * 0.05)
+        }
+    }
+
+    private var cheek: some View {
+        Circle()
+            .fill(Color(red: 1.0, green: 0.45, blue: 0.45).opacity(cheekOpacity))
+            .frame(width: size * 0.13, height: size * 0.13)
+            .blur(radius: size * 0.025)
+    }
+
+    private var cheekOpacity: Double {
+        switch state {
+        case .happy, .cheering: return 0.5
+        case .sweating:         return 0.65
+        default:                return 0.22
+        }
+    }
+
+    // MARK: Eyes
 
     private var eyes: some View {
         HStack(spacing: eyeSpacing) {
             eyeShape
             eyeShape
         }
-        .offset(y: -size * 0.08)
+        .offset(y: eyeVerticalOffset)
+    }
+
+    private var eyeVerticalOffset: CGFloat {
+        character == .owl ? -size * 0.04 : -size * 0.07
     }
 
     private var eyeSpacing: CGFloat {
-        character == .owl ? size * 0.18 : size * 0.15
+        switch character {
+        case .owl:  return size * 0.04   // owl eyes sit close together
+        case .fox:  return size * 0.1
+        case .bear: return size * 0.16
+        case .blob: return size * 0.13
+        }
+    }
+
+    /// Per-character eye geometry & iris colour. A white sclera, coloured iris,
+    /// black pupil and a small offset catchlight give the eyes depth.
+    private struct EyeMetrics {
+        var scleraW: CGFloat
+        var scleraH: CGFloat
+        var irisD: CGFloat
+        var pupilD: CGFloat
+        var catchD: CGFloat
+        var iris: Color
+    }
+
+    private var eyeMetrics: EyeMetrics {
+        switch character {
+        case .blob:
+            return EyeMetrics(scleraW: size * 0.2, scleraH: size * 0.22,
+                              irisD: size * 0.13, pupilD: size * 0.075, catchD: size * 0.05,
+                              iris: Color(red: 0.3, green: 0.22, blue: 0.15))
+        case .bear:
+            return EyeMetrics(scleraW: size * 0.12, scleraH: size * 0.13,
+                              irisD: size * 0.12, pupilD: size * 0.08, catchD: size * 0.04,
+                              iris: Color(red: 0.16, green: 0.1, blue: 0.07))
+        case .owl:
+            return EyeMetrics(scleraW: size * 0.3, scleraH: size * 0.32,
+                              irisD: size * 0.24, pupilD: size * 0.14, catchD: size * 0.07,
+                              iris: Color(red: 0.95, green: 0.62, blue: 0.12))
+        case .fox:
+            return EyeMetrics(scleraW: size * 0.18, scleraH: size * 0.14,
+                              irisD: size * 0.11, pupilD: size * 0.07, catchD: size * 0.04,
+                              iris: Color(red: 0.5, green: 0.32, blue: 0.08))
+        }
     }
 
     private var eyeShape: some View {
-        let width  = character == .owl ? size * 0.19 : size * 0.17
-        let height = character == .owl ? size * 0.22 : size * 0.2
-
+        let m = eyeMetrics
+        let irisDrop = m.scleraH * 0.04
         return ZStack {
-            Capsule()
+            Ellipse()
                 .fill(Color.white)
-                .frame(width: width, height: height * blinkOpacity)
+                .overlay(Ellipse().stroke(Color.black.opacity(0.08), lineWidth: size * 0.008))
+                .frame(width: m.scleraW, height: m.scleraH)
             Circle()
-                .fill(Color(red: 0.15, green: 0.1, blue: 0.05))
-                .frame(width: size * 0.09, height: size * 0.09 * blinkOpacity)
+                .fill(m.iris)
+                .frame(width: m.irisD, height: m.irisD)
+                .offset(y: irisDrop)
+            Circle()
+                .fill(Color.black)
+                .frame(width: m.pupilD, height: m.pupilD)
+                .offset(y: irisDrop)
+            Circle()
+                .fill(Color.white.opacity(0.95))
+                .frame(width: m.catchD, height: m.catchD)
+                .offset(x: -m.irisD * 0.22, y: -m.irisD * 0.22 + irisDrop)
         }
+        // blinkOpacity squishes the eye for blinks; eyeOpenFactor keeps the
+        // eyes half-lidded while sleepy.
+        .scaleEffect(x: 1, y: max(0.04, blinkOpacity * eyeOpenFactor), anchor: .center)
         .rotationEffect(.degrees(wiggleAngle * 0.3))
     }
 
+    private var eyeOpenFactor: CGFloat {
+        state == .sleepy ? 0.4 : 1.0
+    }
+
+    // MARK: Eyebrows
+
+    @ViewBuilder
+    private var eyebrows: some View {
+        if character != .owl {
+            HStack(spacing: browSpacing) {
+                brow(mirror: false)
+                brow(mirror: true)
+            }
+            .offset(y: eyeVerticalOffset - eyeMetrics.scleraH * 0.72 + browDrop)
+        }
+    }
+
+    private var browSpacing: CGFloat { eyeSpacing + eyeMetrics.scleraW * 0.2 }
+
+    private func brow(mirror: Bool) -> some View {
+        Capsule()
+            .fill(Color(red: 0.3, green: 0.2, blue: 0.12).opacity(0.85))
+            .frame(width: eyeMetrics.scleraW * 0.9, height: size * 0.028)
+            .rotationEffect(.degrees(mirror ? -browAngle : browAngle))
+    }
+
+    /// Positive angle furrows the inner ends downward (tense); negative raises
+    /// them (concerned). Mirrored on the right brow.
+    private var browAngle: Double {
+        switch state {
+        case .worried:  return -16
+        case .sweating: return 14
+        case .sleepy:   return 10
+        case .scanning: return -6
+        default:        return -3
+        }
+    }
+
+    private var browDrop: CGFloat {
+        switch state {
+        case .scanning, .cheering: return -size * 0.02
+        case .sweating, .sleepy:   return size * 0.015
+        default:                   return 0
+        }
+    }
+
+    // MARK: Mouth
+
     @ViewBuilder
     private var mouth: some View {
-        switch state {
-        case .happy, .cheering, .neutral:
-            smilingMouth
-        case .sweating:
-            pantingMouth
-        case .worried:
-            worriedMouth
-        case .sleepy:
-            sleepyMouth
-        case .scanning:
-            ohMouth
+        if character == .owl {
+            EmptyView()   // the beak serves as the owl's mouth
+        } else {
+            switch state {
+            case .happy, .cheering, .neutral:
+                smilingMouth
+            case .sweating:
+                pantingMouth
+            case .worried:
+                worriedMouth
+            case .sleepy:
+                sleepyMouth
+            case .scanning:
+                ohMouth
+            }
         }
     }
 
@@ -502,6 +717,34 @@ private struct FoxEarShape: Shape {
         path.move(to: CGPoint(x: rect.midX, y: 0))
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
         path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// Small downward-pointing triangular nose for the fox.
+private struct FoxNoseShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: 0))
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// Curved downward beak for the owl.
+private struct BeakShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let w = rect.width, h = rect.height
+        path.move(to: CGPoint(x: w * 0.5, y: h))
+        path.addQuadCurve(to: CGPoint(x: w, y: 0),
+                          control: CGPoint(x: w * 0.92, y: h * 0.55))
+        path.addLine(to: CGPoint(x: 0, y: 0))
+        path.addQuadCurve(to: CGPoint(x: w * 0.5, y: h),
+                          control: CGPoint(x: w * 0.08, y: h * 0.55))
         path.closeSubpath()
         return path
     }

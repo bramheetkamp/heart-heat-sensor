@@ -12,6 +12,8 @@ struct DashboardView: View {
     @State private var showScenarioPicker = false
     @State private var showCustomize = false
     @State private var profileName = ""
+    @State private var eventName: String?
+    @State private var eventDate: Date?
     @State private var showConfetti = false
     @State private var confettiTriggeredForScore: Int? = nil
 
@@ -92,6 +94,8 @@ struct DashboardView: View {
                         switch section {
                         case .aiSummary:
                             HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                        case .eventCountdown:
+                            EventCountdownCard(eventName: eventName, eventDate: eventDate)
                         case .insights:
                             InsightsCard(readings: Array(recentReadings), warnings: warnings)
                         case .streak:
@@ -167,6 +171,8 @@ struct DashboardView: View {
             if let profile = try? env.dataStore.getOrCreateProfile() {
                 let stored = profile.displayName
                 profileName = (stored == "User" || stored.isEmpty) ? "" : stored
+                eventName = profile.eventName
+                eventDate = profile.eventDate
             }
             // In demo mode with no data yet, seed the active scenario so the
             // dashboard isn't empty (e.g. demo enabled without picking a scenario).
@@ -174,6 +180,11 @@ struct DashboardView: View {
                 try? await env.demoMode.seedReadings(scenario: env.demoMode.activeScenario, into: env.dataStore)
             }
             await refresh()
+        }
+        // Recompute warnings/recovery after a scenario reseed. The @Query already
+        // refreshes the readings + metric cards; this catches the derived state.
+        .onChange(of: env.demoDataReloadToken) { _ in
+            Task { await refresh() }
         }
     }
 
@@ -434,6 +445,12 @@ struct DashboardView: View {
     private var quickNavRow: some View {
         HStack(spacing: 12) {
             QuickNavButton(
+                icon: "figure.run",
+                label: "Workout"
+            ) {
+                env.router.navigate(to: .workout)
+            }
+            QuickNavButton(
                 icon: "chart.xyaxis.line",
                 label: "History"
             ) {
@@ -594,9 +611,10 @@ struct ScenarioPickerSheet: View {
         NavigationStack {
             List(DemoScenario.allCases) { scenario in
                 Button {
-                    env.demoMode.activeScenario = scenario
-                    Task { try? await env.demoMode.seedReadings(scenario: scenario, into: env.dataStore) }
-                    dismiss()
+                    Task {
+                        await env.applyDemoScenario(scenario)
+                        dismiss()
+                    }
                 } label: {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(scenario.rawValue).font(.headline)

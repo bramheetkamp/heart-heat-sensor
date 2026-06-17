@@ -77,6 +77,43 @@ final class NotificationService: NSObject, ObservableObject {
         UserDefaults.standard.set(Array(notified), forKey: notifiedKey)
     }
 
+    // MARK: - Live Heat-Strain Alerts
+
+    /// Throttle state for the live heat alert (per-session, in-memory).
+    private var lastHeatAlertLevel: Int = -1
+
+    /// Fire an active, interruptive alert while a workout is overheating.
+    /// Unlike `notifyIfNeeded`, this is for the LIVE session: it is intentionally
+    /// loud and only (re)fires when the level rises to a new, higher severity, so
+    /// an escalation (serious → critical) always cuts through but the same level
+    /// doesn't spam.
+    func notifyHeatStrain(level: HeatStrainEngine.Level, message: String) async {
+        guard level.shouldAlert else { lastHeatAlertLevel = level.rawValue; return }
+        guard level.rawValue > lastHeatAlertLevel else { return }
+        lastHeatAlertLevel = level.rawValue
+
+        await refreshStatus()
+        guard authorizationStatus == .authorized || authorizationStatus == .provisional else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = level == .critical ? "🛑 Stop now — overheating" : "⚠️ Slow down — overheating"
+        content.body = message
+        content.userInfo = ["type": "heatStrain"]
+        content.interruptionLevel = level == .critical ? .critical : .timeSensitive
+        content.sound = level == .critical ? .defaultCritical : .default
+
+        let request = UNNotificationRequest(
+            identifier: "heat_strain_\(level.rawValue)",
+            content: content,
+            trigger: nil
+        )
+        try? await center.add(request)
+    }
+
+    /// Reset the heat-alert throttle when a workout starts/ends so a later
+    /// session re-alerts from scratch.
+    func resetHeatStrainAlerts() { lastHeatAlertLevel = -1 }
+
     // MARK: - Streak Milestone Notifications
 
     /// Fires a local notification when the streak crosses a new milestone.
@@ -245,6 +282,8 @@ extension NotificationService: UNUserNotificationCenterDelegate {
                     }
                 case "weeklyDigest", "morningBriefing":
                     self.router?.handle(url: URL(string: "heartrate://dashboard")!)
+                case "heatStrain":
+                    self.router?.handle(url: URL(string: "heartrate://workout")!)
                 default: break
                 }
             }

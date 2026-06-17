@@ -21,6 +21,11 @@ final class UserProfile {
     var selectedCharacterRaw: String?
     var aiToneRaw: String?
 
+    // Target event (e.g. a race) for the dashboard countdown. Optional so
+    // existing SwiftData rows migrate cleanly.
+    var eventName: String?
+    var eventDate: Date?
+
     // Backend sync credentials
     var backendToken: String?
     var backendUserId: String?
@@ -49,6 +54,8 @@ final class UserProfile {
         fatigueHRVThreshold: Double = 0.80,
         selectedCharacter: MascotCharacter = .blob,
         aiTone: AISummaryTone = .encouraging,
+        eventName: String? = nil,
+        eventDate: Date? = nil,
         backendToken: String? = nil,
         backendUserId: String? = nil
     ) {
@@ -63,6 +70,8 @@ final class UserProfile {
         self.fatigueHRVThreshold = fatigueHRVThreshold
         self.selectedCharacterRaw = selectedCharacter.rawValue
         self.aiToneRaw = aiTone.rawValue
+        self.eventName = eventName
+        self.eventDate = eventDate
         self.backendToken = backendToken
         self.backendUserId = backendUserId
     }

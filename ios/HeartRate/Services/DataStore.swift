@@ -35,6 +35,16 @@ final class DataStore: ObservableObject {
         try context.save()
     }
 
+    /// Persist many readings in a single transaction (one `context.save()`).
+    /// Demo seeding inserts ~hundreds of rows at once; saving per-row would fire
+    /// the dashboard's `@Query` (and its chart/recovery recompute) hundreds of
+    /// times, which is the source of the scenario-switch lag.
+    func save(readings: [Reading]) throws {
+        guard !readings.isEmpty else { return }
+        for reading in readings { context.insert(reading) }
+        try context.save()
+    }
+
     /// Delete all readings recorded by a given device id (used to clear demo
     /// data before re-seeding so scenarios don't accumulate or mix).
     func deleteReadings(deviceId: String) throws {

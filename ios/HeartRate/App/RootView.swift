@@ -41,6 +41,8 @@ struct MainAppView: View {
                         SettingsView()
                     case .pair:
                         PairingStep()
+                    case .workout:
+                        WorkoutView()
                     }
                 }
         }
