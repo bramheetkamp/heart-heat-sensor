@@ -24,6 +24,8 @@ targets:
       - path: HeartRate
         excludes:
           - "**/*.md"
+    dependencies:
+      - sdk: HealthKit.framework
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.app

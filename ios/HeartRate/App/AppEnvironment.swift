@@ -44,12 +44,17 @@ final class AppEnvironment: ObservableObject {
     let demoMode: DemoModeService
     let syncService: SyncService
     let notifications: NotificationService
+    let healthKit: HealthKitService
     let healthSummary: HealthSummaryService
     let dashboardLayout: DashboardLayoutService
     var router: AppRouter
 
     @Published var isDemoMode: Bool {
-        didSet { UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode") }
+        didSet {
+            UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode")
+            // Don't write demo/mock readings to Apple Health.
+            bleService.healthKit = isDemoMode ? nil : healthKit
+        }
     }
 
     @Published var appearance: AppearanceMode {
@@ -97,7 +102,14 @@ final class AppEnvironment: ObservableObject {
         }
         #endif
 
-        self.bleService = BLEService(transport: transport, dataStore: dataStore)
+        let healthKit = HealthKitService()
+        self.healthKit = healthKit
+
+        let bleService = BLEService(transport: transport, dataStore: dataStore)
+        // Only write real-device readings to Health, never mock/demo data.
+        if !isDemoMode { bleService.healthKit = healthKit }
+        self.bleService = bleService
+
         self.syncService = SyncService()
         self.healthSummary = HealthSummaryService()
         self.dashboardLayout = DashboardLayoutService()

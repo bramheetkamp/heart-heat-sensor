@@ -19,6 +19,7 @@ final class BLEService: ObservableObject {
 
     private let transport: BLETransportProtocol
     private let dataStore: DataStore?
+    var healthKit: HealthKitService?
     private var cancellables = Set<AnyCancellable>()
     private let hapticGenerator = UINotificationFeedbackGenerator()
 
@@ -139,6 +140,10 @@ final class BLEService: ObservableObject {
             deviceId: deviceName
         )
         try? dataStore.save(reading: reading)
+
+        if let hk = healthKit {
+            Task { await hk.write(reading) }
+        }
 
         liveSampleCount += 1
         if liveSampleCount % BLEService.pruneEveryNSamples == 0 {

@@ -15,6 +15,7 @@ struct SettingsView: View {
             dashboardSection
             appearanceSection
             demoSection
+            healthKitSection
             thresholdsSection
             connectionSection
             backendSection
@@ -119,6 +120,68 @@ struct SettingsView: View {
             Text("Demo & Testing")
         } footer: {
             Text("Demo mode feeds simulated data through the same pipeline as a real device. Great for testing all features.")
+        }
+    }
+
+    private var healthKitSection: some View {
+        Section {
+            if !HealthKitService.available {
+                Label("Not available on this device", systemImage: "heart.slash")
+                    .foregroundStyle(.secondary)
+            } else {
+                HStack {
+                    Label("Apple Health", systemImage: "heart.fill")
+                        .foregroundStyle(.red)
+                    Spacer()
+                    Text(healthKitStatusLabel)
+                        .font(.footnote)
+                        .foregroundStyle(healthKitStatusColor)
+                }
+
+                switch env.healthKit.authorizationStatus {
+                case .sharingAuthorized:
+                    Toggle(isOn: Binding(
+                        get: { env.healthKit.isEnabled },
+                        set: { env.healthKit.isEnabled = $0 }
+                    )) {
+                        Label("Write to Health App", systemImage: "waveform.path.ecg")
+                    }
+                    .tint(.orange)
+
+                case .sharingDenied:
+                    Label("Re-enable in Settings › Health › Pulse", systemImage: "exclamationmark.circle")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+
+                default:
+                    Button {
+                        Task { await env.healthKit.requestAuthorization() }
+                    } label: {
+                        Label("Connect to Apple Health", systemImage: "heart.circle")
+                    }
+                }
+            }
+        } header: {
+            Text("Apple Health")
+        } footer: {
+            Text("When connected, each live reading (heart rate, body temperature, HRV) is written to Apple Health in real time. Demo data is never synced.")
+        }
+        .task { env.healthKit.refreshStatus() }
+    }
+
+    private var healthKitStatusLabel: String {
+        switch env.healthKit.authorizationStatus {
+        case .sharingAuthorized: return env.healthKit.isEnabled ? "Writing" : "Connected"
+        case .sharingDenied:     return "Denied"
+        default:                 return "Not connected"
+        }
+    }
+
+    private var healthKitStatusColor: Color {
+        switch env.healthKit.authorizationStatus {
+        case .sharingAuthorized: return env.healthKit.isEnabled ? .green : .secondary
+        case .sharingDenied:     return .red
+        default:                 return .secondary
         }
     }
 
@@ -242,8 +305,6 @@ struct SettingsView: View {
         }
     }
 }
-
-// MARK: - Supporting Views
 
 // MARK: - Export Data View
 
