@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- HealthKit write access -->
+    <key>com.apple.developer.healthkit</key>
+    <true/>
+
+    <!-- App Group shared between the main app and the PulseWidget extension -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.com.heartrate.app</string>
+    </array>
+
     <!-- Universal Links — replace yourdomain.com with your actual backend domain -->
     <key>com.apple.developer.associated-domains</key>
     <array>

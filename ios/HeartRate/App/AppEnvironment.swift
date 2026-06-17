@@ -44,15 +44,27 @@ final class AppEnvironment: ObservableObject {
     let demoMode: DemoModeService
     let syncService: SyncService
     let notifications: NotificationService
+    let healthKit: HealthKitService
     let healthSummary: HealthSummaryService
+    let dashboardLayout: DashboardLayoutService
     var router: AppRouter
 
     @Published var isDemoMode: Bool {
-        didSet { UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode") }
+        didSet {
+            UserDefaults.standard.set(isDemoMode, forKey: "isDemoMode")
+            // Don't write demo/mock readings to Apple Health.
+            bleService.healthKit = isDemoMode ? nil : healthKit
+        }
     }
 
     @Published var appearance: AppearanceMode {
         didSet { UserDefaults.standard.set(appearance.rawValue, forKey: "appearanceMode") }
+    }
+
+    /// The currently selected companion character. Persisted to UserDefaults for
+    /// instant access without an async profile load on each view render.
+    @Published var selectedCharacter: MascotCharacter {
+        didSet { UserDefaults.standard.set(selectedCharacter.rawValue, forKey: "selectedCharacter") }
     }
 
     init() {
@@ -62,6 +74,9 @@ final class AppEnvironment: ObservableObject {
         // Default to dark; `.system` only applies if the user explicitly picks it.
         let storedAppearance = UserDefaults.standard.string(forKey: "appearanceMode")
         self.appearance = storedAppearance.flatMap(AppearanceMode.init(rawValue:)) ?? .dark
+
+        let storedCharacter = UserDefaults.standard.string(forKey: "selectedCharacter")
+        self.selectedCharacter = storedCharacter.flatMap(MascotCharacter.init(rawValue:)) ?? .blob
 
         let dataStore = DataStore()
         self.dataStore = dataStore
@@ -87,9 +102,17 @@ final class AppEnvironment: ObservableObject {
         }
         #endif
 
-        self.bleService = BLEService(transport: transport, dataStore: dataStore)
+        let healthKit = HealthKitService()
+        self.healthKit = healthKit
+
+        let bleService = BLEService(transport: transport, dataStore: dataStore)
+        // Only write real-device readings to Health, never mock/demo data.
+        if !isDemoMode { bleService.healthKit = healthKit }
+        self.bleService = bleService
+
         self.syncService = SyncService()
         self.healthSummary = HealthSummaryService()
+        self.dashboardLayout = DashboardLayoutService()
 
         let router = AppRouter()
         self.router = router

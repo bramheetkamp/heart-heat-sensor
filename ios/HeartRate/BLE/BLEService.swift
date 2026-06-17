@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UIKit
+import WidgetKit
 
 // MARK: - BLEService
 
@@ -19,6 +20,7 @@ final class BLEService: ObservableObject {
 
     private let transport: BLETransportProtocol
     private let dataStore: DataStore?
+    var healthKit: HealthKitService?
     private var cancellables = Set<AnyCancellable>()
     private let hapticGenerator = UINotificationFeedbackGenerator()
 
@@ -126,7 +128,17 @@ final class BLEService: ObservableObject {
         if case .connected(let name) = connectionState { deviceName = name } else { deviceName = "LIVE" }
 
         let activity: Reading.ActivityLevel
-        if let hr { activity = hr.heartRate >= 100 ? .active : .rest } else { activity = .unknown }
+        if let hr {
+            let hour = Calendar.current.component(.hour, from: Date())
+            let isLikelySleeping = (hour >= 22 || hour < 7) && hr.heartRate < 65
+            if hr.heartRate >= 100 {
+                activity = .active
+            } else if isLikelySleeping {
+                activity = .sleep
+            } else {
+                activity = .rest
+            }
+        } else { activity = .unknown }
 
         let reading = Reading(
             timestamp: Date(),
@@ -139,6 +151,18 @@ final class BLEService: ObservableObject {
             deviceId: deviceName
         )
         try? dataStore.save(reading: reading)
+
+        // Write latest vitals to the App Group suite so the homescreen widget
+        // and Siri App Intents can read them without opening the app.
+        let ud = UserDefaults(suiteName: "group.com.heartrate.app") ?? .standard
+        if let hrValue = hr?.heartRate { ud.set(hrValue, forKey: "cachedHR") }
+        if let core = tempCore { ud.set(core, forKey: "cachedCoreTemp") }
+        ud.set(Date().timeIntervalSince1970, forKey: "cachedReadingAt")
+        WidgetCenter.shared.reloadAllTimelines()
+
+        if let hk = healthKit {
+            Task { await hk.write(reading) }
+        }
 
         liveSampleCount += 1
         if liveSampleCount % BLEService.pruneEveryNSamples == 0 {

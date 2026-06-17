@@ -132,10 +132,22 @@ struct WarningDetailView: View {
     }
 
     private func whatToDoCard(_ w: HealthWarning) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Label("What you can do", systemImage: "lightbulb.fill")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.orange)
+
+            // Character-voiced reaction to this specific warning type
+            HStack(alignment: .top, spacing: 12) {
+                MascotView(state: mascotStateFor(w.type), character: env.selectedCharacter, size: 44)
+                Text("\"\(env.selectedCharacter.statusMessage(for: mascotStateFor(w.type)))\"")
+                    .font(.footnote.italic())
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(12)
+            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
 
             ForEach(suggestionsFor(w.type), id: \.self) { suggestion in
                 HStack(alignment: .top, spacing: 10) {
@@ -153,12 +165,20 @@ struct WarningDetailView: View {
             Text("This is a wellness indicator based on your personal trends, not a medical diagnosis. If you have concerns, consult a healthcare professional.")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
-                .padding(.top, 8)
+                .padding(.top, 4)
                 .lineSpacing(3)
         }
         .padding()
         .background(.background, in: RoundedRectangle(cornerRadius: 20))
         .shadow(color: .black.opacity(0.04), radius: 8, y: 3)
+    }
+
+    private func mascotStateFor(_ type: HealthWarning.WarningType) -> MascotState {
+        switch type {
+        case .overheating:     return .sweating
+        case .gettingSick:     return .worried
+        case .fatigueRecovery: return .sleepy
+        }
     }
 
     // MARK: - Helpers

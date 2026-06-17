@@ -1,7 +1,262 @@
 # Pulse — Improvement Log
 
+---
+
+## 2026-06-17 — WidgetKit homescreen widget, sleep demo data fix, confetti + haptic on excellent recovery
+
+**Context**
+Continuing "NEVER STOP IMPROVING" directive.
+
+**What was built**
+
+- **`PulseWidget` (WidgetKit extension)** — small and medium homescreen widgets showing the
+  user's latest heart rate, core temperature, and recovery score. Reads from an App Group
+  shared `UserDefaults` suite (`group.com.heartrate.app`) so no SwiftData/process bridge is
+  needed. Tapping either widget deep-links to `heartrate://dashboard`.
+  - Small widget: animated recovery score ring + number + label + HR row
+  - Medium widget: full recovery ring on the left; HR, core temp, and relative "last updated"
+    timestamp on the right
+  - `PulseProvider` refreshes every 30 minutes; `BLEService` also calls
+    `WidgetCenter.shared.reloadAllTimelines()` on every new live reading for near-real-time updates
+  - `PulseEntry.fromSharedDefaults()` safely handles nil/zero values from UserDefaults
+  - `containerBackground(.fill.tertiary, for: .widget)` for correct iOS 17 widget rendering
+
+- **App Group shared UserDefaults** — `BLEService.persistLiveSample()` now writes
+  `cachedHR`, `cachedCoreTemp`, `cachedReadingAt` to `group.com.heartrate.app` (was
+  `UserDefaults.standard`). `DashboardView.refresh()` adds `cachedRecoveryScore` to the same
+  suite and triggers `WidgetCenter.shared.reloadAllTimelines()` after each computation.
+
+- **`HeartRate.entitlements`** — added `com.apple.security.application-groups` with
+  `group.com.heartrate.app`. Widget extension has its own `PulseWidget.entitlements` with
+  the same group.
+
+- **`project.yml`** — added `PulseWidget` app-extension target (`com.heartrate.app.widget`),
+  embedded into the `HeartRate` app target. `SKIP_INSTALL: YES` and correct
+  `LD_RUNPATH_SEARCH_PATHS` set.
+
+- **Demo sleep data fix** — `DemoModeService.dailyReadingSchedule` now seeds 8 sleep
+  readings per night (22:00–06:30 at ~90-min intervals) in addition to the existing active +
+  rest readings. HR ranges are now activity-specific in all four scenario builders.
+  `SleepQualityCard` window extended from 16 h → 24 h and minimum reading count lowered
+  from 6 → 4 so the card shows data all day after an overnight session.
+
+- **Confetti animation on excellent recovery** — `ConfettiOverlay` (pure SwiftUI, 90
+  coloured pieces, 2–3.5 s fall duration) fires once per unique excellent score (≥ 82)
+  in `DashboardView`. A `confettiTriggeredForScore` guard prevents repeat bursts on
+  repeated `refresh()` calls for the same score.
+
+- **Haptic feedback on excellent recovery** — `RecoveryScoreCard` fires
+  `UINotificationFeedbackGenerator.notificationOccurred(.success)` when the score first
+  reaches ≥ 82, using `UINotificationFeedbackGenerator` prepared in `.onAppear`.
+
+**Verification**
+- 8 files changed / 3 new files pushed to `origin/claude/awesome-brown-p11pvo`
+- Backend unchanged: 54/54 tests still passing
+
+**Not verifiable on Linux (requires Xcode)**
+- Widget layout renders correctly in Widget Gallery at all supported sizes
+- App Group entitlement is provisioned and shared data flows between app and widget
+- `WidgetCenter.reloadAllTimelines()` triggers live widget refresh when a new reading arrives
+- Confetti physics animation timing
+- Haptic `.success` pattern on supported devices
+
+**Next run candidates**
+1. **Live Activities / Dynamic Island** — real-time HR ticker during active workout session
+2. **Streak unlock notifications** — push when Hoot (7d) or Ember (30d) are newly unlocked
+3. **Insights Engine v2** — show `InsightsEngine` cards on the dashboard (it exists as a
+   service but isn't wired to any UI yet)
+4. **Onboarding demo preview** — let users preview a live (mock) reading stream during
+   onboarding so they understand what the app will look like before buying the device
+
+---
+
+## 2026-06-17 — Weekly trends, sleep quality, recovery share sheet, morning briefing, sleep-aware BLE
+
+**Context**
+Continuing "NEVER STOP IMPROVING" directive. This run focused on dashboard depth and data richness.
+
+**What was built**
+
+- **`RecoveryScoreCard`** — 0-100 recovery score ring (HRV 60% + resting HR 40% vs 30-day baseline).
+  Shows animated ring, delta badges, and a **share sheet** that renders a branded PNG card via
+  `ImageRenderer` at 3× scale. `RecoveryShareCard` is a self-contained SwiftUI view (no
+  `@EnvironmentObject`) voiced by the active companion character.
+
+- **`WeeklyTrendCard`** — 7-day resting HRV and resting HR sparklines (Swift Charts, `.catmullRom`
+  area+line). Shows today's value in large text and a delta badge vs. the prior 6-day average.
+  Graceful "Not enough data" placeholder.
+
+- **`SleepQualityCard`** — 0-100 sleep quality score from the past 16 hours of `.sleep` readings.
+  Three components: HR vs. resting baseline (0.3w), HRV vs. baseline (0.5w), duration triangle
+  centred on 7.5 h (0.2w). Animated ring identical to RecoveryScoreCard's style. Labels:
+  POOR / FAIR / GOOD / GREAT in red / orange / blue / indigo.
+
+- **`DashboardSection`** — two new cases: `.weeklyTrend` and `.sleepQuality`, safely appended
+  by `DashboardLayoutService.init()` so existing saved preferences are preserved.
+
+- **`DashboardView`** — handles the two new section cases; `refresh()` re-schedules morning
+  briefing with the latest recovery score on every pull-to-refresh.
+
+- **`NotificationService`** — `scheduleMorningBriefing(score:character:)` fires daily at 8 AM
+  with recovery score voiced by the active character (12 unique messages: 4 chars × 3 score tiers).
+  Guarded by `morningBriefingEnabled` UserDefaults key; removes+replaces the pending request each call.
+
+- **`SettingsView`** — Notifications section: status badge, "Enable Notifications" button, and
+  "Morning Briefing" toggle. Toggle is disabled when notifications aren't authorized.
+
+- **`BLEService`** — sleep-aware activity classification: readings between 22:00–07:00 with
+  HR < 65 bpm are tagged `.sleep` so `SleepQualityCard` (and future sleep analysis) has real data.
+  HR ≥ 100 → `.active`; else during day → `.rest`; no HR → `.unknown`.
+
+**Verification**
+- All 29 changed iOS files pushed to `origin/claude/awesome-brown-p11pvo`
+- Backend unchanged: 54/54 tests still passing
+
+**Not verifiable on Linux (requires Xcode)**
+- `ImageRenderer` PNG output and `ShareLink` sheet presentation
+- `SleepQualityCard` `.sleep` activity readings (requires overnight device use or demo scenario update)
+- Morning briefing notification scheduling and banner display
+- Swift Charts sparklines render correctly at various data densities
+
+**Next run instructions**
+1. Continue "NEVER STOP IMPROVING" — candidates:
+   - **WidgetKit homescreen widget** — small/medium widget showing latest HR + recovery score
+   - **Live Activities / Dynamic Island** — real-time HR ticker during active sessions
+   - **Confetti animation** on excellent recovery score (score ≥ 82)
+   - **`DemoModeService` sleep scenario** — backfill `.sleep` readings in demo so SleepQualityCard
+     shows data without overnight wait (currently the "Poor Recovery" scenario would benefit from this)
+   - **`MetricDisplay` animated number** — already exists as `AnimatedNumber` component; wire it up
+     to HR/temp tiles for smoother live updates
+
+
 Append an entry each run: date, what was merged, what was built, known issues,
 and exact instructions for the next run.
+
+---
+
+## 2026-06-17 — Personalized onboarding v2, streak card, character voices, dashboard customization
+
+**Context**
+Continuing the "NEVER STOP IMPROVING" directive. Merged the onboarding + streak work from prior branches,
+cherry-picked the character voice feature, and now implementing dashboard customization.
+
+**Merged this run**
+- `claude/work-character-system` → `develop` (companion characters + AI tone)
+- `claude/work-onboarding-v2` → `develop` (personalized onboarding, streak card)
+- Cherry-picked `6268904` (character-voiced status messages) from `work-character-voice`
+
+**What was built**
+- **`MascotCharacter.statusMessage(for: MascotState) -> String`** — 28-line switch giving each
+  character (Blobby/Bruno/Hoot/Ember) a distinct voice across 7 emotional states. Blobby is warm
+  and simple; Bruno is nurturing with dad-energy; Hoot is analytical/formal; Ember is sharp/sassy.
+- **`DashboardView`** mascot status card now shows `env.selectedCharacter.displayName` label
+  and routes to `statusMessage(for: mascotState)` instead of a generic text string. Animated
+  with `.contentTransition(.opacity)` when character or state changes.
+- **`CharacterGalleryView`** header shows character voice preview: `statusMessage(for: .cheering)`
+  in italic orange — animates with `.contentTransition(.opacity)` when switching character.
+- **Onboarding step 6 `ChooseMascotStep`** shows each character's cheering voice quote below the
+  mascot preview so users know what they're choosing before committing.
+- **`OnboardingView`** expanded to 8 steps: welcome → chooseName → whatItDoes → bluetoothPrimer
+  → account → pairing → chooseMascot → baselineExplainer. New `ChooseNameStep` collects first
+  name (optional); new `ChooseMascotStep` shows all 4 characters (owl+fox locked with progress bar
+  overlay). `BaselineExplainerStep` now accepts `character` + `name` and shows chosen mascot +
+  "Almost there, [name]!" personalized title.
+- **Dashboard streak card** — counts consecutive days with readings back from today. Shows flame
+  icon (filled/empty by streak status), day count, next-milestone ring (arc progress between
+  milestones: 7→14→30→60→90→180). Subtitle references character unlocks: "One week — Hoot the
+  Owl is unlocked! 🦉"
+- **Personalized greeting** — `navigationTitle` shows "Good morning/afternoon/evening, [name]"
+  (or just greeting if no name was set during onboarding).
+- **`AppEnvironment`** — `@Published var selectedCharacter: MascotCharacter` persisted to
+  UserDefaults `"selectedCharacter"` key for instant read without DataStore async load.
+- **`UserProfile`** — `selectedCharacterRaw: String?` + `aiToneRaw: String?` with computed typed
+  accessors; optional storage ensures zero SwiftData migration friction.
+- **`HealthSummaryService`** — `instructions` static var → `static func instructions(for: AISummaryTone)`;
+  4 distinct system prompts; backward-compat static var delegates to `.encouraging`.
+
+**Verification**
+- Backend: **54/54 tests passing** — no regressions (iOS-only changes)
+
+**Not verifiable on Linux (requires Xcode)**
+- All SwiftUI views compile and render correctly
+- SwiftData migration for existing UserProfile rows (new optional String? fields → nil → defaults)
+- Character selection + tone selection persist across app restarts
+- Onboarding 8-step flow end-to-end (name persisted, character applied, demo mode)
+- Streak card milestone ring animation
+- Character voice animated transitions in dashboard and gallery
+
+**Next run instructions**
+1. `git fetch --all` — pull remote state
+2. Phase 1: verify develop is in sync at origin
+3. Phase 2 — next improvement: **Dashboard customization**
+   - `DashboardSection` enum (streak, aiSummary, metrics, warnings, quickNav)
+   - `DashboardLayoutService` — persists `[DashboardSection]` order + visibility to UserDefaults as JSON
+   - `CustomizeDashboardView` — drag-to-reorder List with toggle per section + fixed Companion Status row
+   - `DashboardView` — render sections via `env.dashboardLayout.visibleSections` ForEach + Customize toolbar button
+   - Settings > Dashboard section linking to CustomizeDashboardView
+
+---
+
+## 2026-06-16 — Companion character system + AI tone customization
+
+**Context**
+Project was marked complete. User explicitly asked for continuous improvement beyond the
+roadmap. Built a companion character system and AI tone customization feature.
+
+**What was built this run**
+- Branch `claude/work-character-system` (NOT yet merged — next run reviews it):
+  - **`MascotCharacter.swift`** — `MascotCharacter` enum (4 chars: Blobby/Bruno/Hoot/Ember)
+    and `AISummaryTone` enum (Encouraging/Analytical/Playful/Direct) with metadata
+  - **`MascotView`** — new `character: MascotCharacter = .blob` parameter (default keeps
+    all existing callers working). Each character gets unique visual ear/tuft shapes drawn
+    behind the body circle: Bear=round ear bumps, Owl=rotated rounded-rect tufts, Fox=
+    triangular `FoxEarShape`. Calm states use character-specific base colors (brown/lavender/
+    burnt-orange); emotional state colors still override so health feedback is never ambiguous.
+    `onChange(of: character)` restarts animations when character changes.
+  - **`UserProfile`** — `selectedCharacterRaw: String?` + `aiToneRaw: String?` with typed
+    computed accessors. Optional storage ensures zero migration friction for existing SwiftData
+    stores; accessors fall back to `.blob` / `.encouraging` when nil.
+  - **`AppEnvironment`** — `@Published var selectedCharacter: MascotCharacter` persisted to
+    UserDefaults (same pattern as `appearance`/`isDemoMode`) for instant read without DataStore.
+  - **`HealthSummaryService`** — `instructions` becomes `static func instructions(for: AISummaryTone)`
+    with four distinct system instruction strings. Backward-compat `static var instructions`
+    delegates to `.encouraging`. `summary()` now passes `profile.aiTone` to pick the tone.
+    Existing `HealthSummaryServiceTests` still pass unchanged.
+  - **`CharacterGalleryView`** — 2-column grid showing all characters with unlock progress;
+    AI tone picker with icon/description/checkmark; reached from Settings > Companion.
+  - **`SettingsView`** — new Companion section at the top with a mini mascot preview + name
+    that navigates to CharacterGalleryView.
+  - **`DashboardView`** — mascot status card passes `env.selectedCharacter` to MascotView.
+
+**Verification**
+- Backend: **54/54 tests passing** — no regressions (iOS-only change)
+
+**Not verifiable on Linux (requires Xcode)**
+- MascotView character shapes render correctly at various sizes
+- SwiftData migration succeeds for existing `UserProfile` records (String? fields should
+  auto-migrate to nil, computed accessors return defaults)
+- CharacterGalleryView @Query + unlock progress calculation
+- Character selection persists across app restarts (UserDefaults + SwiftData)
+- AI tone changes affect the Foundation Models system instructions on iOS 26+
+
+**Next run instructions**
+1. `git fetch --all`
+2. Phase 1: review `claude/work-character-system`.
+   - `cd backend && npm install && npm test` — must show **54/54 passing** (no backend changes).
+   - Swift read-through: verify `MascotCharacter` + `AISummaryTone` enums, `UserProfile` optional
+     fields, `MascotView` character parameter usage, `CharacterGalleryView` @ViewBuilder closures.
+   - Merge into `develop` once clean.
+3. Update ROADMAP.md to note the character system and AI tone improvements.
+4. Phase 2 — next improvements (pick ONE per run):
+   a. **Dashboard customization** — let users reorder or show/hide metric cards (persisted to
+      UserDefaults as an ordered `[String]` of card IDs). Drag-to-reorder with SwiftUI's
+      `.onMove` in a list overlay, then save.
+   b. **Better onboarding** — add a "Meet your companion" step between welcome and whatItDoes
+      showing the 4 characters with unlock requirements, so users know what to work toward.
+   c. **Streak/achievement system** — count consecutive days of data, show streak on dashboard
+      with a flame icon. This naturally drives character unlocks (owl at 7, fox at 30).
+   d. **Notification for new unlock** — when the day count crosses an unlock threshold, fire a
+      local notification: "You unlocked Hoot the Owl!" Deep-link to CharacterGalleryView.
 
 ---
 

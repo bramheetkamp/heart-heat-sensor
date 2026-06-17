@@ -24,6 +24,10 @@ targets:
       - path: HeartRate
         excludes:
           - "**/*.md"
+    dependencies:
+      - sdk: HealthKit.framework
+      - target: PulseWidget
+        embed: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.app
@@ -34,6 +38,25 @@ targets:
     # scheme, background modes, ATS). Do NOT add an `info:` block here — that
     # makes XcodeGen regenerate and overwrite the curated file. INFOPLIST_FILE
     # above points the target at it directly.
+
+  PulseWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: PulseWidget
+        excludes:
+          - "**/*.md"
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heartrate.app.widget
+        INFOPLIST_FILE: PulseWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: PulseWidget/PulseWidget.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../Frameworks @executable_path/../../../PulseWidget.appex/Frameworks"
 
   HeartRateTests:
     type: bundle.unit-test

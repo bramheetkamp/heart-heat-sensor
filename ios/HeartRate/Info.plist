@@ -42,6 +42,12 @@
         <true/>
     </dict>
 
+    <!-- Apple Health -->
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Pulse writes your heart rate, body temperature, and HRV to Apple Health so your data appears alongside other health sources.</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Pulse reads no Health data — it only writes readings from your sensor.</string>
+
     <!-- Bluetooth -->
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Pulse uses Bluetooth to connect to your heart rate and temperature sensor.</string>

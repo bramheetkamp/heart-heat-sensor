@@ -22,6 +22,8 @@ see no difference. Swap in the real device later by turning Demo Mode off.
 ```
 heart-heat-sensor/
 ├── ios/          iOS app — Swift + SwiftUI + CoreBluetooth + SwiftData + Swift Charts
+│   ├── HeartRate/      main app target
+│   └── PulseWidget/    WidgetKit home-screen extension (bundle id com.heartrate.app.widget)
 ├── backend/      Sync API — Node.js + TypeScript + Fastify + better-sqlite3
 └── docs/         ROADMAP.md (feature checklist), IMPROVEMENT_LOG.md
 ```
@@ -34,7 +36,7 @@ npm install
 cp .env.example .env        # set JWT_SECRET at minimum
 npm run dev                 # tsx watch, http://localhost:3100
 npm run seed                # test@example.com / password123 + 35 days of data
-npm test                    # vitest, 50 tests, in-process via Fastify inject() — no port
+npm test                    # vitest, 54 tests, in-process via Fastify inject() — no port
 docker-compose up           # alternative to npm run dev
 ```
 
@@ -50,9 +52,13 @@ xcodebuild test -project HeartRate.xcodeproj -scheme HeartRate \
   *not* checked in as source of truth. Edit `project.yml`, then re-run
   `generate_project.sh`. Never hand-edit `HeartRate.xcodeproj`.
 - **`Info.plist` is hand-maintained** (BLE usage strings, `heartrate://` URL
-  scheme, background modes, ATS). Do NOT add an `info:` block to `project.yml` —
-  it would make XcodeGen overwrite the curated file. The target points at it via
-  `INFOPLIST_FILE`.
+  scheme, background modes, ATS, HealthKit usage strings). Do NOT add an `info:`
+  block to `project.yml` — it would make XcodeGen overwrite the curated file. The
+  target points at it via `INFOPLIST_FILE`.
+- The **`PulseWidget/Info.plist`** is *also* hand-maintained and must keep the
+  standard bundle keys (`CFBundleIdentifier = $(PRODUCT_BUNDLE_IDENTIFIER)`, etc.)
+  alongside the `NSExtension` block — without `CFBundleIdentifier` the embedded
+  extension's bundle id resolves to `(null)` and the app fails to embed it.
 - iOS 17 deployment target, Swift 5.9, iPhone-only. Set `DEVELOPMENT_TEAM` in
   `project.yml` to run on a physical device.
 
@@ -68,8 +74,11 @@ BLE transport ──► BLEService ──► (parsers already applied) ──►
 
 - **`AppEnvironment`** is the central DI container (created in `HeartRateApp`,
   injected as an `@EnvironmentObject`). It owns `BLEService`, `DataStore`,
-  `DemoModeService`, `SyncService`, `NotificationService`, and `AppRouter`, and
-  publishes `isDemoMode` and `appearance` (defaults to dark) to `UserDefaults`.
+  `DemoModeService`, `SyncService`, `NotificationService`, `HealthKitService`,
+  `DashboardLayoutService`, and `AppRouter`, and publishes `isDemoMode`,
+  `appearance` (defaults to dark), and `selectedCharacter` to `UserDefaults`.
+  Toggling Demo Mode also detaches/attaches `BLEService.healthKit` so simulated
+  data never reaches Apple Health.
 - **BLE is behind a protocol** (`BLETransportProtocol`) so `CoreBluetoothTransport`
   (real) and `MockBLETransport` (simulated) are interchangeable. `AppEnvironment`
   picks the mock **on the simulator or when Demo Mode is on**, else CoreBluetooth.
@@ -94,12 +103,14 @@ BLE transport ──► BLEService ──► (parsers already applied) ──►
 ### Key iOS files
 - `App/` — `HeartRateApp` (`@main`, `onOpenURL` deep-link entry), `AppEnvironment`, `RootView`
 - `Navigation/` — `AppRouter` (push/sheet/`handle(url:)`), `AppRoute` (+ `HistoryMetric`, URL parser)
-- `Models/` — `Reading` (`@Model`; `rrIntervals` in **seconds**; `eda` µS optional; computed `rmssd` in ms; `ActivityLevel`), `HealthWarning` (Codable; `WarningType` + `WarningContext`), `UserProfile` (`@Model`; thresholds + backend token)
-- `Services/` — `DataStore`, `DemoModeService`, `SyncService`, `NotificationService`
+- `Models/` — `Reading` (`@Model`; `rrIntervals` in **seconds**; `eda` µS optional; computed `rmssd` in ms; `ActivityLevel`), `HealthWarning` (Codable; `WarningType` + `WarningContext`), `UserProfile` (`@Model`; thresholds + backend token + `aiTone`), `MascotCharacter` (companion roster + per-character voice lines + `AISummaryTone`), `DashboardSection` (dashboard layout enum + `DashboardLayoutService`)
+- `Services/` — `DataStore`, `DemoModeService`, `SyncService`, `NotificationService`, `HealthKitService` (write HR/temp/HRV to Apple Health), `InsightsEngine` (pure rule-based insights, fallback for all iOS 17+ devices), `HealthSummaryService` (on-device Foundation Models summary), `DashboardLayoutService`
 - `Parsing/` — `HRMeasurementParser`, `TemperatureMeasurementParser`, `BodyTempFrameParser` (custom-service float32 LE)
 - `BLE/` — `BLETransportProtocol`, `MockBLETransport`, `CoreBluetoothTransport`
-- `Views/` — `Dashboard/`, `History/`, `Warnings/`, `Onboarding/`, `Settings/`
-- `Components/` — `MascotView` (8 emotional states), `AnimatedNumber`, `ConnectionStatusView`
+- `Intents/` — `GetHeartRateIntent`, `GetWellnessStatusIntent`, `PulseShortcuts` (Siri "Hey Siri, what's my heart rate?")
+- `Views/` — `Dashboard/` (incl. `RecoveryScoreCard`, `WeeklyTrendCard`, `SleepQualityCard`, `InsightsCard`, `HealthSummaryCard`, `CustomizeDashboardView`), `History/`, `Warnings/`, `Onboarding/`, `Settings/` (incl. `CharacterGalleryView`)
+- `Components/` — `MascotView` (8 emotional states × selectable character), `AnimatedNumber`, `ConnectionStatusView`, `ConfettiView` (excellent-recovery celebration)
+- `PulseWidget/` — `PulseWidget.swift` WidgetKit home-screen widget (separate target/extension)
 
 ### BLE protocol details (must match firmware)
 
@@ -182,6 +193,32 @@ diagnosis language.
 > backend is the recompute/authority for synced data; the iOS engine is for
 > live/offline. If you change a rule, change it in **both** and update both test
 > suites (`WarningsEngineTests.swift` and `tests/warningsEngine.test.ts`).
+
+## Companion, dashboard & platform features (iOS)
+
+These are all client-side, offline-capable, and additive — none touch the BLE
+contract, the warnings rules, or the backend wire format.
+
+- **Companion characters** (`MascotCharacter`): a selectable roster (Blobby/blob
+  and Bruno/bear always available; Hoot/owl unlocks at 7 unique recorded days,
+  Ember/fox at 30). The chosen character drives `MascotView`'s look *and* its
+  spoken status lines via `statusMessage(for:)`. Picked in `CharacterGalleryView`
+  (Settings) and onboarding; persisted as `selectedCharacter` in `UserDefaults`.
+- **AI summary tone** (`AISummaryTone` on `UserProfile.aiTone`): adjusts the voice
+  of the on-device `HealthSummaryService` output (Foundation Models).
+- **Customizable dashboard** (`DashboardSection` + `DashboardLayoutService`):
+  users reorder/hide cards in `CustomizeDashboardView`; `DashboardView` renders
+  sections in saved order. Cards: AI summary, rule-based insights, streak,
+  recovery score, weekly trends, sleep quality, metrics, active alerts, quick nav.
+- **Rule-based `InsightsEngine`** — a pure, SwiftData-free struct (like
+  `WarningsEngine`); the always-available fallback when Foundation Models isn't.
+- **Apple Health** (`HealthKitService`): writes HR, body temperature, and HRV
+  from live readings. Wired through `BLEService.healthKit`, which `AppEnvironment`
+  detaches in Demo Mode so synthetic data never lands in Health.
+- **Siri App Shortcuts** (`Intents/`): `GetHeartRateIntent`,
+  `GetWellnessStatusIntent`, registered by `PulseShortcuts`.
+- **Home-screen widget** (`PulseWidget/`): a separate WidgetKit extension target.
+- **Confetti** (`ConfettiView`) celebrates an excellent recovery score.
 
 ## Demo Mode
 

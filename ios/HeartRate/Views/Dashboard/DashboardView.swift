@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct DashboardView: View {
     @EnvironmentObject private var env: AppEnvironment
@@ -9,6 +10,10 @@ struct DashboardView: View {
     @Query private var recentReadings: [Reading]
     @State private var warnings: [HealthWarning] = []
     @State private var showScenarioPicker = false
+    @State private var showCustomize = false
+    @State private var profileName = ""
+    @State private var showConfetti = false
+    @State private var confettiTriggeredForScore: Int? = nil
 
     init() {
         var descriptor = FetchDescriptor<Reading>(
@@ -20,6 +25,35 @@ struct DashboardView: View {
 
     private var latestReading: Reading? { recentReadings.first }
     private var activeWarnings: [HealthWarning] { warnings.filter { $0.resolvedAt == nil } }
+
+    // MARK: - Personalization helpers
+
+    private var timeGreeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 12 { return "Good morning" }
+        if hour < 17 { return "Good afternoon" }
+        return "Good evening"
+    }
+
+    private var personalizedTitle: String {
+        profileName.isEmpty ? timeGreeting : "\(timeGreeting), \(profileName)"
+    }
+
+    // Consecutive days with at least one reading, counting back from today.
+    private var streakDays: Int {
+        guard !recentReadings.isEmpty else { return 0 }
+        let calendar = Calendar.current
+        let uniqueDays = Set(recentReadings.map { calendar.startOfDay(for: $0.timestamp) })
+        var count = 0
+        var day = calendar.startOfDay(for: Date())
+        while uniqueDays.contains(day) {
+            count += 1
+            guard let prev = calendar.date(byAdding: .day, value: -1, to: day) else { break }
+            day = prev
+        }
+        return count
+    }
+
     private var mascotState: MascotState {
         if let top = topWarning {
             switch top.type {
@@ -50,21 +84,42 @@ struct DashboardView: View {
         // NOTE: no NavigationStack here — MainAppView already provides one bound
         // to env.router.path. A nested stack would swallow router pushes and
         // leave the toolbar's value-based NavigationLink with no destination.
-        ScrollView {
-            VStack(spacing: 20) {
-                mascotStatusCard
-                HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
-                metricsGrid
-                if !activeWarnings.isEmpty {
-                    activeWarningsSection
+        ZStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    mascotStatusCard
+                    ForEach(env.dashboardLayout.visibleSections) { section in
+                        switch section {
+                        case .aiSummary:
+                            HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
+                        case .insights:
+                            InsightsCard(readings: Array(recentReadings), warnings: warnings)
+                        case .streak:
+                            streakCard
+                        case .recovery:
+                            RecoveryScoreCard(readings: Array(recentReadings))
+                        case .weeklyTrend:
+                            WeeklyTrendCard(readings: Array(recentReadings))
+                        case .sleepQuality:
+                            SleepQualityCard(readings: Array(recentReadings))
+                        case .metrics:
+                            metricsGrid
+                        case .warnings:
+                            if !activeWarnings.isEmpty { activeWarningsSection }
+                        case .quickNav:
+                            quickNavRow
+                        }
+                    }
                 }
-                quickNavRow
+                .padding()
             }
-            .padding()
+            .refreshable { await refresh() }
+            .background(Color(.systemGroupedBackground))
+
+            ConfettiOverlay(isActive: $showConfetti)
+                .ignoresSafeArea()
         }
-        .refreshable { await refresh() }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("Today")
+        .navigationTitle(personalizedTitle)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -81,6 +136,12 @@ struct DashboardView: View {
                                 .foregroundColor(.orange)
                         }
                     }
+                    Button {
+                        showCustomize = true
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                            .foregroundColor(.secondary)
+                    }
                     NavigationLink(value: AppRoute.settings) {
                         Image(systemName: "gearshape.fill")
                             .foregroundColor(.secondary)
@@ -95,7 +156,18 @@ struct DashboardView: View {
             ScenarioPickerSheet()
                 .environmentObject(env)
         }
+        .sheet(isPresented: $showCustomize) {
+            NavigationStack {
+                CustomizeDashboardView()
+                    .environmentObject(env)
+            }
+        }
         .task {
+            // Load profile name for personalized greeting.
+            if let profile = try? env.dataStore.getOrCreateProfile() {
+                let stored = profile.displayName
+                profileName = (stored == "User" || stored.isEmpty) ? "" : stored
+            }
             // In demo mode with no data yet, seed the active scenario so the
             // dashboard isn't empty (e.g. demo enabled without picking a scenario).
             if env.isDemoMode && recentReadings.isEmpty {
@@ -109,29 +181,125 @@ struct DashboardView: View {
 
     private var mascotStatusCard: some View {
         HStack(spacing: 20) {
-            MascotView(state: mascotState, size: 80)
+            MascotView(state: mascotState, character: env.selectedCharacter, size: 80)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
+                // Character name label
+                Text(env.selectedCharacter.displayName.uppercased())
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.orange.opacity(0.8))
+                    .tracking(1.2)
+
                 Text(overallStatus.text)
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(overallStatus.color)
 
-                if let w = topWarning {
-                    Text(w.message)
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                } else {
-                    Text("Everything looks normal today.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                }
+                Text(env.selectedCharacter.statusMessage(for: mascotState))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut(duration: 0.3), value: mascotState)
+                    .animation(.easeInOut(duration: 0.3), value: env.selectedCharacter)
             }
             Spacer()
         }
         .padding()
         .background(.background, in: RoundedRectangle(cornerRadius: 20))
         .shadow(color: .black.opacity(0.04), radius: 8, y: 3)
+    }
+
+    // MARK: - Streak Card
+
+    private var streakCard: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(streakDays > 0 ? Color.orange.opacity(0.12) : Color(.systemGray6))
+                    .frame(width: 50, height: 50)
+                Image(systemName: streakDays > 0 ? "flame.fill" : "flame")
+                    .font(.system(size: 22))
+                    .foregroundStyle(streakDays > 0 ? .orange : Color(.systemGray3))
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                if streakDays > 0 {
+                    Text("\(streakDays) day\(streakDays == 1 ? "" : "s") in a row")
+                        .font(.system(size: 15, weight: .semibold))
+                    Text(streakSubtitle(for: streakDays))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Start your streak")
+                        .font(.system(size: 15, weight: .semibold))
+                    Text("Wear your sensor today to begin.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            if streakDays > 0 {
+                streakMilestoneRing
+            }
+        }
+        .padding()
+        .background(.background, in: RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+    }
+
+    private var streakMilestoneRing: some View {
+        let milestone = nextStreakMilestone(from: streakDays)
+        let base = previousStreakMilestone(from: streakDays)
+        let span = max(milestone - base, 1)
+        let progress = Double(streakDays - base) / Double(span)
+
+        return VStack(spacing: 3) {
+            ZStack {
+                Circle()
+                    .stroke(Color(.systemGray5), lineWidth: 3.5)
+                Circle()
+                    .trim(from: 0, to: min(progress, 1.0))
+                    .stroke(Color.orange, style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut(duration: 0.6), value: streakDays)
+                VStack(spacing: 0) {
+                    Text("\(milestone)")
+                        .font(.system(size: 11, weight: .bold))
+                        .monospacedDigit()
+                    Text("d")
+                        .font(.system(size: 8))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 40, height: 40)
+            Text("goal")
+                .font(.system(size: 9))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func nextStreakMilestone(from days: Int) -> Int {
+        [7, 14, 30, 60, 90, 180].first { $0 > days } ?? 180
+    }
+
+    private func previousStreakMilestone(from days: Int) -> Int {
+        ([0, 7, 14, 30, 60, 90] as [Int]).last { $0 <= days } ?? 0
+    }
+
+    private func streakSubtitle(for days: Int) -> String {
+        let next = nextStreakMilestone(from: days)
+        switch days {
+        case 7:  return "One week — Hoot the Owl is unlocked! 🦉"
+        case 14: return "Two weeks — your baseline is forming nicely."
+        case 30: return "A month! Ember the Fox is unlocked 🦊"
+        default:
+            let remaining = next - days
+            if days < 7  { return "\(remaining) more day\(remaining == 1 ? "" : "s") to unlock Hoot the Owl." }
+            if days < 30 { return "\(remaining) day\(remaining == 1 ? "" : "s") to unlock Ember the Fox." }
+            return "\(remaining) day\(remaining == 1 ? "" : "s") to your next milestone."
+        }
     }
 
     // MARK: - Metrics Grid
@@ -297,6 +465,24 @@ struct DashboardView: View {
             profile: (try? env.dataStore.getOrCreateProfile()) ?? UserProfile()
         )
         await env.notifications.notifyIfNeeded(for: warnings)
+        await env.notifications.checkAndNotifyStreak(days: streakDays, character: env.selectedCharacter)
+
+        // Re-schedule morning briefing with the latest recovery score so the
+        // notification content stays fresh even if the user's baseline shifts.
+        let recoveryResult = RecoveryScoreCard.compute(readings: Array(recentReadings))
+        let recoveryScore: Int? = { if case .score(let s, _, _) = recoveryResult { return s }; return nil }()
+        await env.notifications.scheduleMorningBriefing(score: recoveryScore, character: env.selectedCharacter)
+
+        // Persist recovery score to App Group so the homescreen widget stays current.
+        let ud = UserDefaults(suiteName: "group.com.heartrate.app") ?? .standard
+        if let score = recoveryScore { ud.set(score, forKey: "cachedRecoveryScore") }
+        WidgetCenter.shared.reloadAllTimelines()
+
+        // Fire confetti once per unique excellent score so it doesn't repeat on every refresh.
+        if let score = recoveryScore, score >= 82, confettiTriggeredForScore != score {
+            confettiTriggeredForScore = score
+            showConfetti = true
+        }
     }
 }
 
