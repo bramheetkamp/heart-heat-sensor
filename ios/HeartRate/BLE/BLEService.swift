@@ -16,13 +16,33 @@ final class BLEService: ObservableObject {
     @Published var latestEDA: EDAMeasurement?
     @Published var isConnected: Bool = false
 
+    /// Always-on heat-strain assessment, recomputed on every core-temp sample
+    /// from the connected sensor — independent of whether `WorkoutView` is open.
+    /// This is what makes overheating warnings fire even when the user started a
+    /// run elsewhere and never opened Pulse.
+    @Published private(set) var heatAssessment: HeatStrainEngine.Assessment =
+        HeatStrainEngine.assess(samples: [], isActive: false, caution: 38.5)
+    /// Recent core-temp samples (trailing window) for the live workout trend chart.
+    @Published private(set) var heatTrend: [HeatStrainEngine.Sample] = []
+
     // MARK: - Private
 
     private let transport: BLETransportProtocol
     private let dataStore: DataStore?
     var healthKit: HealthKitService?
+    /// Set by AppEnvironment so background heat alerts can be posted.
+    weak var notifications: NotificationService?
     private var cancellables = Set<AnyCancellable>()
     private let hapticGenerator = UINotificationFeedbackGenerator()
+    private let impactGenerator = UIImpactFeedbackGenerator(style: .heavy)
+
+    /// Cached caution threshold (`profile.overheatingThreshold`). Refreshed lazily
+    /// and whenever Settings change it via `refreshHeatThreshold()`.
+    private var cautionThreshold: Double = 38.5
+    private var cautionLoaded = false
+    /// Rolling window of core-temp samples kept for assessment + the trend chart.
+    private var heatSamples: [HeatStrainEngine.Sample] = []
+    private static let heatWindow: TimeInterval = 900   // 15 min
 
     /// Live-sample counter; we prune old rows every so often rather than on each
     /// save to keep the hot path cheap. ~180 days kept (well past warning baselines).
@@ -159,6 +179,12 @@ final class BLEService: ObservableObject {
         )
         try? dataStore.save(reading: reading)
 
+        // Always-on heat-strain evaluation: assess every core-temp sample and
+        // fire escalating alerts even if no workout was started in-app.
+        if let core = tempCore {
+            evaluateHeatStrain(coreTemp: core, isActive: activity == .active, at: reading.timestamp)
+        }
+
         // Write latest vitals to the App Group suite so the homescreen widget
         // and Siri App Intents can read them without opening the app.
         let ud = UserDefaults(suiteName: "group.com.heartrate.app") ?? .standard
@@ -174,6 +200,52 @@ final class BLEService: ObservableObject {
         liveSampleCount += 1
         if liveSampleCount % BLEService.pruneEveryNSamples == 0 {
             try? dataStore.pruneReadings(olderThan: BLEService.retentionDays)
+        }
+    }
+
+    // MARK: - Always-on Heat Strain
+
+    /// Reload the caution threshold from the user profile (call after Settings change).
+    func refreshHeatThreshold() {
+        if let p = try? dataStore?.getOrCreateProfile() {
+            cautionThreshold = p.overheatingThreshold
+            cautionLoaded = true
+        }
+    }
+
+    /// Assess one core-temp sample, publish the result, and post a heat alert
+    /// when it escalates. `notifyHeatStrain` self-throttles (re-fires only on a
+    /// higher level; calling it at lower levels lowers the throttle baseline so a
+    /// later episode re-alerts), so it's safe to call on every sample.
+    private func evaluateHeatStrain(coreTemp: Double, isActive: Bool, at time: Date) {
+        if !cautionLoaded { refreshHeatThreshold() }
+
+        heatSamples.append(.init(time: time, core: coreTemp))
+        let windowStart = time.addingTimeInterval(-BLEService.heatWindow)
+        heatSamples.removeAll { $0.time < windowStart }
+
+        let assessment = HeatStrainEngine.assess(
+            samples: heatSamples, isActive: isActive, caution: cautionThreshold, now: time)
+        let previous = heatAssessment.level
+        heatAssessment = assessment
+        heatTrend = heatSamples
+
+        // Haptics (foreground only — no-op when backgrounded) on escalation.
+        if assessment.level > previous {
+            switch assessment.level {
+            case .critical: hapticGenerator.notificationOccurred(.error)
+            case .serious:  hapticGenerator.notificationOccurred(.warning)
+            case .elevated: impactGenerator.impactOccurred()
+            case .nominal:  break
+            }
+        }
+        if assessment.level == .critical { impactGenerator.impactOccurred(intensity: 1.0) }
+
+        // Local notification — the mechanism that reaches the user with the app closed.
+        if let notifications {
+            let level = assessment.level
+            let message = assessment.message
+            Task { await notifications.notifyHeatStrain(level: level, message: message) }
         }
     }
 }

@@ -1,35 +1,26 @@
 import SwiftUI
 import Charts
-import UIKit
 
 // MARK: - WorkoutView
 
-/// Live training session screen. Shows real-time HR + core temperature, the
-/// core-temp trend during the session, and an **escalating** heat-strain banner
-/// powered by `HeatStrainEngine` — warning early (ease off), then harshly telling
-/// the athlete to stop. Strong haptics + an interruptive notification fire as the
-/// level rises into `serious`/`critical`.
+/// Live view of the **always-on** heat-strain monitor. Heat warnings fire from
+/// `BLEService` whenever the sensor is connected — even with the app closed and
+/// no session started — so this screen is a *window* onto that monitoring, not
+/// the on/off switch. It adds an optional session timer for convenience.
+///
+/// The view polls `BLEService` once a second via a ticker rather than observing
+/// the nested object directly (it isn't re-broadcast through `AppEnvironment`).
 struct WorkoutView: View {
     @EnvironmentObject private var env: AppEnvironment
 
-    @State private var isRunning = false
-    @State private var startTime: Date?
+    @State private var sessionStart: Date?
     @State private var now = Date()
-    @State private var samples: [HeatStrainEngine.Sample] = []
-    @State private var peakLevel: HeatStrainEngine.Level = .nominal
     @State private var caution: Double = 38.5
 
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    private let impact = UIImpactFeedbackGenerator(style: .heavy)
-    private let notify = UINotificationFeedbackGenerator()
 
-    /// Keep at most 30 min of 1 Hz samples to bound memory on long sessions.
-    private static let maxSamples = 1_800
-
-    private var assessment: HeatStrainEngine.Assessment {
-        HeatStrainEngine.assess(samples: samples, isActive: isRunning, caution: caution, now: now)
-    }
-
+    private var assessment: HeatStrainEngine.Assessment { env.bleService.heatAssessment }
+    private var trend: [HeatStrainEngine.Sample] { env.bleService.heatTrend }
     private var liveHR: Int? { env.bleService.latestHR?.heartRate }
     private var liveCore: Double? { env.bleService.latestTemp[.core]?.value }
 
@@ -38,27 +29,27 @@ struct WorkoutView: View {
             VStack(spacing: 18) {
                 heatBanner
                 statsRow
-                if !samples.isEmpty { trendCard }
-                controlButton
+                if !trend.isEmpty { trendCard }
+                sessionButton
+                Label("Monitoring is always on while your sensor is connected — even with Pulse closed.",
+                      systemImage: "bolt.shield.fill")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
                 if !env.bleService.isConnected {
                     Label("Connect your sensor (or turn on Demo Mode) to see live data.",
                           systemImage: "antenna.radiowaves.left.and.right.slash")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.top, 4)
                 }
             }
             .padding()
         }
         .navigationTitle("Workout")
         .navigationBarTitleDisplayMode(.inline)
-        .onReceive(ticker) { _ in tick() }
-        .onAppear {
-            caution = (try? env.dataStore.getOrCreateProfile().overheatingThreshold) ?? 38.5
-            impact.prepare(); notify.prepare()
-        }
-        .onDisappear { if isRunning { stop() } }
+        .onReceive(ticker) { _ in now = Date() }
+        .onAppear { caution = (try? env.dataStore.getOrCreateProfile().overheatingThreshold) ?? 38.5 }
     }
 
     // MARK: - Heat banner
@@ -69,8 +60,7 @@ struct WorkoutView: View {
             MascotView(state: a.level.mascotState, character: env.selectedCharacter, size: 84)
                 .padding(.top, 4)
             Text(a.level.shortLabel.uppercased())
-                .font(.caption.bold())
-                .tracking(2)
+                .font(.caption.bold()).tracking(2)
                 .foregroundStyle(.white.opacity(0.9))
             Text(a.title)
                 .font(.title2.bold())
@@ -84,18 +74,11 @@ struct WorkoutView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 22)
         .padding(.horizontal, 18)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(a.level.color.gradient)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(.white.opacity(0.15), lineWidth: 1)
-        )
-        // Pulse the critical banner to demand attention.
-        .scaleEffect(a.level == .critical && isRunning ? 1.015 : 1.0)
+        .background(RoundedRectangle(cornerRadius: 24).fill(a.level.color.gradient))
+        .overlay(RoundedRectangle(cornerRadius: 24).stroke(.white.opacity(0.15), lineWidth: 1))
+        .scaleEffect(a.level == .critical ? 1.015 : 1.0)
         .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true),
-                   value: a.level == .critical && isRunning)
+                   value: a.level == .critical)
         .animation(.easeInOut(duration: 0.3), value: a.level)
     }
 
@@ -103,21 +86,12 @@ struct WorkoutView: View {
 
     private var statsRow: some View {
         HStack(spacing: 12) {
-            statTile(title: "Heart Rate",
-                     value: liveHR.map { "\($0)" } ?? "—",
-                     unit: "bpm",
-                     icon: "heart.fill",
-                     tint: .pink)
-            statTile(title: "Core Temp",
-                     value: liveCore.map { String(format: "%.1f", $0) } ?? "—",
-                     unit: "°C",
-                     icon: "thermometer.medium",
-                     tint: assessment.level.color)
-            statTile(title: "Elapsed",
-                     value: elapsedString,
-                     unit: "",
-                     icon: "stopwatch",
-                     tint: .orange)
+            statTile(title: "Heart Rate", value: liveHR.map { "\($0)" } ?? "—",
+                     unit: "bpm", icon: "heart.fill", tint: .pink)
+            statTile(title: "Core Temp", value: liveCore.map { String(format: "%.1f", $0) } ?? "—",
+                     unit: "°C", icon: "thermometer.medium", tint: assessment.level.color)
+            statTile(title: "Session", value: elapsedString, unit: "",
+                     icon: "stopwatch", tint: .orange)
         }
     }
 
@@ -142,7 +116,7 @@ struct WorkoutView: View {
     private var trendCard: some View {
         let serious = HeatStrainEngine.seriousThreshold(caution: caution)
         let critical = HeatStrainEngine.criticalThreshold(caution: caution)
-        let cores = samples.map(\.core)
+        let cores = trend.map(\.core)
         let lo = min((cores.min() ?? 36) - 0.3, caution - 0.5)
         let hi = max((cores.max() ?? 40) + 0.3, critical + 0.3)
         return VStack(alignment: .leading, spacing: 8) {
@@ -157,7 +131,7 @@ struct WorkoutView: View {
                 }
             }
             Chart {
-                ForEach(Array(samples.enumerated()), id: \.offset) { _, s in
+                ForEach(Array(trend.enumerated()), id: \.offset) { _, s in
                     LineMark(x: .value("Time", s.time), y: .value("Core", s.core))
                         .foregroundStyle(assessment.level.color)
                         .interpolationMethod(.monotone)
@@ -184,72 +158,26 @@ struct WorkoutView: View {
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(.quaternary, lineWidth: 1))
     }
 
-    // MARK: - Control
+    // MARK: - Optional session timer
 
-    private var controlButton: some View {
+    private var sessionButton: some View {
         Button {
-            isRunning ? stop() : start()
+            if sessionStart == nil { sessionStart = Date(); now = Date() } else { sessionStart = nil }
         } label: {
-            Label(isRunning ? "End Workout" : "Start Workout",
-                  systemImage: isRunning ? "stop.fill" : "play.fill")
+            Label(sessionStart == nil ? "Start Session Timer" : "End Session",
+                  systemImage: sessionStart == nil ? "play.fill" : "stop.fill")
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
         }
-        .background(isRunning ? AnyShapeStyle(.red) : AnyShapeStyle(Color.orange),
+        .background(sessionStart == nil ? AnyShapeStyle(Color.orange) : AnyShapeStyle(.red),
                     in: RoundedRectangle(cornerRadius: 16))
         .foregroundStyle(.white)
     }
 
-    // MARK: - Session control
-
-    private func start() {
-        isRunning = true
-        startTime = Date()
-        now = Date()
-        samples = []
-        peakLevel = .nominal
-        env.notifications.resetHeatStrainAlerts()
-        impact.prepare(); notify.prepare()
-        notify.notificationOccurred(.success)
-    }
-
-    private func stop() {
-        isRunning = false
-        env.notifications.resetHeatStrainAlerts()
-    }
-
-    private func tick() {
-        guard isRunning else { return }
-        now = Date()
-        if let core = liveCore {
-            samples.append(.init(time: now, core: core))
-            if samples.count > Self.maxSamples {
-                samples.removeFirst(samples.count - Self.maxSamples)
-            }
-        }
-        let a = assessment
-
-        // Escalation feedback: haptic when crossing into a new, higher level…
-        if a.level > peakLevel {
-            peakLevel = a.level
-            switch a.level {
-            case .critical: notify.notificationOccurred(.error)
-            case .serious:  notify.notificationOccurred(.warning)
-            case .elevated: impact.impactOccurred()
-            case .nominal:  break
-            }
-        }
-        // …and a continuous heavy buzz while critical, so it's impossible to ignore.
-        if a.level == .critical { impact.impactOccurred(intensity: 1.0) }
-
-        // notifyHeatStrain self-throttles (only re-fires on a higher level).
-        Task { await env.notifications.notifyHeatStrain(level: a.level, message: a.message) }
-    }
-
     private var elapsedString: String {
-        guard let startTime else { return "0:00" }
-        let secs = max(0, Int(now.timeIntervalSince(startTime)))
+        guard let sessionStart else { return "—" }
+        let secs = max(0, Int(now.timeIntervalSince(sessionStart)))
         return String(format: "%d:%02d", secs / 60, secs % 60)
     }
 }

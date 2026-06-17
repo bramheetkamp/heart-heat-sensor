@@ -218,12 +218,19 @@ contract, the warnings rules, or the backend wire format.
   *and* rate-of-rise while active. Thresholds anchor to `profile.overheatingThreshold`
   (caution); serious = caution + 0.8 °C, critical = caution + 1.5 °C (defaults
   38.5 / 39.3 / 40.0 °C); a rise ≥ 0.6 °C/10 min while active escalates one level.
-  `WorkoutView` (route `heartrate://workout`) is the live session: start/stop
-  timer, live HR + core temp, a Swift Charts core-temp trend with the rise rate,
-  and a full-bleed escalating banner with **harsh** copy at the top ("STOP. Your
-  core temperature is dangerously high…"). Crossing into serious/critical fires
-  strong haptics and `NotificationService.notifyHeatStrain` (time-sensitive /
-  critical interruption level, self-throttled to only re-fire on a higher level).
+  Monitoring is **always-on**: `BLEService` assesses every core-temp sample from
+  the connected sensor (`@Published heatAssessment`/`heatTrend`) and fires the
+  escalating alert via `NotificationService.notifyHeatStrain` — even with the app
+  closed and no workout started in-app (background BLE wakes the app to evaluate).
+  This is by design so a run begun elsewhere (e.g. on Apple Watch) is still
+  covered without opening Pulse. `WorkoutView` (route `heartrate://workout`) is
+  just a live *view* of that monitor (banner + live HR/core + Swift Charts trend
+  with rise rate + an optional session timer), not the on/off switch. Copy is
+  **harsh** at the top ("STOP. Your core temperature is dangerously high…").
+  `notifyHeatStrain` is time-sensitive/critical and self-throttled to re-fire only
+  on a higher level (lower levels lower the baseline so a later episode re-alerts).
+  Caution threshold is cached in `BLEService`; Settings calls `refreshHeatThreshold()`
+  on dismiss.
 - **Event countdown.** `UserProfile.eventName`/`eventDate` drive the
   `EventCountdownCard` dashboard section (a race-day countdown), editable in
   Settings → Target Event.

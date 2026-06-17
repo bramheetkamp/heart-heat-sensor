@@ -126,6 +126,8 @@ final class AppEnvironment: ObservableObject {
         let notifications = NotificationService()
         notifications.router = router
         self.notifications = notifications
+        // Let the always-on heat-strain monitor post background alerts.
+        bleService.notifications = notifications
 
         // `dashboardLayout` and `demoMode` are nested ObservableObjects. SwiftUI's
         // @EnvironmentObject only observes *this* object's own @Published props, so
