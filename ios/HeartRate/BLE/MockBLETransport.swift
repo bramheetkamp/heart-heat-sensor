@@ -95,7 +95,10 @@ final class MockBLETransport: BLETransportProtocol {
         // Simulate connection after a short delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self, self.isRunning else { return }
-            self.connectionStateSubject.send(.connected(peripheralName: "Mock Device"))
+            // Tag the connection as "DEMO" so live mock readings are persisted
+            // with deviceId "DEMO" and get cleared by seedReadings on every
+            // scenario switch (otherwise stale hot readings keep firing warnings).
+            self.connectionStateSubject.send(.connected(peripheralName: "DEMO"))
             self.startTimers()
         }
     }

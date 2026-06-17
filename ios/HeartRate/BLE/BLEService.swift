@@ -213,6 +213,16 @@ final class BLEService: ObservableObject {
         }
     }
 
+    /// Clear the rolling heat buffer and reset the live assessment to nominal.
+    /// Called on a demo-scenario switch so a previous (e.g. overheating) session's
+    /// samples don't linger and keep the banner/mascot hot after switching back.
+    func resetHeatMonitor() {
+        heatSamples.removeAll()
+        heatAssessment = HeatStrainEngine.assess(samples: [], isActive: false, caution: cautionThreshold)
+        heatTrend = []
+        notifications?.resetHeatStrainAlerts()
+    }
+
     /// Assess one core-temp sample, publish the result, and post a heat alert
     /// when it escalates. `notifyHeatStrain` self-throttles (re-fires only on a
     /// higher level; calling it at lower levels lowers the throttle baseline so a

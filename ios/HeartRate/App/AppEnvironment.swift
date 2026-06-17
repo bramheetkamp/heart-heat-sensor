@@ -166,6 +166,9 @@ final class AppEnvironment: ObservableObject {
     func applyDemoScenario(_ scenario: DemoScenario) async {
         demoMode.activeScenario = scenario
         bleService.applyDemoScenario(scenario)
+        // Drop the previous scenario's heat samples so the banner/mascot don't
+        // stay hot when switching (e.g. Overheating → Normal Week).
+        bleService.resetHeatMonitor()
         // Make sure the live stream is actually running so the new scenario
         // streams continuously (it may not be if the user never paired).
         if !bleService.isConnected { bleService.startScanning() }

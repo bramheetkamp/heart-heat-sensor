@@ -96,6 +96,34 @@ final class BLEServiceTests: XCTestCase {
         XCTAssertFalse(service.heatTrend.isEmpty, "Trend buffer captured the sample")
     }
 
+    /// Switching scenarios must clear the previous session's *live* readings so a
+    /// prior overheating run doesn't keep firing warnings. Live mock readings are
+    /// tagged "DEMO" (and legacy "Mock Device"/"LIVE" are also purged) by
+    /// seedReadings. (Regression for "switching to Normal Week still shows
+    /// overheating / the angry bear".)
+    func test_switchingScenario_clearsStaleHotLiveReadings() async throws {
+        let store = DataStore(inMemory: true)
+        let demo = DemoModeService()
+
+        // Simulate hot live readings left over from an Overheating session.
+        let hotDemo = Reading(); hotDemo.timestamp = Date(); hotDemo.tempCore = 40.2
+        hotDemo.heartRate = 150; hotDemo.activity = .active; hotDemo.deviceId = "DEMO"
+        let hotLegacy = Reading(); hotLegacy.timestamp = Date(); hotLegacy.tempCore = 39.8
+        hotLegacy.heartRate = 148; hotLegacy.activity = .active; hotLegacy.deviceId = "Mock Device"
+        try store.save(readings: [hotDemo, hotLegacy])
+
+        // Switch to Normal Week → reseed should purge the hot readings.
+        try await demo.seedReadings(scenario: .normalWeek, into: store)
+
+        let readings = try store.recentReadings(days: 2)
+        let hottest = readings.compactMap(\.tempCore).max() ?? 0
+        XCTAssertLessThan(hottest, 38.5, "No leftover hot readings after switching to Normal Week")
+
+        let warnings = WarningsEngine.compute(readings: readings, profile: UserProfile())
+        XCTAssertFalse(warnings.contains { $0.type == .overheating },
+                       "Overheating warning must clear after switching to Normal Week")
+    }
+
     /// With no connection, injected measurements must not be persisted.
     func test_measurementsWithoutConnection_areNotPersisted() async throws {
         let store = DataStore(inMemory: true)

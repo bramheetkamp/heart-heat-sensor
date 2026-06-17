@@ -119,8 +119,10 @@ struct ScenarioPicker: View {
     var body: some View {
         List(DemoScenario.allCases) { scenario in
             Button {
-                env.demoMode.activeScenario = scenario
-                Task { try? await env.demoMode.seedReadings(scenario: scenario, into: env.dataStore) }
+                // Go through the single end-to-end path so the live stream is
+                // re-pointed, the heat monitor reset, and derived state refreshed
+                // — not just the historical seed.
+                Task { await env.applyDemoScenario(scenario) }
                 dismiss()
             } label: {
                 HStack {

@@ -82,7 +82,12 @@ final class DemoModeService: ObservableObject {
         let daysBack = 35
 
         // Clear any previously-seeded demo data so switching scenarios is clean.
+        // Includes legacy live-stream tags ("Mock Device"/"LIVE") written before
+        // demo readings were unified under "DEMO", so stale hot readings from a
+        // prior overheating session don't keep firing warnings after a switch.
         try? store.deleteReadings(deviceId: "DEMO")
+        try? store.deleteReadings(deviceId: "Mock Device")
+        try? store.deleteReadings(deviceId: "LIVE")
 
         var readings: [Reading] = []
 
