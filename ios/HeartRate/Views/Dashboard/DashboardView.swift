@@ -90,6 +90,8 @@ struct DashboardView: View {
                         HealthSummaryCard(readings: Array(recentReadings), warnings: warnings)
                     case .streak:
                         streakCard
+                    case .recovery:
+                        RecoveryScoreCard(readings: Array(recentReadings))
                     case .metrics:
                         metricsGrid
                     case .warnings:
@@ -450,6 +452,12 @@ struct DashboardView: View {
         )
         await env.notifications.notifyIfNeeded(for: warnings)
         await env.notifications.checkAndNotifyStreak(days: streakDays, character: env.selectedCharacter)
+
+        // Re-schedule morning briefing with the latest recovery score so the
+        // notification content stays fresh even if the user's baseline shifts.
+        let recoveryResult = RecoveryScoreCard.compute(readings: Array(recentReadings))
+        let recoveryScore: Int? = { if case .score(let s, _, _) = recoveryResult { return s }; return nil }()
+        await env.notifications.scheduleMorningBriefing(score: recoveryScore, character: env.selectedCharacter)
     }
 }
 

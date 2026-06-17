@@ -124,6 +124,65 @@ final class NotificationService: NSObject, ObservableObject {
         }
     }
 
+    // MARK: - Morning Readiness Briefing
+
+    /// Schedules (or replaces) a daily 8 AM notification containing the user's
+    /// current recovery score voiced by their active companion character.
+    /// No-op if the user has turned off morning briefings (`morningBriefingEnabled`
+    /// UserDefaults key) or notifications are not authorized.
+    func scheduleMorningBriefing(score: Int?, character: MascotCharacter) async {
+        guard UserDefaults.standard.bool(forKey: "morningBriefingEnabled") else {
+            center.removePendingNotificationRequests(withIdentifiers: ["morning_briefing"])
+            return
+        }
+        await refreshStatus()
+        guard authorizationStatus == .authorized || authorizationStatus == .provisional else { return }
+
+        center.removePendingNotificationRequests(withIdentifiers: ["morning_briefing"])
+
+        let content = UNMutableNotificationContent()
+        content.sound = .default
+        content.userInfo = ["type": "morningBriefing"]
+
+        if let score {
+            let label = score >= 82 ? "Excellent" : score >= 65 ? "Good" : score >= 45 ? "Fair" : "Low"
+            content.title = "Morning check-in — Recovery \(score) (\(label))"
+            content.body  = morningBody(score: score, character: character)
+        } else {
+            content.title = "Good morning from \(character.displayName)!"
+            content.body  = character.statusMessage(for: .happy)
+        }
+
+        var components = DateComponents()
+        components.hour   = 8
+        components.minute = 0
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(identifier: "morning_briefing", content: content, trigger: trigger)
+        try? await center.add(request)
+    }
+
+    private func morningBody(score: Int, character: MascotCharacter) -> String {
+        switch character {
+        case .blob:
+            if score >= 82 { return "You're fully charged — ready to take on anything today!" }
+            if score >= 65 { return "Feeling pretty solid. A good day ahead." }
+            return "Take it easy today and let your body catch up."
+        case .bear:
+            if score >= 82 { return "Ready to roll. All systems go, champ." }
+            if score >= 65 { return "Good enough to get after it. Pace yourself." }
+            return "Rest up today. Your body's working hard behind the scenes."
+        case .owl:
+            if score >= 82 { return "Peak biometric indicators. Optimal performance window detected." }
+            if score >= 65 { return "Metrics within acceptable range. Moderate exertion is advisable." }
+            return "Recovery deficit detected. Prioritise sleep and low-intensity activity."
+        case .fox:
+            if score >= 82 { return "You're on fire right now — make the most of it." }
+            if score >= 65 { return "Solid day ahead. Keep that momentum going." }
+            return "Smart move to take it slow today. Know your limits, then exceed them tomorrow."
+        }
+    }
+
     // MARK: - Weekly Digest
 
     /// Schedules (or re-schedules) a recurring Sunday 9 AM reminder to review
@@ -184,7 +243,7 @@ extension NotificationService: UNUserNotificationCenterDelegate {
                     if milestone == 7 || milestone == 30 {
                         self.router?.handle(url: URL(string: "heartrate://settings")!)
                     }
-                case "weeklyDigest":
+                case "weeklyDigest", "morningBriefing":
                     self.router?.handle(url: URL(string: "heartrate://dashboard")!)
                 default: break
                 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
@@ -16,6 +17,7 @@ struct SettingsView: View {
             appearanceSection
             demoSection
             healthKitSection
+            notificationsSection
             thresholdsSection
             connectionSection
             backendSection
@@ -182,6 +184,63 @@ struct SettingsView: View {
         case .sharingAuthorized: return env.healthKit.isEnabled ? .green : .secondary
         case .sharingDenied:     return .red
         default:                 return .secondary
+        }
+    }
+
+    private var notificationsSection: some View {
+        Section {
+            HStack {
+                Label("Status", systemImage: "bell.fill")
+                Spacer()
+                Text(notificationStatusLabel)
+                    .font(.footnote)
+                    .foregroundStyle(notificationStatusColor)
+            }
+
+            if env.notifications.authorizationStatus != .authorized {
+                Button {
+                    Task { await env.notifications.requestAuthorization() }
+                } label: {
+                    Label("Enable Notifications", systemImage: "bell.badge")
+                }
+            }
+
+            Toggle(isOn: Binding(
+                get: { UserDefaults.standard.bool(forKey: "morningBriefingEnabled") },
+                set: { enabled in
+                    UserDefaults.standard.set(enabled, forKey: "morningBriefingEnabled")
+                    if !enabled {
+                        UNUserNotificationCenter.current()
+                            .removePendingNotificationRequests(withIdentifiers: ["morning_briefing"])
+                    }
+                }
+            )) {
+                Label("Morning Briefing", systemImage: "sunrise.fill")
+            }
+            .tint(.orange)
+            .disabled(env.notifications.authorizationStatus != .authorized)
+        } header: {
+            Text("Notifications")
+        } footer: {
+            Text("Morning Briefing fires at 8 AM with your recovery score, voiced by \(env.selectedCharacter.displayName). Health alerts and streak milestones are always sent when notifications are allowed.")
+        }
+        .task { await env.notifications.refreshStatus() }
+    }
+
+    private var notificationStatusLabel: String {
+        switch env.notifications.authorizationStatus {
+        case .authorized:    return "Allowed"
+        case .denied:        return "Denied"
+        case .provisional:   return "Provisional"
+        default:             return "Not set"
+        }
+    }
+
+    private var notificationStatusColor: Color {
+        switch env.notifications.authorizationStatus {
+        case .authorized:  return .green
+        case .denied:      return .red
+        default:           return .secondary
         }
     }
 
