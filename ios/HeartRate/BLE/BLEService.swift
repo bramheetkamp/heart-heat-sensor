@@ -141,6 +141,13 @@ final class BLEService: ObservableObject {
         )
         try? dataStore.save(reading: reading)
 
+        // Cache latest values in UserDefaults so Siri App Intents can read
+        // them without needing to open the app or query SwiftData.
+        let ud = UserDefaults.standard
+        if let hrValue = hr?.heartRate { ud.set(hrValue, forKey: "cachedHR") }
+        if let core = tempCore { ud.set(core, forKey: "cachedCoreTemp") }
+        ud.set(Date().timeIntervalSince1970, forKey: "cachedReadingAt")
+
         if let hk = healthKit {
             Task { await hk.write(reading) }
         }

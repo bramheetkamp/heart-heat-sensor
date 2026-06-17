@@ -1,8 +1,15 @@
 import SwiftUI
+import AppIntents
 
 @main
 struct HeartRateApp: App {
     @StateObject private var env = AppEnvironment()
+
+    init() {
+        // Register Siri App Shortcuts so "Hey Siri, what's my heart rate?"
+        // works without requiring the user to manually add the shortcut.
+        PulseShortcuts.updateAppShortcutParameters()
+    }
 
     var body: some Scene {
         WindowGroup {
