@@ -2,6 +2,87 @@
 
 ---
 
+## 2026-06-17 — Live Activities / Dynamic Island for workout sessions
+
+**Context**
+Continuing "NEVER STOP IMPROVING" directive. Implements real-time Dynamic Island
+and Lock Screen Live Activities that persist while a workout session is active — a
+defining Oura/Whoop-level premium feature.
+
+**What was built**
+
+- **`HeartRateLiveActivityAttributes.swift`** (new, in `HeartRate/Shared/`) — shared
+  `ActivityAttributes` struct compiled into both the HeartRate app target and the
+  PulseWidget extension. `ContentState` carries HR, core temp, heat level raw value,
+  and `isWarning` flag. Static attributes hold `startDate` and `characterName`.
+  ActivityKit matches app ↔ widget by type name string (`"HeartRateLiveActivityAttributes"`)
+  which resolves identically in both modules.
+
+- **`PulseLiveActivity.swift`** (new, in `PulseWidget/`) — `ActivityConfiguration` with:
+  - **Lock Screen / StandBy**: three-column banner showing HR | core temp | elapsed
+    session time. Elapsed time uses `Text(startDate, style: .timer)` which
+    auto-updates every second with zero custom-timer overhead.
+  - **Dynamic Island expanded** (long-press): HR (leading), core temp tinted by heat
+    level (trailing), companion character name (centre), session timer (bottom).
+  - **Dynamic Island compact leading**: red heart icon + live HR with `.numericText()`
+    transition.
+  - **Dynamic Island compact trailing**: thermometer icon + core temp, tinted green →
+    amber → orange → red as heat level escalates.
+  - **Dynamic Island minimal** (two-app shared pill): HR only.
+  - `.keylineTint` driven by heat level color; `.widgetURL(heartrate://workout)` so
+    tapping the island deep-links directly to WorkoutView.
+
+- **`WorkoutView.swift`** updated:
+  - `@State private var currentActivity: Activity<HeartRateLiveActivityAttributes>?`
+  - "Start Session" taps `startLiveActivity()` (guarded by `ActivityAuthorizationInfo().areActivitiesEnabled`).
+  - "End Session" taps `endLiveActivity()` → `activity.end(...)`. Also ends on
+    `.onDisappear` so the activity is never left dangling.
+  - `.onChange(of: liveHR)`, `.onChange(of: liveCore)`, `.onChange(of: assessment.level)`
+    each call `updateLiveActivity()` to push the latest `ContentState`.
+  - Purple "Live Activity running" hint banner appears below the session button while
+    the activity is active.
+  - Session button shows a radio-wave icon next to "End Session" when the live activity
+    is running, so users know the Dynamic Island is active.
+
+- **`Info.plist`**: `NSSupportsLiveActivities = YES` and
+  `NSSupportsLiveActivitiesFrequentUpdates = YES` (up to 4 updates/minute, matching the
+  ~5 s BLE cadence).
+
+- **`project.yml`**: `ActivityKit.framework` linked to both `HeartRate` and `PulseWidget`
+  targets; `HeartRate/Shared` added as an extra source path to `PulseWidget` so the
+  shared attributes type compiles into both modules.
+
+**Verification**
+- Backend: **54/54 tests still passing** — iOS-only change, no regressions.
+- All modified Swift files pass manual read-through (types resolve, APIs match iOS 17
+  deployment target, `ActivityContent` is iOS 16.2+ which is covered by 17.0 minimum).
+
+**Not verifiable on Linux (requires Xcode + iPhone 14 Pro or later)**
+- Dynamic Island compact/expanded/minimal layouts render correctly at all sizes
+- `Text(startDate, style: .timer)` auto-increments on Lock Screen and StandBy
+- `.contentTransition(.numericText())` animates digit changes in the island
+- `ActivityAuthorizationInfo().areActivitiesEnabled` gracefully skips on unsupported
+  devices or when the user has disabled Live Activities in Settings
+- Heat level color escalation (green → amber → orange → red) visually tracks
+  `HeatStrainEngine.Level`
+- Session end and view-disappear correctly dismiss the live activity
+
+**Next run candidates**
+1. **Onboarding demo preview** — show a live mock reading stream during the "pair your
+   device" onboarding step so users understand what the app looks like before buying
+   hardware. Wire `MockBLETransport` to emit a few demo readings while the step is visible.
+2. **Recovery trend history screen** — a dedicated "Trends" route showing 30-day
+   recovery score sparkline, resting HR trend, and HRV trend in one scrollable view
+   (complements the 7-day cards on the dashboard with longer-range context).
+3. **Personalized threshold suggestions** — after 14+ days of data, the app suggests a
+   refined overheating threshold based on the user's own resting core-temp baseline
+   (currently defaults to 38.5 °C for everyone).
+4. **Stress score from EDA** — interpret EDA (skin conductance in µS) alongside HRV
+   to produce a combined stress indicator, shown as a new tile on the dashboard and
+   in the InsightsEngine.
+
+---
+
 ## 2026-06-17 — WidgetKit homescreen widget, sleep demo data fix, confetti + haptic on excellent recovery
 
 **Context**
