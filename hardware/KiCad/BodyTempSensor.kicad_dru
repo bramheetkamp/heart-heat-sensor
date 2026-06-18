@@ -1,0 +1,123 @@
+(version 1)
+# JLCPCB 4-layer, 1oz outer / 0.5oz inner
+# Verified against JLCPCB capabilities (2025)
+
+# -----------------------------------------------
+# TRACE WIDTH
+# -----------------------------------------------
+(rule "Minimum Trace Width (outer layer)"
+	(constraint track_width (min 0.127mm))
+	(layer outer)
+	(condition "A.Type == 'track'"))
+
+(rule "Minimum Trace Width (inner layer)"
+	(constraint track_width (min 0.1mm))
+	(layer inner)
+	(condition "A.Type == 'track'"))
+
+# -----------------------------------------------
+# TRACE SPACING
+# -----------------------------------------------
+(rule "Minimum Trace Spacing (outer layer)"
+	(constraint clearance (min 0.127mm))
+	(layer outer)
+	(condition "A.Type == 'track' && B.Type == A.Type"))
+
+(rule "Minimum Trace Spacing (inner layer)"
+	(constraint clearance (min 0.1mm))
+	(layer inner)
+	(condition "A.Type == 'track' && B.Type == A.Type"))
+
+# -----------------------------------------------
+# PAD TO TRACK CLEARANCE
+# -----------------------------------------------
+(rule "Pad to Track clearance"
+	(constraint clearance (min 0.1mm))
+	(condition "A.Type == 'pad' && B.Type == 'track'"))
+
+# -----------------------------------------------
+# PAD TO PAD CLEARANCE
+# -----------------------------------------------
+(rule "pad to pad clearance (without hole, different nets)"
+	(constraint clearance (min 0.1mm))
+	(condition "A.Type == 'pad' && B.Type == A.Type && A.Net != B.Net"))
+
+(rule "pad to pad clearance (with hole, different nets)"
+	(constraint hole_to_hole (min 0.5mm))
+	(condition "A.Type == 'pad' && B.Type == A.Type && A.Net != B.Net"))
+
+# -----------------------------------------------
+# VIAS
+# -----------------------------------------------
+(rule "Minimum Via Diameter"
+	(constraint via_diameter (min 0.45mm))
+	(condition "A.Type == 'via'"))
+
+(rule "Minimum Via Hole Size"
+	(constraint hole_size (min 0.2mm))
+	(condition "A.Type == 'via'"))
+
+(rule "via to track clearance"
+	(constraint hole_clearance (min 0.254mm))
+	(condition "A.Type == 'via' && B.Type == 'track'"))
+
+(rule "via to via clearance (different nets)"
+	(constraint hole_to_hole (min 0.254mm))
+	(condition "A.Type == 'via' && B.Type == A.Type && A.Net != B.Net"))
+
+(rule "via to via clearance (same net)"
+	(constraint hole_to_hole (min 0.254mm))
+	(condition "A.Type == 'via' && B.Type == A.Type && A.Net == B.Net"))
+
+# -----------------------------------------------
+# DRILL / HOLES
+# -----------------------------------------------
+(rule "PTH Hole Size"
+	(constraint hole_size (min 0.2mm) (max 6.3mm))
+	(condition "A.isPlated()"))
+
+(rule "Minimum Non-plated Hole Size"
+	(constraint hole_size (min 0.5mm))
+	(condition "A.Type == 'pad' && !A.isPlated()"))
+
+(rule "drill hole size (mechanical)"
+	(constraint hole_size (min 0.2mm) (max 6.3mm)))
+
+(rule "Minimum Castellated Hole Size"
+	(constraint hole_size (min 0.6mm))
+	(condition "A.Type == 'pad' && A.Fabrication_Property == 'Castellated pad'"))
+
+# -----------------------------------------------
+# HOLE TO HOLE
+# -----------------------------------------------
+(rule "hole to hole clearance (different nets)"
+	(constraint hole_to_hole (min 0.5mm))
+	(condition "A.Net != B.Net"))
+
+(rule "PTH to Track clearance"
+	(constraint hole_clearance (min 0.33mm))
+	(condition "A.isPlated() && B.Type == 'track'"))
+
+(rule "NPTH to Track clearance"
+	(constraint hole_clearance (min 0.254mm))
+	(condition "A.Pad_Type == 'NPTH, mechanical' && B.Type == 'track'"))
+
+# -----------------------------------------------
+# EDGE CLEARANCE
+# -----------------------------------------------
+(rule "Trace to Outline"
+	(constraint edge_clearance (min 0.3mm))
+	(condition "A.Type == 'track'"))
+
+# -----------------------------------------------
+# SILKSCREEN
+# -----------------------------------------------
+(rule "Minimum Text"
+	(constraint text_thickness (min 0.15mm))
+	(constraint text_height (min 1mm))
+	(layer "?.Silkscreen"))
+
+(rule "Pad to Silkscreen"
+	(constraint silk_clearance (min 0.15mm))
+	(layer outer)
+	(condition "A.Type == 'pad' && (B.Type == 'text' || B.Type == 'graphic')"))
