@@ -1,0 +1,19 @@
+# ============================================================================
+#  File:    board.yml
+#  Purpose: Hardware-Model-v2 board descriptor for the custom PCB.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    NCS v3.x uses Hardware Model v2: a board.yml names the board and its SoC
+#    so west can resolve the build target "bodytemp_wearable/nrf54l15/cpuapp".
+#    (This is the modern replacement for the old Kconfig.board file; the twister
+#    metadata still lives in bodytemp_wearable.yaml.)
+# ============================================================================
+
+board:
+  name: bodytemp_wearable
+  full_name: BodyTempSensor Chest-Strap Wearable
+  vendor: itsnotdaan
+  socs:
+    - name: nrf54l15

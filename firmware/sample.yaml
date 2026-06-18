@@ -1,0 +1,30 @@
+# ============================================================================
+#  File:    sample.yaml
+#  Purpose: NCS-style sample metadata for CI / twister discovery.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Optional NCS metadata describing this application as a buildable sample.
+#    Lets Zephyr's twister build it for the DK target in CI. The custom board
+#    is intentionally not listed as a default CI target until its definition is
+#    finalised.
+# ============================================================================
+
+sample:
+  name: Biometric Chest-Strap Wearable (PoC)
+  description: >
+    nRF54L15 firmware streaming TMP117 heat-flux core-temperature and EDA/GSR
+    biometrics over ANT+ (primary) and a custom BLE GATT service (secondary).
+
+common:
+  tags: ant ble sensor saadc tmp117 led_strip
+
+tests:
+  sample.biometric_wearable.dk:
+    platform_allow:
+      - nrf54l15dk/nrf54l15/cpuapp
+    integration_platforms:
+      - nrf54l15dk/nrf54l15/cpuapp
+    build_only: true
+    tags: ble sensor

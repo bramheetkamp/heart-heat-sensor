@@ -1,0 +1,14 @@
+# ============================================================================
+#  File:    Kconfig.bodytemp_wearable
+#  Purpose: Hardware-Model-v2 board Kconfig anchor.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Declares the board's Kconfig symbol. In Hardware Model v2 this file
+#    replaces the old "Kconfig.board"; its name must match the board name from
+#    board.yml. No options are added here for the PoC.
+# ============================================================================
+
+config BOARD_BODYTEMP_WEARABLE
+	select SOC_NRF54L15_CPUAPP if BOARD_BODYTEMP_WEARABLE

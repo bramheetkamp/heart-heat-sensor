@@ -1,0 +1,45 @@
+# ============================================================================
+#  File:    west.yml
+#  Purpose: Freestanding-app west manifest (NCS + ANT add-on).
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Use this ONLY if you manage the firmware as a freestanding west workspace
+#    (its own .west/). It imports the nRF Connect SDK at a pinned revision and
+#    adds the ANT for nRF Connect SDK add-on, which is NOT part of the default
+#    NCS manifest. If you instead build inside an existing NCS tree, ignore this
+#    file and add the firmware to that workspace's manifest.
+#
+#    Versions: pinned to NCS v3.3.0 (the current release as of 2026-06). The
+#    ANT add-on tag is aligned to the matching sdk-nrf tag — confirm the exact
+#    tag in the add-on release notes before relying on nRF54L support.
+# ============================================================================
+
+manifest:
+  remotes:
+    - name: nordic
+      url-base: https://github.com/nrfconnect
+    - name: thisisant
+      # ANT add-on (sdk-ant). Mirror used by the official add-on docs.
+      url-base: https://github.com/thisisant
+
+  projects:
+    # ---- nRF Connect SDK (pulls in Zephyr, MCUboot, drivers via import) ----
+    - name: nrf
+      remote: nordic
+      repo-path: sdk-nrf
+      revision: v3.3.0
+      import: true
+
+    # ---- ANT for nRF Connect SDK add-on (primary radio protocol) ----------
+    # TODO(PoC): set 'revision' to the add-on tag that documents nRF54L
+    # support in its compatibility matrix (see README assumptions).
+    - name: sdk-ant
+      remote: thisisant
+      repo-path: sdk-ant
+      revision: main
+      path: ant
+
+  self:
+    path: application

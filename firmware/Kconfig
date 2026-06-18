@@ -1,0 +1,34 @@
+# ============================================================================
+#  File:    Kconfig
+#  Purpose: App-specific Kconfig options (feature flags, future tunables).
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    App-level Kconfig. Most numeric tunables live in src/app/app_config.h so
+#    they are visible next to the code that uses them; this file exists for
+#    options that genuinely belong in the build configuration (feature toggles
+#    a downstream build or CI might want to flip). Sourcing the Zephyr Kconfig
+#    at the end keeps the standard menu structure intact.
+# ============================================================================
+
+menu "Biometric Wearable (PoC) options"
+
+config APP_FEATURE_ANT
+	bool "Enable the ANT+ broadcast back-end"
+	default y
+	help
+	  Compile and start the ANT+ broadcast profile (primary link). Turn off
+	  for a BLE-only bring-up. Independent of the upstream CONFIG_ANT symbol
+	  the ANT add-on provides; ant_profile.c also guards on CONFIG_ANT.
+
+config APP_FEATURE_BLE
+	bool "Enable the BLE GATT service back-end"
+	default y
+	help
+	  Compile and start the custom BLE biometric service (secondary link).
+
+endmenu
+
+# Pull in the standard Zephyr Kconfig tree so the normal options remain.
+source "Kconfig.zephyr"

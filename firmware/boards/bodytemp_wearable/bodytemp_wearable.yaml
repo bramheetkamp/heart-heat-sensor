@@ -1,0 +1,28 @@
+# ============================================================================
+#  File:    bodytemp_wearable.yaml
+#  Purpose: Twister / build-system metadata for the custom board target.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Describes the application-core build variant of the custom PCB so Zephyr's
+#    tooling knows its capabilities. Mirrors the nRF54L15 DK cpuapp entry.
+# ============================================================================
+
+identifier: bodytemp_wearable/nrf54l15/cpuapp
+name: BodyTempSensor Wearable (nRF54L15 cpuapp)
+type: mcu
+arch: arm
+toolchain:
+  - gnuarmemb
+  - zephyr
+ram: 256
+flash: 1524
+supported:
+  - i2c
+  - spi
+  - adc
+  - gpio
+  - ble
+  - watchdog
+vendor: itsnotdaan

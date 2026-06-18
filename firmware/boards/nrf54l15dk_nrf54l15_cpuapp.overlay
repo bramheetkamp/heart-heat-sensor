@@ -1,0 +1,156 @@
+/*
+ * ============================================================================
+ *  File:    nrf54l15dk_nrf54l15_cpuapp.overlay
+ *  Purpose: DK bring-up wiring for the biometric chest-strap firmware.
+ *  Author:  Daan
+ *  Date:    2026-06-14
+ *
+ *  Description:
+ *    Adds the peripherals the firmware needs on top of the stock nRF54L15 DK:
+ *      - I2C bus with the four TMP117 sensors (two heat-flux stacks).
+ *      - SAADC channel for the EDA/GSR signal + an excitation-gate GPIO.
+ *      - One WS2812 status pixel on SPI.
+ *    The DK's own `leds` and `buttons` (gpio-leds / gpio-keys) nodes are reused
+ *    as-is: the firmware binds to them by node label, so no redefinition here.
+ *
+ *  NOTE: pin assignments below are placeholders chosen so the project builds
+ *  and runs on a bare DK. Wire the DK headers to match, or edit these to suit
+ *  your jumpering — they do not affect any source file.
+ * ============================================================================
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/led/led.h>
+#include <zephyr/dt-bindings/adc/adc.h>
+#include <zephyr/dt-bindings/adc/nrf-saadc.h>
+
+/* ============================================================
+ *  PINCTRL  (I2C + SPI signal routing)
+ * ============================================================ */
+&pinctrl {
+	/* I2C20 -> TMP117 bus. SDA P1.11, SCL P1.12. */
+	i2c20_default: i2c20_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 11)>,
+				<NRF_PSEL(TWIM_SCL, 1, 12)>;
+		};
+	};
+	i2c20_sleep: i2c20_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 11)>,
+				<NRF_PSEL(TWIM_SCL, 1, 12)>;
+			low-power-enable;
+		};
+	};
+
+	/* SPI21 -> WS2812 data line. Only MOSI carries data; SCK is parked. */
+	spi21_default: spi21_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  2, 1)>,
+				<NRF_PSEL(SPIM_MOSI, 2, 2)>;
+		};
+	};
+	spi21_sleep: spi21_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  2, 1)>,
+				<NRF_PSEL(SPIM_MOSI, 2, 2)>;
+			low-power-enable;
+		};
+	};
+};
+
+/* ============================================================
+ *  I2C20  +  FOUR TMP117 SENSORS
+ * ============================================================ */
+&i2c20 {
+	status = "okay";
+	pinctrl-0 = <&i2c20_default>;
+	pinctrl-1 = <&i2c20_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-frequency = <400000>;   /* I2C fast mode */
+
+	/*
+	 * Four distinct ADD0 straps -> addresses 0x48..0x4B. Stack 0 = skin+amb
+	 * at 0x48/0x49, stack 1 = skin+amb at 0x4A/0x4B. The Zephyr "ti,tmp116"
+	 * driver covers the TMP117. Node LABELS are the contract with the code.
+	 */
+	tmp117_s0_skin: tmp117@48 {
+		compatible = "ti,tmp116";
+		reg = <0x48>;
+	};
+	tmp117_s0_amb: tmp117@49 {
+		compatible = "ti,tmp116";
+		reg = <0x49>;
+	};
+	tmp117_s1_skin: tmp117@4a {
+		compatible = "ti,tmp116";
+		reg = <0x4a>;
+	};
+	tmp117_s1_amb: tmp117@4b {
+		compatible = "ti,tmp116";
+		reg = <0x4b>;
+	};
+};
+
+/* ============================================================
+ *  SAADC  (EDA / GSR channel)
+ * ============================================================ */
+&adc {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	/*
+	 * EDA channel: VDD/4 reference with gain 1/2 -> full scale ~1.65 V, which
+	 * comfortably covers the MCP6001 TIA output swing. adc_raw_to_millivolts
+	 * uses these to return calibrated input mV regardless of the exact combo.
+	 */
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_2";
+		zephyr,reference = "ADC_REF_VDD_1_4";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
+		zephyr,resolution = <12>;
+	};
+};
+
+/* ============================================================
+ *  SPI21  +  WS2812 STATUS PIXEL
+ * ============================================================ */
+&spi21 {
+	status = "okay";
+	pinctrl-0 = <&spi21_default>;
+	pinctrl-1 = <&spi21_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		reg = <0>;
+		spi-max-frequency = <4000000>;
+		chain-length = <1>;            /* single status pixel */
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>; /* WS2812 GRB order */
+		spi-one-frame = <0x70>;        /* SPI byte encoding a '1' bit */
+		spi-zero-frame = <0x40>;       /* SPI byte encoding a '0' bit */
+	};
+};
+
+/* ============================================================
+ *  APP-LEVEL NODES  (ADC channel handle + EDA excitation gate)
+ * ============================================================ */
+/ {
+	zephyr,user {
+		/* SAADC channel handle the eda_gsr module reads. */
+		io-channels = <&adc 0>;
+
+		/* GPIO that gates the electrode excitation drive. */
+		eda-gate-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+	};
+
+	chosen {
+		/* status_led.c resolves the strip through this chosen node. */
+		zephyr,led-strip = &led_strip;
+	};
+};

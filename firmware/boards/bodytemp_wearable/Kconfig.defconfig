@@ -1,0 +1,18 @@
+# ============================================================================
+#  File:    Kconfig.defconfig
+#  Purpose: Board-conditional Kconfig defaults for the custom PCB.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Applied only when this board is the active target. Used for defaults that
+#    must be expressed in Kconfig (rather than the plain *_defconfig), e.g.
+#    overriding a default device name. Kept minimal for the PoC.
+# ============================================================================
+
+if BOARD_BODYTEMP_WEARABLE
+
+config BT_DEVICE_NAME
+	default "BodyTempPoC"
+
+endif # BOARD_BODYTEMP_WEARABLE

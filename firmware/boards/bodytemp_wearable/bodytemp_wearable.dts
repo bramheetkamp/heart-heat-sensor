@@ -1,0 +1,140 @@
+/*
+ * ============================================================================
+ *  File:    bodytemp_wearable.dts
+ *  Purpose: Devicetree for the custom BodyTempSensor PCB (nRF54L15-QFAA).
+ *  Author:  Daan
+ *  Date:    2026-06-14
+ *
+ *  Description:
+ *    Board definition for the real chest-strap PCB. Brings in the nRF54L15
+ *    application-core SoC devicetree and the board pinctrl, then declares the
+ *    on-board peripherals the firmware drives: the four TMP117 sensors, the
+ *    EDA SAADC channel + excitation gate, the WS2812 status pixel, the three
+ *    discrete LEDs (D1..D3), and the tactile button (ACT1).
+ *
+ *  TODO(PoC): this is a SCAFFOLD. Copy the exact SoC include, RAM/flash
+ *  `chosen`, and partitioning from the installed NCS nrf54l15dk board files,
+ *  then confirm every pin against the KiCad schematic. A second button child
+ *  is stubbed (disabled) per the BOM discrepancy note.
+ * ============================================================================
+ */
+
+/dts-v1/;
+
+#include <nordic/nrf54l15_cpuapp.dtsi>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/led/led.h>
+#include <zephyr/dt-bindings/adc/adc.h>
+#include <zephyr/dt-bindings/adc/nrf-saadc.h>
+#include "bodytemp_wearable-pinctrl.dtsi"
+
+/ {
+	model = "BodyTempSensor Wearable";
+	compatible = "itsnotdaan,bodytemp-wearable";
+
+	chosen {
+		zephyr,sram = &cpuapp_sram;
+		zephyr,flash = &cpuapp_rram;
+		zephyr,console = &uart20;
+		zephyr,led-strip = &led_strip;
+	};
+
+	/* --- Three discrete status LEDs (D1, D2, D3) --- */
+	leds: leds {
+		compatible = "gpio-leds";
+		led_power: led_0 {
+			gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+			label = "D1 power";
+		};
+		led_charge: led_1 {
+			gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+			label = "D2 charge";
+		};
+		led_fault: led_2 {
+			gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+			label = "D3 fault";
+		};
+	};
+
+	/*
+	 * --- Buttons (gpio-keys) ---
+	 * ACT1 is the single populated tactile switch. The firmware supports N
+	 * buttons by iterating this node's children, so the second button is just
+	 * a disabled child to enable later — no code change required.
+	 */
+	buttons: buttons {
+		compatible = "gpio-keys";
+		button_act1: button_0 {
+			gpios = <&gpio1 0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "ACT1";
+		};
+		/* TODO(PoC): populate + enable when a 2nd switch is fitted. */
+		button_aux: button_1 {
+			gpios = <&gpio1 1 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "AUX (stubbed)";
+			status = "disabled";
+		};
+	};
+
+	/* --- App-level handles: EDA ADC channel + excitation gate GPIO --- */
+	zephyr,user {
+		io-channels = <&adc 0>;
+		eda-gate-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+/* --- I2C20: four TMP117 sensors (two heat-flux stacks) --- */
+&i2c20 {
+	status = "okay";
+	pinctrl-0 = <&i2c20_default>;
+	pinctrl-1 = <&i2c20_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-frequency = <400000>;
+
+	tmp117_s0_skin: tmp117@48 { compatible = "ti,tmp116"; reg = <0x48>; };
+	tmp117_s0_amb:  tmp117@49 { compatible = "ti,tmp116"; reg = <0x49>; };
+	tmp117_s1_skin: tmp117@4a { compatible = "ti,tmp116"; reg = <0x4a>; };
+	tmp117_s1_amb:  tmp117@4b { compatible = "ti,tmp116"; reg = <0x4b>; };
+};
+
+/* --- SAADC: EDA / GSR channel --- */
+&adc {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_2";
+		zephyr,reference = "ADC_REF_VDD_1_4";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
+		zephyr,resolution = <12>;
+	};
+};
+
+/* --- SPI21: WS2812 single status pixel --- */
+&spi21 {
+	status = "okay";
+	pinctrl-0 = <&spi21_default>;
+	pinctrl-1 = <&spi21_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		reg = <0>;
+		spi-max-frequency = <4000000>;
+		chain-length = <1>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+	};
+};
+
+/* Console UART for SWD/USB debug logging during bring-up. */
+&uart20 {
+	status = "okay";
+	current-speed = <115200>;
+};

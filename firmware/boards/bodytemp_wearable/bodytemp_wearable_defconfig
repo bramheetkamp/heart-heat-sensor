@@ -1,0 +1,23 @@
+# ============================================================================
+#  File:    bodytemp_wearable_defconfig
+#  Purpose: Board-level default Kconfig for the custom PCB.
+#  Author:  Daan
+#  Date:    2026-06-14
+#
+#  Description:
+#    Defaults applied whenever this board is selected, before the app prj.conf.
+#    Keep it to board-intrinsic settings (clocks, console, regulators); feature
+#    enables belong in the app prj.conf so they are board-independent.
+# ============================================================================
+
+# Serial console + logging backend over the debug UART.
+CONFIG_CONSOLE=y
+CONFIG_UART_CONSOLE=y
+CONFIG_SERIAL=y
+
+# GPIO is always needed on this board (LEDs, buttons, EDA gate).
+CONFIG_GPIO=y
+
+# Use the internal RC for LF clock unless a 32.768 kHz crystal is fitted.
+# (HFXO/Y1 is mandatory for the radio and is enabled by the SoC dtsi.)
+CONFIG_CLOCK_CONTROL=y
