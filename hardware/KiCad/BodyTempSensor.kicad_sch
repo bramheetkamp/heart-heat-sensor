@@ -7786,6 +7786,12 @@
 		(uuid "047cdd0f-b0f7-4477-b900-09ae8d206d1d")
 	)
 	(junction
+		(at 215.9 255.27)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "055b54e8-914c-4062-a78e-0b850fcb4e86")
+	)
+	(junction
 		(at 276.86 118.11)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7798,12 +7804,6 @@
 		(uuid "08394983-4cf5-43d6-b6a8-e2120ae63876")
 	)
 	(junction
-		(at 215.9 255.27)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0a70d739-02de-483f-b67e-60867f254448")
-	)
-	(junction
 		(at 264.16 224.79)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7814,12 +7814,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "18abb239-d41c-45e1-ab48-c8a32780063a")
-	)
-	(junction
-		(at 226.06 255.27)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1bc64fb3-d5fc-468d-bf9c-25ef14319cbb")
 	)
 	(junction
 		(at 330.2 67.31)
@@ -8032,12 +8026,6 @@
 		(uuid "a6420d3b-2b82-41ed-a997-7081aac96d35")
 	)
 	(junction
-		(at 226.06 267.97)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a695e452-47d5-4b45-8be8-9ef8eb02e151")
-	)
-	(junction
 		(at 144.78 39.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8060,12 +8048,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b66b15e9-487f-4898-bce6-74b2169636a5")
-	)
-	(junction
-		(at 215.9 267.97)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bb8fff0f-34f2-414c-9d39-1a9631684075")
 	)
 	(junction
 		(at 372.11 46.99)
@@ -8156,6 +8138,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "eef781f2-cd68-4fbe-8eda-7ae78f374a61")
+	)
+	(junction
+		(at 215.9 267.97)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "efee7db0-bcf6-4e0a-be63-d673d585581a")
 	)
 	(junction
 		(at 264.16 168.91)
@@ -8761,6 +8749,16 @@
 	)
 	(wire
 		(pts
+			(xy 219.71 255.27) (xy 215.9 255.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "26687f05-0f2c-4acf-84a7-43fa77492ae1")
+	)
+	(wire
+		(pts
 			(xy 417.83 135.89) (xy 447.04 135.89)
 		)
 		(stroke
@@ -8921,7 +8919,7 @@
 	)
 	(wire
 		(pts
-			(xy 237.49 252.73) (xy 237.49 257.81)
+			(xy 231.14 252.73) (xy 231.14 257.81)
 		)
 		(stroke
 			(width 0)
@@ -9301,16 +9299,6 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 265.43) (xy 226.06 267.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5457c733-6efc-4c4c-8736-cf5322fc8bea")
-	)
-	(wire
-		(pts
 			(xy 62.23 54.61) (xy 62.23 57.15)
 		)
 		(stroke
@@ -9571,16 +9559,6 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 255.27) (xy 226.06 257.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "68647e7a-bd22-445b-b96d-729a55b95f83")
-	)
-	(wire
-		(pts
 			(xy 397.51 49.53) (xy 403.86 49.53)
 		)
 		(stroke
@@ -9658,16 +9636,6 @@
 			(type default)
 		)
 		(uuid "712f7b9e-d2e7-4b82-80cc-f7b2a57300af")
-	)
-	(wire
-		(pts
-			(xy 226.06 255.27) (xy 215.9 255.27)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7176609f-02c8-4e4c-927b-f8bb20d7e362")
 	)
 	(wire
 		(pts
@@ -9811,7 +9779,7 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 267.97) (xy 226.06 271.78)
+			(xy 219.71 267.97) (xy 219.71 271.78)
 		)
 		(stroke
 			(width 0)
@@ -10021,7 +9989,7 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 252.73) (xy 226.06 255.27)
+			(xy 219.71 252.73) (xy 219.71 255.27)
 		)
 		(stroke
 			(width 0)
@@ -10238,6 +10206,16 @@
 			(type default)
 		)
 		(uuid "9ee29129-c60e-4e3b-9407-ff5d3704cde6")
+	)
+	(wire
+		(pts
+			(xy 219.71 267.97) (xy 215.9 267.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9f2a1b5b-ae04-479b-bac2-7ca5fedde285")
 	)
 	(wire
 		(pts
@@ -10471,16 +10449,6 @@
 	)
 	(wire
 		(pts
-			(xy 226.06 267.97) (xy 215.9 267.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b36d2d50-f62b-43d1-be23-e6d62d7c9437")
-	)
-	(wire
-		(pts
 			(xy 293.37 59.69) (xy 309.88 59.69)
 		)
 		(stroke
@@ -10661,7 +10629,7 @@
 	)
 	(wire
 		(pts
-			(xy 237.49 265.43) (xy 237.49 271.78)
+			(xy 231.14 265.43) (xy 231.14 271.78)
 		)
 		(stroke
 			(width 0)
@@ -12546,7 +12514,7 @@
 		(uuid "2f2d83b8-69b9-4350-b8b2-aed506bcff08")
 	)
 	(label "P0.19/SCL"
-		(at 146.05 144.78 0)
+		(at 128.27 271.78 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12566,7 +12534,7 @@
 		(uuid "3c99094f-36e7-4a75-bc3e-c3715ce0d536")
 	)
 	(label "IO_IMP_IN"
-		(at 146.05 140.97 0)
+		(at 128.27 267.97 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12608,7 +12576,7 @@
 		(uuid "4b6522f5-1903-44eb-99e1-c22e5040896e")
 	)
 	(label "IO_BAT_MEAS_ON"
-		(at 146.05 125.73 0)
+		(at 128.27 252.73 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12746,7 +12714,7 @@
 		(uuid "a13c8d23-cd6f-481d-8538-88acad333a4f")
 	)
 	(label "IO_IMP_PWR"
-		(at 146.05 128.27 0)
+		(at 128.27 255.27 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12809,7 +12777,7 @@
 		(uuid "bae2a516-0c36-492b-abcf-ce1bbdca9b6d")
 	)
 	(label "IO_RGB"
-		(at 146.05 135.89 0)
+		(at 128.27 262.89 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12819,7 +12787,7 @@
 		(uuid "bc4628d0-b271-47a2-b7a9-36adab7a3e48")
 	)
 	(label "P0.17/SDA"
-		(at 146.05 147.32 0)
+		(at 128.27 274.32 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12892,7 +12860,7 @@
 		(uuid "dcc9a5a0-2388-4f87-a6b3-c34c8b6e4d03")
 	)
 	(label "IO_BTN_ACT"
-		(at 146.05 133.35 0)
+		(at 128.27 260.35 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12902,7 +12870,7 @@
 		(uuid "df0aa0e6-a8fb-4892-a15b-0fbcf37b51c9")
 	)
 	(label "IO_BAT_MEAS"
-		(at 146.05 130.81 0)
+		(at 128.27 257.81 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12967,7 +12935,7 @@
 		(uuid "fb90f03b-3d57-4412-94f3-96d0884e4542")
 	)
 	(label "IO_IMP_OUT"
-		(at 146.05 138.43 0)
+		(at 128.27 265.43 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -13266,7 +13234,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "470Ω ±5% 100mW 0603 (uit inventory)"
 			(at 186.69 58.42 0)
 			(hide yes)
 			(show_name no)
@@ -13290,6 +13258,39 @@
 		)
 		(property "JCLPCB" "C25104"
 			(at 186.69 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C3017744"
+			(at 186.69 58.42 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VO"
+			(at 186.69 58.42 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SCR0603J470R"
+			(at 186.69 58.42 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13369,7 +13370,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 276.86 176.53 0)
 			(hide yes)
 			(show_name no)
@@ -13599,7 +13600,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 237.49 261.62 0)
+		(at 231.14 261.62 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -13610,7 +13611,7 @@
 		(fields_autoplaced yes)
 		(uuid "08a8d555-3a9a-4c88-9c00-5b27ddaf3b43")
 		(property "Reference" "C11"
-			(at 241.3 260.35 0)
+			(at 234.95 260.35 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13621,7 +13622,7 @@
 			)
 		)
 		(property "Value" "4u7"
-			(at 241.3 262.89 0)
+			(at 234.95 262.89 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13632,7 +13633,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
-			(at 238.4552 265.43 0)
+			(at 232.1052 265.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13643,7 +13644,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 237.49 261.62 0)
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13653,8 +13654,8 @@
 				)
 			)
 		)
-		(property "Description" "6.3V 4.7uF X5R ±20% 0402"
-			(at 237.49 261.62 0)
+		(property "Description" "6.3V 4.7uF X5R ¬±20% 0402"
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13665,7 +13666,7 @@
 			)
 		)
 		(property "Allied_Number" ""
-			(at 237.49 261.62 0)
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13676,7 +13677,7 @@
 			)
 		)
 		(property "LCSC PART #" "C82453"
-			(at 237.49 261.62 0)
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13687,7 +13688,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "GRM155R60J475ME47D"
-			(at 237.49 261.62 0)
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13698,7 +13699,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "Murata Electronics"
-			(at 237.49 261.62 0)
+			(at 231.14 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13935,7 +13936,7 @@
 				)
 			)
 		)
-		(property "Description" "100kΩ 0402 50V ±50ppm"
+		(property "Description" "100kŒ© 0402 50V ¬±50ppm"
 			(at 375.92 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -14139,7 +14140,7 @@
 				)
 			)
 		)
-		(property "Description" "50V 12pF NP0 ±5% 0402"
+		(property "Description" "12pF ±5% 50V NP0 0402"
 			(at 224.79 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -14161,7 +14162,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C106201"
 			(at 224.79 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -14172,7 +14173,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "CC0402JRNPO9BN120"
 			(at 224.79 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -14183,7 +14184,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 224.79 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -14341,7 +14342,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 185.42 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -14545,7 +14546,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 481.33 269.24 0)
 			(hide yes)
 			(show_name no)
@@ -14637,7 +14638,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "SW_RST"
+		(property "Value" "MCP73833-xxx-UN"
 			(at 265.43 127 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14648,7 +14649,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "PCB_Lib_ItsNotDaan:SW_SPST_EVQP2"
+		(property "Footprint" "Package_SO:MSOP-10_3x3mm_P0.5mm"
 			(at 259.08 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14659,7 +14660,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/22005b.pdf"
 			(at 259.08 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14670,7 +14671,7 @@
 				)
 			)
 		)
-		(property "Description" "20mA 4.7mm 100MΩ 1,000,000 Times 1N 15V 3.5mm 2.5mm Rectangle button"
+		(property "Description" "Stand-Alone Linear Li-Ion / Li-Polymer Charge Management Controller, MSOP-10"
 			(at 264.16 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14692,7 +14693,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" "C512395"
+		(property "LCSC PART #" "C424093"
 			(at 264.16 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14703,7 +14704,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "EVQP2P02W"
+		(property "Manufacturer_Part_Number" "MCP73831T-2ACI/OT"
 			(at 264.16 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14714,7 +14715,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" "PANASONIC "
+		(property "Manufacturer_Name" "MICROCHIP"
 			(at 264.16 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -14796,7 +14797,7 @@
 				)
 			)
 		)
-		(property "Description" "100kΩ 0402 50V ±50ppm"
+		(property "Description" "100kŒ© 0402 50V ¬±50ppm"
 			(at 412.75 68.58 0)
 			(hide yes)
 			(show_name no)
@@ -14944,7 +14945,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "TBT"
 			(at 177.8 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -15205,7 +15206,7 @@
 				)
 			)
 		)
-		(property "Description" "10kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "10kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 313.69 59.69 0)
 			(hide yes)
 			(show_name no)
@@ -15330,7 +15331,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "470Ω ±5% 100mW 0603 (uit inventory)"
 			(at 180.34 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -15354,6 +15355,39 @@
 		)
 		(property "JCLPCB" "C25104"
 			(at 180.34 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C3017744"
+			(at 180.34 62.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VO"
+			(at 180.34 62.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SCR0603J470R"
+			(at 180.34 62.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15433,7 +15467,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 215.9 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -15559,7 +15593,7 @@
 				)
 			)
 		)
-		(property "Description" "100kΩ 0402 50V ±50ppm"
+		(property "Description" "100kŒ© 0402 50V ¬±50ppm"
 			(at 375.92 168.91 0)
 			(hide yes)
 			(show_name no)
@@ -15742,7 +15776,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0201_0603Metric"
+		(property "Footprint" "Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -15764,7 +15798,7 @@
 				)
 			)
 		)
-		(property "Description" "4.7 nH 0402"
+		(property "Description" "FIXED IND 4.7uH 500mΩ 0603"
 			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -15786,7 +15820,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C76799"
 			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -15797,7 +15831,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "TDK"
 			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -15808,7 +15842,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "MLZ1608M4R7WT000"
 			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
@@ -15968,7 +16002,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 205.74 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -16093,6 +16127,39 @@
 			)
 		)
 		(property "Description" "Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 209.55 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" ""
+			(at 209.55 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" ""
+			(at 209.55 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
 			(at 209.55 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -16244,7 +16311,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 184.658 48.26 90)
+			(at 184.912 47.498 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -16254,7 +16321,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
+		(property "Footprint" "LED_SMD:LED_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
 			(at 182.88 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -16276,8 +16343,41 @@
 				)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" "Red 625nm LED Indication - Discrete 2.3V 0402"
 			(at 182.88 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C965790"
+			(at 182.88 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "XINGLIGHT"
+			(at 182.88 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "XL-1005SURC"
+			(at 182.88 46.99 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16334,7 +16434,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:SON65P200X200X80-7N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
 			(at 459.74 352.73 0)
 			(hide yes)
 			(show_name no)
@@ -16358,7 +16458,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "Board Mount Temperature Sensors +/-0.1 C accurate digital temperature sensor with integrated NV memory 6-WSON 0 to 85"
+		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
 			(at 433.07 257.81 0)
 			(hide yes)
 			(show_name no)
@@ -16393,7 +16493,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "TMP117MAIDRVT"
+		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
 			(at 459.74 852.73 0)
 			(hide yes)
 			(show_name no)
@@ -16451,6 +16551,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C2803242"
+			(at 433.07 257.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "4"
@@ -16538,7 +16649,7 @@
 				)
 			)
 		)
-		(property "Description" "10kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "10kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 405.13 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -16630,7 +16741,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "MountingHole_Pad"
+		(property "Value" ""
 			(at 362.712 137.16 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16641,7 +16752,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_DIN965_Pad"
+		(property "Footprint" ""
 			(at 351.79 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -16663,8 +16774,41 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole with connection"
+		(property "Description" ""
 			(at 351.79 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" ""
+			(at 351.79 133.35 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" ""
+			(at 351.79 133.35 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 351.79 133.35 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16741,7 +16885,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "68kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 339.09 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -16763,7 +16907,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C238338"
 			(at 339.09 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -16774,7 +16918,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-0768KL"
 			(at 339.09 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -16785,7 +16929,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 339.09 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -16867,7 +17011,7 @@
 				)
 			)
 		)
-		(property "Description" "450kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "450kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 412.75 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -16938,131 +17082,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 226.06 261.62 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "3e47503e-0f27-4382-b3be-4885cc8bdc31")
-		(property "Reference" "C26"
-			(at 228.6 260.35 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100n"
-			(at 228.6 262.89 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
-			(at 227.0252 265.43 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Allied_Number" ""
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC PART #" "C361203"
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Manufacturer_Part_Number" "C1005X5R1E104KT000E"
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Manufacturer_Name" "YAGEO"
-			(at 226.06 261.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "a33a7b3a-1dd2-4d31-b4fc-8d0e761e8edb")
-		)
-		(pin "2"
-			(uuid "5a5b0f90-233f-4b83-88e6-551038dc235d")
-		)
-		(instances
-			(project "BodyTempSensor"
-				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
-					(reference "C26")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:L")
 		(at 209.55 215.9 90)
 		(unit 1)
@@ -17084,7 +17103,7 @@
 				)
 			)
 		)
-		(property "Value" "3.5nH"
+		(property "Value" "3n5"
 			(at 209.55 213.36 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17094,7 +17113,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0201_0603Metric"
+		(property "Footprint" "Inductor_SMD:L_0201_0603Metric_Pad0.64x0.40mm_HandSolder"
 			(at 209.55 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -17116,7 +17135,7 @@
 				)
 			)
 		)
-		(property "Description" "3.5 nH 0402"
+		(property "Description" "450mA 3.5nH 250mΩ Multilayer inductor 0201 Fixed Inductors RoHS"
 			(at 209.55 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -17138,7 +17157,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C52109755"
 			(at 209.55 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -17149,7 +17168,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "CCTC"
 			(at 209.55 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -17160,7 +17179,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "LQP03HQ3N5B02"
+		(property "Manufacturer_Part_Number" "TCGL0603C3N5SZT"
 			(at 209.55 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -17398,7 +17417,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "470Ω ±5% 100mW 0603 (uit inventory)"
 			(at 191.77 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -17422,6 +17441,39 @@
 		)
 		(property "JCLPCB" "C25104"
 			(at 191.77 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C3017744"
+			(at 191.77 54.61 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VO"
+			(at 191.77 54.61 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SCR0603J470R"
+			(at 191.77 54.61 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17580,7 +17632,7 @@
 				)
 			)
 		)
-		(property "Description" "180kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "180kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 414.02 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -17602,7 +17654,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C138046"
 			(at 414.02 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -17613,7 +17665,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-07180KL"
 			(at 414.02 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -17624,7 +17676,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 414.02 165.1 0)
 			(hide yes)
 			(show_name no)
@@ -17705,7 +17757,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 2.2nF X5R ±10% 0402"
+		(property "Description" "2.2nF ±10% 50V X7R 0402"
 			(at 45.72 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -17727,7 +17779,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C106861"
 			(at 45.72 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -17738,7 +17790,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "CC0402KRX7R9BB222"
 			(at 45.72 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -17749,7 +17801,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 45.72 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -17864,6 +17916,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Name" ""
+			(at 276.86 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 276.86 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "8fe20f81-d03d-4ece-aa23-c11dd0cdda06")
 		)
@@ -17907,7 +17981,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0504_1310Metric_Pad0.83x1.28mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 			(at 143.8148 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -17929,7 +18003,40 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "CAP CER 1uF 10V X5R 0402"
+			(at 144.78 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C106254"
+			(at 144.78 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 144.78 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402KRX5R6BB105"
 			(at 144.78 49.53 0)
 			(hide yes)
 			(show_name no)
@@ -18122,6 +18229,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Name" ""
+			(at 431.8 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 431.8 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "2b816585-0161-4172-a82d-23a7c2d2ea6b")
 		)
@@ -18168,7 +18297,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 332.74 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -18190,7 +18319,7 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "30V 5.7A N-ch MOSFET SOT-23"
 			(at 327.66 59.69 0)
 			(hide yes)
 			(show_name no)
@@ -18225,6 +18354,39 @@
 		)
 		(property "Sim.Pins" "1=D 2=G 3=S"
 			(at 327.66 74.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C20917"
+			(at 327.66 59.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "AOS"
+			(at 327.66 59.69 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "AO3400A"
+			(at 327.66 59.69 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18274,7 +18436,7 @@
 				)
 			)
 		)
-		(property "Value" "2.7nH"
+		(property "Value" "2n7"
 			(at 170.18 213.36 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18284,7 +18446,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0201_0603Metric"
+		(property "Footprint" "Inductor_SMD:L_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
 			(at 170.18 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -18306,7 +18468,7 @@
 				)
 			)
 		)
-		(property "Description" "2.7 nH 0402"
+		(property "Description" "FIXED IND 2.7nH 800mA 120mΩ 0402"
 			(at 170.18 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -18328,7 +18490,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C77108"
 			(at 170.18 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -18339,7 +18501,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "muRata"
 			(at 170.18 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -18350,7 +18512,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "LQP03HQ2N7B02"
+		(property "Manufacturer_Part_Number" "LQG15HS2N7S02D"
 			(at 170.18 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -18431,7 +18593,40 @@
 				)
 			)
 		)
-		(property "Description" "1MHz, Low-Power Op Amp, SOT-23-5"
+		(property "Description" "1MHz 1.8V~6V Single Op-Amp SOT-23-5"
+			(at 402.59 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C116490"
+			(at 402.59 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "Microchip"
+			(at 402.59 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "MCP6001T-I/OT"
 			(at 402.59 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -18520,7 +18715,7 @@
 				)
 			)
 		)
-		(property "Description" "3.4A 2.2uH ±20% 3.4A SMD,4x4x2mm Power Inductors ROHS"
+		(property "Description" "3.4A 2.2uH ¬±20% 3.4A SMD,4x4x2mm Power Inductors ROHS"
 			(at 405.13 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -18724,8 +18919,41 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "RES 5.1kΩ ±5% 62.5mW 0402"
 			(at 386.08 196.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C105873"
+			(at 386.08 196.85 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 386.08 196.85 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
+			(at 386.08 196.85 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18863,7 +19091,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 424.18 154.94 0)
 			(hide yes)
 			(show_name no)
@@ -18885,7 +19113,7 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, drain/source/gate"
+		(property "Description" "30V 5.7A N-ch MOSFET SOT-23"
 			(at 419.1 157.48 0)
 			(hide yes)
 			(show_name no)
@@ -18920,6 +19148,39 @@
 		)
 		(property "Sim.Pins" "1=D 2=G 3=S"
 			(at 419.1 172.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C20917"
+			(at 419.1 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "AOS"
+			(at 419.1 157.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "AO3400A"
+			(at 419.1 157.48 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19126,7 +19387,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "2n2"
 			(at 279.4 127 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19159,7 +19420,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "2.2nF ±10% 50V X7R 0402"
 			(at 276.86 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -19181,7 +19442,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" "C361203"
+		(property "LCSC PART #" "C106861"
 			(at 276.86 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -19192,7 +19453,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "C1005X5R1E104KT000E"
+		(property "Manufacturer_Part_Number" "CC0402KRX7R9BB222"
 			(at 276.86 125.73 0)
 			(hide yes)
 			(show_name no)
@@ -19284,7 +19545,7 @@
 				)
 			)
 		)
-		(property "Description" "10V 10uF X5R ±20% 0402"
+		(property "Description" "10V 10uF X5R ¬±20% 0402"
 			(at 425.45 60.96 0)
 			(hide yes)
 			(show_name no)
@@ -19487,7 +19748,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "1kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 227.33 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -19510,6 +19771,39 @@
 			)
 		)
 		(property "JCLPCB" "C25104"
+			(at 227.33 67.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C106235"
+			(at 227.33 67.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 227.33 67.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402FR-071KL"
 			(at 227.33 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -19590,7 +19884,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 264.16 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -19740,7 +20034,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 237.49 271.78 0)
+		(at 231.14 271.78 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -19751,7 +20045,7 @@
 		(fields_autoplaced yes)
 		(uuid "76045a32-bc0b-407e-b7ac-4462a4974972")
 		(property "Reference" "#PWR024"
-			(at 237.49 278.13 0)
+			(at 231.14 278.13 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19762,7 +20056,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 237.49 275.59 0)
+			(at 231.14 275.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19773,7 +20067,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 237.49 271.78 0)
+			(at 231.14 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19784,7 +20078,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 237.49 271.78 0)
+			(at 231.14 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19795,7 +20089,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 237.49 271.78 0)
+			(at 231.14 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20030,7 +20324,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 394.97 231.14 0)
 			(hide yes)
 			(show_name no)
@@ -20232,7 +20526,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 481.33 231.14 0)
 			(hide yes)
 			(show_name no)
@@ -20334,7 +20628,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal"
 			(at 41.91 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -20345,7 +20639,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
+		(property "Datasheet" ""
 			(at 41.91 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -20356,7 +20650,40 @@
 				)
 			)
 		)
-		(property "Description" "USB 2.0-only Type-C Receptacle connector"
+		(property "Description" "USB-C (USB TYPE-C) Receptacle Connector 16 Position Surface Mount"
+			(at 38.1 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C223907"
+			(at 38.1 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "Korean Hroparts Elec"
+			(at 38.1 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "TYPE-C-31-M-14"
 			(at 38.1 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -20806,7 +21133,7 @@
 				)
 			)
 		)
-		(property "Description" "10kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "10kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 264.16 161.29 0)
 			(hide yes)
 			(show_name no)
@@ -20931,7 +21258,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "CAP CER 390nF 16V X5R 0402"
 			(at 400.05 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -20953,7 +21280,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C7393858"
 			(at 400.05 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -20964,7 +21291,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "TCC0402X5R394K160AT"
 			(at 400.05 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -20975,7 +21302,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "CCTC"
 			(at 400.05 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -21003,7 +21330,7 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint")
-		(at 226.06 252.73 0)
+		(at 219.71 252.73 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -21013,7 +21340,7 @@
 		(dnp no)
 		(uuid "823e8367-1094-45b4-b0a3-1813bc1bc1ba")
 		(property "Reference" "TP1"
-			(at 224.282 247.65 0)
+			(at 217.932 247.65 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -21024,7 +21351,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 228.6 250.6979 0)
+			(at 222.25 250.6979 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21036,7 +21363,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 231.14 252.73 0)
+			(at 224.79 252.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21047,7 +21374,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 231.14 252.73 0)
+			(at 224.79 252.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21058,7 +21385,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 226.06 252.73 0)
+			(at 219.71 252.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21069,7 +21396,7 @@
 			)
 		)
 		(property "Allied_Number" ""
-			(at 226.06 252.73 0)
+			(at 219.71 252.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21080,7 +21407,29 @@
 			)
 		)
 		(property "LCSC PART #" ""
-			(at 226.06 252.73 0)
+			(at 219.71 252.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" ""
+			(at 219.71 252.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 219.71 252.73 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21201,7 +21550,7 @@
 				)
 			)
 		)
-		(property "Value" "TMP117MAIDRVR"
+		(property "Value" "TMP117MAIDRVT"
 			(at 361.95 214.63 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21211,7 +21560,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:SON65P200X200X80-7N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
 			(at 373.38 314.63 0)
 			(hide yes)
 			(show_name no)
@@ -21235,7 +21584,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "Board Mount Temperature Sensors +/-0.1 C accurate digital temperature sensor with integrated NV memory 6-WSON 0 to 85"
+		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
 			(at 346.71 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -21270,7 +21619,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "TMP117MAIDRVT"
+		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
 			(at 373.38 814.63 0)
 			(hide yes)
 			(show_name no)
@@ -21328,6 +21677,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C2803242"
+			(at 346.71 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "4"
@@ -21518,7 +21878,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 226.06 271.78 0)
+		(at 219.71 271.78 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -21529,7 +21889,7 @@
 		(fields_autoplaced yes)
 		(uuid "8db418e4-487d-4718-813a-76e8a33a56a1")
 		(property "Reference" "#PWR022"
-			(at 226.06 278.13 0)
+			(at 219.71 278.13 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21540,7 +21900,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 226.06 275.59 0)
+			(at 219.71 275.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21551,7 +21911,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 226.06 271.78 0)
+			(at 219.71 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21562,7 +21922,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 226.06 271.78 0)
+			(at 219.71 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21573,7 +21933,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 226.06 271.78 0)
+			(at 219.71 271.78 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21651,7 +22011,7 @@
 				)
 			)
 		)
-		(property "Description" "6.3V 4.7uF X5R ±20% 0402"
+		(property "Description" "6.3V 4.7uF X5R ¬±20% 0402"
 			(at 370.84 60.96 0)
 			(hide yes)
 			(show_name no)
@@ -21753,7 +22113,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:SON65P200X200X80-7N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
 			(at 459.74 314.63 0)
 			(hide yes)
 			(show_name no)
@@ -21777,7 +22137,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "Board Mount Temperature Sensors +/-0.1 C accurate digital temperature sensor with integrated NV memory 6-WSON 0 to 85"
+		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
 			(at 433.07 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -21812,7 +22172,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "TMP117MAIDRVT"
+		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
 			(at 459.74 814.63 0)
 			(hide yes)
 			(show_name no)
@@ -21870,6 +22230,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C2803242"
+			(at 433.07 219.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "4"
@@ -21958,7 +22329,40 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "RES 5.1kΩ ±5% 62.5mW 0402"
+			(at 62.23 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C105873"
+			(at 62.23 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 62.23 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
 			(at 62.23 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -22007,7 +22411,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "450k"
 			(at 266.7 111.76 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22040,7 +22444,7 @@
 				)
 			)
 		)
-		(property "Description" "10kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "450kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 264.16 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -22062,7 +22466,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" "C163810"
+		(property "LCSC PART #" "C5159688"
 			(at 264.16 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -22073,7 +22477,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "WR04X1002FTL"
+		(property "Manufacturer_Part_Number" "FRC0402F4503TS"
 			(at 264.16 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -22084,7 +22488,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" "Walsin Tech Corp"
+		(property "Manufacturer_Name" "FOJAN"
 			(at 264.16 110.49 0)
 			(hide yes)
 			(show_name no)
@@ -22163,7 +22567,7 @@
 				)
 			)
 		)
-		(property "Description" "22Ω 0402 50V 100mW ±100ppm"
+		(property "Description" "22Œ© 0402 50V 100mW ¬±100ppm"
 			(at 377.19 49.53 0)
 			(hide yes)
 			(show_name no)
@@ -22444,7 +22848,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 195.58 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -22569,7 +22973,7 @@
 				)
 			)
 		)
-		(property "Description" "47kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "47kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 330.2 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -22591,7 +22995,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C93943"
 			(at 330.2 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -22602,7 +23006,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-0747KL"
 			(at 330.2 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -22613,7 +23017,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 330.2 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -22670,7 +23074,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:QFN40P600X600X95-49N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:QFN40P600X600X95-49N"
 			(at 152.4 229.54 0)
 			(hide yes)
 			(show_name no)
@@ -22694,7 +23098,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "RF System on a Chip - SoC Ultra-low power Bluetooth Multiprotocol 5.4 SoC System-on-Chip"
+		(property "Description" "2.4GHz BLE/Thread/Zigbee SoC QFN-48 1.5MB NVM"
 			(at 90.17 152.4 0)
 			(hide yes)
 			(show_name no)
@@ -22787,6 +23191,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C42458750"
+			(at 90.17 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "27"
@@ -23045,7 +23460,7 @@
 				)
 			)
 		)
-		(property "Value" "3.5nH"
+		(property "Value" "3n5"
 			(at 189.23 213.36 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23055,7 +23470,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0201_0603Metric"
+		(property "Footprint" "Inductor_SMD:L_0201_0603Metric_Pad0.64x0.40mm_HandSolder"
 			(at 189.23 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -23077,7 +23492,7 @@
 				)
 			)
 		)
-		(property "Description" "3.5 nH 0402"
+		(property "Description" "450mA 3.5nH 250mΩ Multilayer inductor 0201 Fixed Inductors RoHS"
 			(at 189.23 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -23099,7 +23514,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C52109755"
 			(at 189.23 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -23110,7 +23525,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "CCTC"
 			(at 189.23 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -23121,7 +23536,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "LQP03HQ3N5B02"
+		(property "Manufacturer_Part_Number" "TCGL0603C3N5SZT"
 			(at 189.23 215.9 0)
 			(hide yes)
 			(show_name no)
@@ -23648,7 +24063,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "82kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 400.05 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -23670,7 +24085,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C137932"
 			(at 400.05 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -23681,7 +24096,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-0782KL"
 			(at 400.05 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -23692,7 +24107,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 400.05 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -23850,6 +24265,39 @@
 			)
 		)
 		(property "Description" "Stand-Alone Linear Li-Ion / Li-Polymer Charge Management Controller, MSOP-10"
+			(at 214.63 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C424093"
+			(at 214.63 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "MICROCHIP"
+			(at 214.63 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "MCP73831T-2ACI/OT"
 			(at 214.63 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -24112,7 +24560,7 @@
 				)
 			)
 		)
-		(property "Description" "50V 2pF 0402"
+		(property "Description" "2pF ±0.1pF 50V NP0 0402 (niet op LCSC, zie Farnell)"
 			(at 199.39 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -24134,7 +24582,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "CC0402BRNPO9BN2R0"
 			(at 199.39 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -24145,7 +24593,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "CC0402BRNPO9BN2R0"
 			(at 199.39 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -24156,7 +24604,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 199.39 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -24293,7 +24741,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:QFN40P600X600X95-49N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:QFN40P600X600X95-49N"
 			(at 151.13 324.79 0)
 			(hide yes)
 			(show_name no)
@@ -24317,7 +24765,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "RF System on a Chip - SoC Ultra-low power Bluetooth Multiprotocol 5.4 SoC System-on-Chip"
+		(property "Description" "2.4GHz BLE/Thread/Zigbee SoC QFN-48 1.5MB NVM"
 			(at 88.9 247.65 0)
 			(hide yes)
 			(show_name no)
@@ -24410,6 +24858,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C42458750"
+			(at 88.9 247.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "27"
@@ -24726,84 +25185,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:VBUS")
-		(at 237.49 252.73 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "adbef3d9-aad1-463f-8781-ca371c63763e")
-		(property "Reference" "#PWR023"
-			(at 237.49 256.54 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "VBUS"
-			(at 237.49 247.65 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 237.49 252.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 237.49 252.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VBUS\""
-			(at 237.49 252.73 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2fea9fb3-4f11-47e8-91dc-2e8b7c321d18")
-		)
-		(instances
-			(project "BodyTempSensor"
-				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
-					(reference "#PWR023")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 175.26 261.62 0)
 		(unit 1)
@@ -24858,7 +25239,7 @@
 				)
 			)
 		)
-		(property "Description" "10V 1uF X5R ±20% 0403"
+		(property "Description" "10V 1uF X5R ¬±20% 0402"
 			(at 175.26 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -24902,7 +25283,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" "KDS Daishinku"
+		(property "Manufacturer_Name" "YAGEO"
 			(at 175.26 261.62 0)
 			(hide yes)
 			(show_name no)
@@ -25095,6 +25476,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Name" ""
+			(at 375.92 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 375.92 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "7da8dadb-c26f-4ad7-abdf-4ecf8a71e850")
 		)
@@ -25239,7 +25642,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 10nF X5R ±10% 0402"
+		(property "Description" "CAP CER 10nF 25V X7R 0402"
 			(at 36.83 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25261,7 +25664,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C327025"
 			(at 36.83 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25272,7 +25675,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "CC0402KRX7R8BB103"
 			(at 36.83 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25283,7 +25686,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 36.83 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25362,7 +25765,7 @@
 				)
 			)
 		)
-		(property "Description" "22Ω 0402 50V 100mW ±100ppm"
+		(property "Description" "22Œ© 0402 50V 100mW ¬±100ppm"
 			(at 203.2 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -25566,7 +25969,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 100nF X5R ±10% 0402"
+		(property "Description" "25V 100nF X5R ¬±10% 0402"
 			(at 394.97 269.24 0)
 			(hide yes)
 			(show_name no)
@@ -25770,7 +26173,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 2.2uF X5R ±10% 0402"
+		(property "Description" "2.2uF ±10% 10V X5R 0402"
 			(at 27.94 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25792,7 +26195,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C295941"
 			(at 27.94 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25803,7 +26206,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "0402X225K100CT"
 			(at 27.94 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -25814,7 +26217,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "Walsin Tech Corp"
 			(at 27.94 204.47 0)
 			(hide yes)
 			(show_name no)
@@ -26051,7 +26454,7 @@
 				)
 			)
 		)
-		(property "Description" "180kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "180kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 322.58 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -26073,7 +26476,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C138046"
 			(at 322.58 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -26084,7 +26487,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-07180KL"
 			(at 322.58 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -26095,7 +26498,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 322.58 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -26177,7 +26580,40 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "RES 5.1kΩ ±5% 62.5mW 0402"
+			(at 71.12 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C105873"
+			(at 71.12 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 71.12 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
 			(at 71.12 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -26256,7 +26692,7 @@
 				)
 			)
 		)
-		(property "Description" "32MHz SMD crystal oscillator 10pF ±10ppm ±20ppm SMD"
+		(property "Description" "32MHz ±10ppm 10pF SMD3225-4P Crystal"
 			(at 217.17 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -26289,7 +26725,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C113671"
 			(at 217.17 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -26300,7 +26736,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "X322532MMB4SI"
 			(at 217.17 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -26311,7 +26747,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YXC"
 			(at 217.17 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -26476,8 +26912,41 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "RES 5.1kΩ ±5% 62.5mW 0402"
 			(at 386.08 201.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C105873"
+			(at 386.08 201.93 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO"
+			(at 386.08 201.93 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
+			(at 386.08 201.93 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26636,7 +27105,7 @@
 				)
 			)
 		)
-		(property "Description" "25V 2.2uF X5R ±10% 0402"
+		(property "Description" "2.2uF ±10% 10V X5R 0402"
 			(at 41.91 173.99 0)
 			(hide yes)
 			(show_name no)
@@ -26658,7 +27127,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C295941"
 			(at 41.91 173.99 0)
 			(hide yes)
 			(show_name no)
@@ -26669,7 +27138,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "0402X225K100CT"
 			(at 41.91 173.99 0)
 			(hide yes)
 			(show_name no)
@@ -26680,7 +27149,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "Walsin Tech Corp"
 			(at 41.91 173.99 0)
 			(hide yes)
 			(show_name no)
@@ -26908,7 +27377,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LibLoader:SON65P200X200X80-7N"
+		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
 			(at 373.38 352.73 0)
 			(hide yes)
 			(show_name no)
@@ -26932,7 +27401,7 @@
 				(justify left top)
 			)
 		)
-		(property "Description" "Board Mount Temperature Sensors +/-0.1 C accurate digital temperature sensor with integrated NV memory 6-WSON 0 to 85"
+		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
 			(at 346.71 257.81 0)
 			(hide yes)
 			(show_name no)
@@ -26967,7 +27436,7 @@
 				(justify left top)
 			)
 		)
-		(property "Manufacturer_Part_Number" "TMP117MAIDRVT"
+		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
 			(at 373.38 852.73 0)
 			(hide yes)
 			(show_name no)
@@ -27025,6 +27494,17 @@
 					(size 1.27 1.27)
 				)
 				(justify left top)
+			)
+		)
+		(property "LCSC PART #" "C2803242"
+			(at 346.71 257.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(pin "4"
@@ -27112,7 +27592,7 @@
 				)
 			)
 		)
-		(property "Description" "20mA 4.7mm 100MΩ 1,000,000 Times 1N 15V 3.5mm 2.5mm Rectangle button"
+		(property "Description" "20mA 4.7mm 100MŒ© 1,000,000 Times 1N 15V 3.5mm 2.5mm Rectangle button"
 			(at 264.16 176.53 0)
 			(hide yes)
 			(show_name no)
@@ -27237,7 +27717,7 @@
 				)
 			)
 		)
-		(property "Description" "10kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "10kŒ© 0402 50V 62,5mW ¬±100ppm"
 			(at 236.22 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -27362,7 +27842,7 @@
 				)
 			)
 		)
-		(property "Description" "180kΩ 0402 50V 62,5mW ±100ppm"
+		(property "Description" "180kΩ ±1% 62.5mW 0402 Thick Film Resistor"
 			(at 330.2 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -27384,7 +27864,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C138046"
 			(at 330.2 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -27395,7 +27875,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "RC0402FR-07180KL"
 			(at 330.2 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -27406,7 +27886,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 330.2 48.26 0)
 			(hide yes)
 			(show_name no)
@@ -27768,7 +28248,7 @@
 				)
 			)
 		)
-		(property "Value" "MountingHole_Pad"
+		(property "Value" ""
 			(at 375.92 136.398 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27778,7 +28258,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_DIN965_Pad"
+		(property "Footprint" ""
 			(at 377.19 133.35 0)
 			(hide yes)
 			(show_name no)
@@ -27800,8 +28280,41 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole with connection"
+		(property "Description" ""
 			(at 377.19 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" ""
+			(at 377.19 133.35 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" ""
+			(at 377.19 133.35 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" ""
+			(at 377.19 133.35 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28002,7 +28515,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 169.418 48.006 90)
+			(at 169.418 47.498 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -28012,7 +28525,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
+		(property "Footprint" "LED_SMD:LED_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
 			(at 167.64 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -28034,8 +28547,41 @@
 				)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" "Red 625nm LED Indication - Discrete 2.3V 0402"
 			(at 167.64 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C965790"
+			(at 167.64 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "XINGLIGHT"
+			(at 167.64 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "XL-1005SURC"
+			(at 167.64 46.99 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28351,7 +28897,7 @@
 				)
 			)
 		)
-		(property "Description" "50V 12pF NP0 ±5% 0402"
+		(property "Description" "12pF ±5% 50V NP0 0402"
 			(at 209.55 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -28373,7 +28919,7 @@
 				)
 			)
 		)
-		(property "LCSC PART #" ""
+		(property "LCSC PART #" "C106201"
 			(at 209.55 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -28384,7 +28930,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" ""
+		(property "Manufacturer_Part_Number" "CC0402JRNPO9BN120"
 			(at 209.55 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -28395,7 +28941,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Name" ""
+		(property "Manufacturer_Name" "YAGEO"
 			(at 209.55 175.26 0)
 			(hide yes)
 			(show_name no)
@@ -28487,6 +29033,39 @@
 				)
 			)
 		)
+		(property "LCSC PART #" "C2827654"
+			(at 95.25 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "TECH PUBLIC"
+			(at 95.25 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "USBLC6-2SC6"
+			(at 95.25 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "c60c3d7f-f6c1-4445-9d3f-2c34300577ee")
 		)
@@ -28537,7 +29116,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 176.784 48.006 90)
+			(at 176.784 47.498 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -28547,7 +29126,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
+		(property "Footprint" "LED_SMD:LED_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
 			(at 175.26 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -28569,8 +29148,41 @@
 				)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" "Red 625nm LED Indication - Discrete 2.3V 0402"
 			(at 175.26 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C965790"
+			(at 175.26 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "XINGLIGHT"
+			(at 175.26 46.99 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "XL-1005SURC"
+			(at 175.26 46.99 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -28590,6 +29202,84 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "D2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 231.14 252.73 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fd194ecb-bdf5-4916-9d31-75a342190991")
+		(property "Reference" "#PWR014"
+			(at 231.14 256.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 231.14 247.65 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 231.14 252.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 231.14 252.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 231.14 252.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1349d6bb-75a7-49ba-b63d-c9eae1acba42")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
