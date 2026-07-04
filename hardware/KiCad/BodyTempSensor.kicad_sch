@@ -759,6 +759,222 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector_Generic:Conn_02x02_Odd_Even"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "J"
+				(at 1.27 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_02x02_Odd_Even"
+				(at 1.27 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_2x??_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Conn_02x02_Odd_Even_1_1"
+				(rectangle
+					(start -1.27 1.27)
+					(end 3.81 -3.81)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 3.81 0.127)
+					(end 2.54 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 3.81 -2.413)
+					(end 2.54 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 0 180)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 7.62 -2.54 180)
+					(length 3.81)
+					(name "Pin_4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Connector_Generic:Conn_02x05_Odd_Even"
 			(pin_names
 				(offset 1.016)
@@ -6344,7 +6560,7 @@
 	)
 	(rectangle
 		(start 317.5 185.42)
-		(end 502.92 292.1)
+		(end 502.92 309.88)
 		(stroke
 			(width 0.5)
 			(type default)
@@ -6560,7 +6776,7 @@
 	)
 	(text "https://www.ti.com/lit/ug/tidudw4b/tidudw4b.pdf?ts=1779587732925"
 		(exclude_from_sim no)
-		(at 365.252 289.814 0)
+		(at 411.734 307.848 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7096,7 +7312,7 @@
 	)
 	(text "1001000x "
 		(exclude_from_sim no)
-		(at 378.206 265.176 0)
+		(at 378.206 275.336 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7216,7 +7432,7 @@
 	)
 	(text "1001011x"
 		(exclude_from_sim no)
-		(at 464.312 266.192 0)
+		(at 464.312 276.352 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7389,7 +7605,7 @@
 		(uuid "36bf2c8a-7610-41bb-b75c-fcb32f65a04c")
 	)
 	(junction
-		(at 394.97 260.35)
+		(at 394.97 270.51)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "394a1f9c-a34a-4b8b-8067-cc2129c51739")
@@ -7497,7 +7713,7 @@
 		(uuid "7237644c-76c7-40e5-b70d-368d1b7f830d")
 	)
 	(junction
-		(at 481.33 260.35)
+		(at 481.33 270.51)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "77342e09-5d4e-4de9-99f1-b59c78789ccd")
@@ -7667,7 +7883,7 @@
 		(uuid "272c85fc-eca2-4596-ba18-c47efe78878b")
 	)
 	(no_connect
-		(at 448.31 275.59)
+		(at 448.31 285.75)
 		(uuid "2f1410c7-51a1-4bcc-91e2-a41a1b00dd8e")
 	)
 	(no_connect
@@ -7691,15 +7907,15 @@
 		(uuid "713e927e-9fb2-4ac7-a028-c7cdf36ec1d2")
 	)
 	(no_connect
-		(at 361.95 275.59)
+		(at 361.95 285.75)
 		(uuid "72c507db-ee0b-4684-ada8-3966ea50718e")
 	)
 	(no_connect
-		(at 433.07 262.89)
+		(at 433.07 273.05)
 		(uuid "7f6015c5-9c84-4949-9178-66366e195051")
 	)
 	(no_connect
-		(at 346.71 262.89)
+		(at 346.71 273.05)
 		(uuid "8d039ed0-38a2-4479-bd34-ca71934f8148")
 	)
 	(no_connect
@@ -7776,7 +7992,7 @@
 	)
 	(wire
 		(pts
-			(xy 394.97 273.05) (xy 394.97 278.13)
+			(xy 394.97 283.21) (xy 394.97 288.29)
 		)
 		(stroke
 			(width 0)
@@ -7856,6 +8072,16 @@
 	)
 	(wire
 		(pts
+			(xy 454.66 298.45) (xy 468.63 298.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "06eaee7f-727f-4028-a39a-e578fd58df87")
+	)
+	(wire
+		(pts
 			(xy 209.55 163.83) (xy 209.55 171.45)
 		)
 		(stroke
@@ -7866,7 +8092,7 @@
 	)
 	(wire
 		(pts
-			(xy 334.01 260.35) (xy 334.01 278.13)
+			(xy 334.01 270.51) (xy 334.01 288.29)
 		)
 		(stroke
 			(width 0)
@@ -7966,7 +8192,7 @@
 	)
 	(wire
 		(pts
-			(xy 384.81 262.89) (xy 384.81 278.13)
+			(xy 384.81 273.05) (xy 384.81 288.29)
 		)
 		(stroke
 			(width 0)
@@ -8053,6 +8279,16 @@
 			(type default)
 		)
 		(uuid "1aacb2cb-340b-4da7-b806-47f1edd21b64")
+	)
+	(wire
+		(pts
+			(xy 454.66 250.19) (xy 468.63 250.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c13a3c0-ec9b-46cf-9d16-9893d9fb6924")
 	)
 	(wire
 		(pts
@@ -8176,6 +8412,16 @@
 	)
 	(wire
 		(pts
+			(xy 454.66 295.91) (xy 468.63 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "248cb0d9-5d4a-4568-b07f-2657e904da57")
+	)
+	(wire
+		(pts
 			(xy 403.86 116.84) (xy 415.29 116.84)
 		)
 		(stroke
@@ -8286,7 +8532,7 @@
 	)
 	(wire
 		(pts
-			(xy 394.97 260.35) (xy 394.97 251.46)
+			(xy 394.97 270.51) (xy 394.97 261.62)
 		)
 		(stroke
 			(width 0)
@@ -8386,6 +8632,16 @@
 	)
 	(wire
 		(pts
+			(xy 368.3 251.46) (xy 382.27 251.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "31695b12-efc8-4a4a-84f8-1715dea7da19")
+	)
+	(wire
+		(pts
 			(xy 264.16 114.3) (xy 264.16 118.11)
 		)
 		(stroke
@@ -8456,6 +8712,16 @@
 	)
 	(wire
 		(pts
+			(xy 454.66 252.73) (xy 468.63 252.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3a8f0ea0-370c-423d-b5fc-f6ca743a15ac")
+	)
+	(wire
+		(pts
 			(xy 403.86 107.95) (xy 417.83 107.95)
 		)
 		(stroke
@@ -8476,7 +8742,7 @@
 	)
 	(wire
 		(pts
-			(xy 481.33 273.05) (xy 481.33 278.13)
+			(xy 481.33 283.21) (xy 481.33 288.29)
 		)
 		(stroke
 			(width 0)
@@ -8546,6 +8812,16 @@
 	)
 	(wire
 		(pts
+			(xy 341.63 295.91) (xy 355.6 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "456ab85e-0ba3-4de8-a405-108e2b706a92")
+	)
+	(wire
+		(pts
 			(xy 421.64 148.59) (xy 430.53 148.59)
 		)
 		(stroke
@@ -8553,6 +8829,16 @@
 			(type default)
 		)
 		(uuid "45a0a0b2-98d4-43f6-b632-32ba65c2ae94")
+	)
+	(wire
+		(pts
+			(xy 341.63 251.46) (xy 355.6 251.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "46503cfc-f21b-4a2d-b814-acc3d5c89eeb")
 	)
 	(wire
 		(pts
@@ -8566,13 +8852,23 @@
 	)
 	(wire
 		(pts
-			(xy 463.55 262.89) (xy 477.52 262.89)
+			(xy 463.55 273.05) (xy 477.52 273.05)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "49127a6d-a8fc-4054-a1b8-075a298234ac")
+	)
+	(wire
+		(pts
+			(xy 427.99 250.19) (xy 441.96 250.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "499ed68c-986e-4604-a677-a52e4bd83b63")
 	)
 	(wire
 		(pts
@@ -8626,6 +8922,16 @@
 	)
 	(wire
 		(pts
+			(xy 427.99 246.38) (xy 427.99 250.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4f9ba1ed-3627-4983-8a65-8aea9d3c0659")
+	)
+	(wire
+		(pts
 			(xy 207.01 163.83) (xy 209.55 163.83)
 		)
 		(stroke
@@ -8663,6 +8969,16 @@
 			(type default)
 		)
 		(uuid "52b26c6f-8a59-4f6e-9d1b-cf2790ec7d47")
+	)
+	(wire
+		(pts
+			(xy 341.63 245.11) (xy 341.63 248.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "52f21909-e384-4f28-9f7d-8b0a7252d0ab")
 	)
 	(wire
 		(pts
@@ -8746,6 +9062,16 @@
 	)
 	(wire
 		(pts
+			(xy 468.63 252.73) (xy 468.63 255.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5add022e-4a50-4f59-aa10-1ba0a1478033")
+	)
+	(wire
+		(pts
 			(xy 214.63 73.66) (xy 214.63 77.47)
 		)
 		(stroke
@@ -8776,7 +9102,17 @@
 	)
 	(wire
 		(pts
-			(xy 481.33 260.35) (xy 481.33 251.46)
+			(xy 427.99 252.73) (xy 441.96 252.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5da55af8-16cb-4e59-b40a-30a2f15d799a")
+	)
+	(wire
+		(pts
+			(xy 481.33 270.51) (xy 481.33 261.62)
 		)
 		(stroke
 			(width 0)
@@ -8796,7 +9132,7 @@
 	)
 	(wire
 		(pts
-			(xy 394.97 260.35) (xy 394.97 265.43)
+			(xy 394.97 270.51) (xy 394.97 275.59)
 		)
 		(stroke
 			(width 0)
@@ -8806,7 +9142,7 @@
 	)
 	(wire
 		(pts
-			(xy 463.55 260.35) (xy 481.33 260.35)
+			(xy 463.55 270.51) (xy 481.33 270.51)
 		)
 		(stroke
 			(width 0)
@@ -8886,6 +9222,26 @@
 	)
 	(wire
 		(pts
+			(xy 368.3 298.45) (xy 382.27 298.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "63d21896-2882-46ca-9a80-920519d38c6a")
+	)
+	(wire
+		(pts
+			(xy 427.99 292.1) (xy 427.99 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "667eb91d-cfb9-4f27-a0e8-63a9f9e4f79d")
+	)
+	(wire
+		(pts
 			(xy 388.62 107.95) (xy 388.62 133.35)
 		)
 		(stroke
@@ -8933,6 +9289,16 @@
 			(type default)
 		)
 		(uuid "69eae23b-b10d-4146-8f56-ad2d6b1aca0d")
+	)
+	(wire
+		(pts
+			(xy 368.3 248.92) (xy 382.27 248.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6a366dc6-e26f-453e-82dd-a9a44313daac")
 	)
 	(wire
 		(pts
@@ -9316,6 +9682,16 @@
 	)
 	(wire
 		(pts
+			(xy 427.99 295.91) (xy 441.96 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91a96187-467b-45a9-aedf-8d3e1c9e37d5")
+	)
+	(wire
+		(pts
 			(xy 372.11 46.99) (xy 370.84 46.99)
 		)
 		(stroke
@@ -9406,7 +9782,7 @@
 	)
 	(wire
 		(pts
-			(xy 346.71 260.35) (xy 334.01 260.35)
+			(xy 346.71 270.51) (xy 334.01 270.51)
 		)
 		(stroke
 			(width 0)
@@ -9526,7 +9902,7 @@
 	)
 	(wire
 		(pts
-			(xy 463.55 257.81) (xy 477.52 257.81)
+			(xy 463.55 267.97) (xy 477.52 267.97)
 		)
 		(stroke
 			(width 0)
@@ -9916,6 +10292,16 @@
 	)
 	(wire
 		(pts
+			(xy 468.63 298.45) (xy 468.63 300.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c65cd5cf-d71a-4e99-b95f-b02b6dc959ea")
+	)
+	(wire
+		(pts
 			(xy 205.74 255.27) (xy 195.58 255.27)
 		)
 		(stroke
@@ -10043,6 +10429,16 @@
 			(type default)
 		)
 		(uuid "cefcb7af-c0cf-4934-8d1f-7ac0eac5bca7")
+	)
+	(wire
+		(pts
+			(xy 341.63 292.1) (xy 341.63 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf0f04c2-0739-425f-bc6b-567b58958805")
 	)
 	(wire
 		(pts
@@ -10176,6 +10572,26 @@
 	)
 	(wire
 		(pts
+			(xy 341.63 298.45) (xy 355.6 298.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d8fd8c91-c1d0-4f8b-8c97-76d265c3ba6b")
+	)
+	(wire
+		(pts
+			(xy 427.99 298.45) (xy 441.96 298.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "da0b7a71-b143-4a55-8654-fe3edc07167e")
+	)
+	(wire
+		(pts
 			(xy 412.75 46.99) (xy 412.75 49.53)
 		)
 		(stroke
@@ -10186,6 +10602,16 @@
 	)
 	(wire
 		(pts
+			(xy 341.63 248.92) (xy 355.6 248.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dbc55db7-719f-441a-a492-2f9473e49617")
+	)
+	(wire
+		(pts
 			(xy 394.97 234.95) (xy 394.97 240.03)
 		)
 		(stroke
@@ -10193,6 +10619,16 @@
 			(type default)
 		)
 		(uuid "dd29bb56-d924-46d1-a8a1-54e2b520c56a")
+	)
+	(wire
+		(pts
+			(xy 382.27 251.46) (xy 382.27 254)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd3543ae-d61f-4b81-a076-3e87bba56a4b")
 	)
 	(wire
 		(pts
@@ -10213,6 +10649,16 @@
 			(type default)
 		)
 		(uuid "de86bd43-7bbc-46b8-8e88-ef0e8455bd2f")
+	)
+	(wire
+		(pts
+			(xy 368.3 295.91) (xy 382.27 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ded8add7-f862-4e51-9213-749ebe6060b6")
 	)
 	(wire
 		(pts
@@ -10356,7 +10802,7 @@
 	)
 	(wire
 		(pts
-			(xy 377.19 257.81) (xy 391.16 257.81)
+			(xy 377.19 267.97) (xy 391.16 267.97)
 		)
 		(stroke
 			(width 0)
@@ -10406,7 +10852,7 @@
 	)
 	(wire
 		(pts
-			(xy 419.1 257.81) (xy 433.07 257.81)
+			(xy 419.1 267.97) (xy 433.07 267.97)
 		)
 		(stroke
 			(width 0)
@@ -10486,7 +10932,7 @@
 	)
 	(wire
 		(pts
-			(xy 433.07 260.35) (xy 420.37 260.35)
+			(xy 433.07 270.51) (xy 420.37 270.51)
 		)
 		(stroke
 			(width 0)
@@ -10496,7 +10942,7 @@
 	)
 	(wire
 		(pts
-			(xy 332.74 257.81) (xy 346.71 257.81)
+			(xy 332.74 267.97) (xy 346.71 267.97)
 		)
 		(stroke
 			(width 0)
@@ -10566,7 +11012,7 @@
 	)
 	(wire
 		(pts
-			(xy 377.19 260.35) (xy 394.97 260.35)
+			(xy 377.19 270.51) (xy 394.97 270.51)
 		)
 		(stroke
 			(width 0)
@@ -10596,13 +11042,23 @@
 	)
 	(wire
 		(pts
-			(xy 481.33 260.35) (xy 481.33 265.43)
+			(xy 481.33 270.51) (xy 481.33 275.59)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "f738003c-8722-41d2-be72-c90032f13c15")
+	)
+	(wire
+		(pts
+			(xy 382.27 298.45) (xy 382.27 300.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f89183b5-d854-40af-9be8-a743d3bdd09d")
 	)
 	(wire
 		(pts
@@ -10616,7 +11072,7 @@
 	)
 	(wire
 		(pts
-			(xy 420.37 260.35) (xy 420.37 278.13)
+			(xy 420.37 270.51) (xy 420.37 288.29)
 		)
 		(stroke
 			(width 0)
@@ -10646,7 +11102,7 @@
 	)
 	(wire
 		(pts
-			(xy 377.19 262.89) (xy 384.81 262.89)
+			(xy 377.19 273.05) (xy 384.81 273.05)
 		)
 		(stroke
 			(width 0)
@@ -11690,7 +12146,7 @@
 		(uuid "0202334a-aa7b-4155-b906-c9c9966775b2")
 	)
 	(label "P0.17/SDA"
-		(at 477.52 257.81 180)
+		(at 477.52 267.97 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11741,7 +12197,17 @@
 		(uuid "257139ea-eb7a-463c-92a5-7bd555e237df")
 	)
 	(label "P0.19/SCL"
-		(at 332.74 257.81 0)
+		(at 382.27 295.91 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "2e04b28c-49b1-48e5-b03b-6b89de3691dc")
+	)
+	(label "P0.19/SCL"
+		(at 332.74 267.97 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11759,6 +12225,16 @@
 			(justify left bottom)
 		)
 		(uuid "31f2cb78-c68e-409a-83bb-b53b51cda279")
+	)
+	(label "P0.17/SDA"
+		(at 468.63 250.19 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3491b453-b2f5-4acd-8fb1-8669dc93753c")
 	)
 	(label "AMP_1"
 		(at 408.94 124.46 180)
@@ -11780,6 +12256,16 @@
 		)
 		(uuid "3ca2c2ee-41f6-4ba8-b599-fb897aea20c9")
 	)
+	(label "P0.19/SCL"
+		(at 468.63 295.91 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3d110a1e-76c4-47fb-9712-07970b40866d")
+	)
 	(label "nRF_RESET"
 		(at 238.76 128.27 180)
 		(effects
@@ -11793,7 +12279,7 @@
 		(uuid "40cbb788-0d9e-4427-bc85-6e900c0eb0b9")
 	)
 	(label "P0.17/SDA"
-		(at 391.16 257.81 180)
+		(at 391.16 267.97 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11811,6 +12297,16 @@
 			(justify left bottom)
 		)
 		(uuid "4b6522f5-1903-44eb-99e1-c22e5040896e")
+	)
+	(label "P0.17/SDA"
+		(at 382.27 248.92 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5a3b86b6-8013-4a30-adf1-936bb678cb8f")
 	)
 	(label "IO_BAT_MEAS_ON"
 		(at 128.27 252.73 0)
@@ -11833,7 +12329,7 @@
 		(uuid "62141b36-19e4-4e58-a86b-4cd72a73829f")
 	)
 	(label "P0.19/SCL"
-		(at 419.1 257.81 0)
+		(at 419.1 267.97 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11883,6 +12379,16 @@
 			(justify right bottom)
 		)
 		(uuid "75879b04-087e-4093-a592-9512729d99dd")
+	)
+	(label "P0.17/SDA"
+		(at 427.99 298.45 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "76a69f83-e4a7-45ef-bd28-18690c6b94c4")
 	)
 	(label "IO_IMP_IN"
 		(at 323.85 133.35 0)
@@ -11961,6 +12467,16 @@
 		(uuid "a9d68c0c-9c56-4abf-82e9-2a4d778ad4a2")
 	)
 	(label "P0.17/SDA"
+		(at 341.63 298.45 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ac857bb2-3618-4b97-9744-45c1cca776a6")
+	)
+	(label "P0.17/SDA"
 		(at 391.16 219.71 180)
 		(effects
 			(font
@@ -12004,7 +12520,7 @@
 		(uuid "ba89365a-cf88-4619-a076-d534d842c33c")
 	)
 	(label "P0.19/SCL"
-		(at 477.52 262.89 180)
+		(at 477.52 273.05 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12012,6 +12528,16 @@
 			(justify right bottom)
 		)
 		(uuid "bae2a516-0c36-492b-abcf-ce1bbdca9b6d")
+	)
+	(label "P0.19/SCL"
+		(at 341.63 251.46 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "bb6c498f-aabb-47ea-b038-419391739f11")
 	)
 	(label "IO_RGB"
 		(at 128.27 262.89 0)
@@ -12085,6 +12611,16 @@
 			(justify right bottom)
 		)
 		(uuid "d153e4bb-c39a-4ad4-a230-5cfdacf29fbd")
+	)
+	(label "P0.19/SCL"
+		(at 427.99 252.73 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d3c6858d-e2d8-45ba-b934-172559837171")
 	)
 	(label "IO_BAT_MEAS_ON"
 		(at 293.37 59.69 0)
@@ -13730,7 +14266,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 481.33 269.24 0)
+		(at 481.33 279.4 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -13740,7 +14276,7 @@
 		(dnp no)
 		(uuid "197f8a01-e48d-4dd2-8e35-9405a9224f37")
 		(property "Reference" "C25"
-			(at 483.87 267.97 0)
+			(at 483.87 278.13 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13751,7 +14287,7 @@
 			)
 		)
 		(property "Value" "100n"
-			(at 483.87 270.51 0)
+			(at 483.87 280.67 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13762,7 +14298,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
-			(at 482.2952 273.05 0)
+			(at 482.2952 283.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13773,7 +14309,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13784,7 +14320,7 @@
 			)
 		)
 		(property "Description" "25V 100nF X5R ¬±10% 0402"
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13795,7 +14331,7 @@
 			)
 		)
 		(property "Allied_Number" ""
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13806,7 +14342,7 @@
 			)
 		)
 		(property "LCSC PART #" "C361203"
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13817,7 +14353,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "C1005X5R1E104KT000E"
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13828,7 +14364,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "YAGEO"
-			(at 481.33 269.24 0)
+			(at 481.33 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14304,6 +14840,92 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "#PWR019")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 447.04 250.19 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "27411980-4346-4d46-a148-d9ce5f0a7e20")
+		(property "Reference" "J5"
+			(at 448.31 243.84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02_Odd_Even"
+			(at 448.31 246.38 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x02_P1.27mm_Vertical_SMD"
+			(at 447.04 250.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 447.04 250.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 447.04 250.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f1a86f12-f14e-423b-b363-78164047a9d4")
+		)
+		(pin "2"
+			(uuid "5212abb9-e0b1-4778-859d-6642abff5536")
+		)
+		(pin "3"
+			(uuid "1e787859-a4bf-4aec-8320-2e77eca1fb55")
+		)
+		(pin "4"
+			(uuid "ccf172f6-0401-4698-affd-2990357fecd8")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "J5")
 					(unit 1)
 				)
 			)
@@ -14980,6 +15602,83 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3V3")
+		(at 341.63 292.1 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2f47aeb9-ded6-4691-bdc6-cf6c7834f766")
+		(property "Reference" "#PWR089"
+			(at 341.63 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 341.376 288.036 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 341.63 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 341.63 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 341.63 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5e7d454e-b963-4644-ba65-e3af32f15915")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR089")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:L")
 		(at 41.91 156.21 180)
 		(unit 1)
@@ -15641,7 +16340,7 @@
 	)
 	(symbol
 		(lib_id "PCB_Lib_ItsNotDaan:TMP117MAIDRVT")
-		(at 433.07 257.81 0)
+		(at 433.07 267.97 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -15652,7 +16351,7 @@
 		(fields_autoplaced yes)
 		(uuid "3b17cb9c-9b3a-4cda-ab48-0054050106ac")
 		(property "Reference" "IC6"
-			(at 448.31 250.19 0)
+			(at 448.31 260.35 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15662,7 +16361,7 @@
 			)
 		)
 		(property "Value" "TMP117MAIDRVT"
-			(at 448.31 252.73 0)
+			(at 448.31 262.89 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -15672,7 +16371,7 @@
 			)
 		)
 		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
-			(at 459.74 352.73 0)
+			(at 459.74 362.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15684,7 +16383,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tmp117.pdf"
-			(at 459.74 452.73 0)
+			(at 459.74 462.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15696,7 +16395,7 @@
 			)
 		)
 		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
-			(at 433.07 257.81 0)
+			(at 433.07 267.97 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15707,7 +16406,7 @@
 			)
 		)
 		(property "Height" "0.8"
-			(at 459.74 652.73 0)
+			(at 459.74 662.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15719,7 +16418,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "Texas Instruments"
-			(at 459.74 752.73 0)
+			(at 459.74 762.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15731,7 +16430,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
-			(at 459.74 852.73 0)
+			(at 459.74 862.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15743,7 +16442,7 @@
 			)
 		)
 		(property "Mouser Part Number" "595-TMP117MAIDRVT"
-			(at 459.74 952.73 0)
+			(at 459.74 962.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15755,7 +16454,7 @@
 			)
 		)
 		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TMP117MAIDRVT?qs=qSfuJ%252Bfl%2Fd7%252B0%2FufpTVPxA%3D%3D"
-			(at 459.74 1052.73 0)
+			(at 459.74 1062.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15767,7 +16466,7 @@
 			)
 		)
 		(property "Arrow Part Number" "TMP117MAIDRVT"
-			(at 459.74 1152.73 0)
+			(at 459.74 1162.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15779,7 +16478,7 @@
 			)
 		)
 		(property "Arrow Price/Stock" "https://www.arrow.com/en/products/tmp117maidrvt/texas-instruments.html?utm_currency=USD&region=nac"
-			(at 459.74 1252.73 0)
+			(at 459.74 1262.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15791,7 +16490,7 @@
 			)
 		)
 		(property "LCSC PART #" "C2803242"
-			(at 433.07 257.81 0)
+			(at 433.07 267.97 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17300,6 +17999,85 @@
 		)
 	)
 	(symbol
+		(lib_id "power:Earth")
+		(at 468.63 300.99 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4cc3954a-f0e9-4940-83e9-e2f628df5e8e")
+		(property "Reference" "#PWR094"
+			(at 468.63 307.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Earth"
+			(at 468.63 304.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 468.63 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 468.63 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Earth\""
+			(at 468.63 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e63f1bbc-0b39-460a-a717-0b905aaa2116")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR094")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:VBUS")
 		(at 68.58 34.29 0)
 		(unit 1)
@@ -17646,6 +18424,92 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "Q1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 360.68 295.91 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "59ef6f0c-0739-49bb-bf8a-aa5ac1a35169")
+		(property "Reference" "J4"
+			(at 361.95 289.56 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02_Odd_Even"
+			(at 361.95 292.1 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x02_P1.27mm_Vertical"
+			(at 360.68 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 360.68 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 360.68 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5e4de5ff-e7ff-4e5e-8fec-a58a0ab48a0f")
+		)
+		(pin "2"
+			(uuid "2b5fe237-b3c6-419f-935a-91febff9898a")
+		)
+		(pin "3"
+			(uuid "184f8614-ed84-4094-908a-9551e67c2ae2")
+		)
+		(pin "4"
+			(uuid "ac74681c-a88e-49cb-9a32-fde8473a85cb")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "J4")
 					(unit 1)
 				)
 			)
@@ -18525,6 +19389,85 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
+		(at 468.63 255.27 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "688e1cbe-e968-4adb-84e5-9788fbc5de44")
+		(property "Reference" "#PWR093"
+			(at 468.63 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Earth"
+			(at 468.63 259.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 468.63 255.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 468.63 255.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Earth\""
+			(at 468.63 255.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5bf749bb-6188-4cd7-8a78-805edf9eae1f")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR093")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:Earth")
 		(at 123.19 179.07 0)
 		(unit 1)
 		(body_style 1)
@@ -19264,6 +20207,85 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:Earth")
+		(at 382.27 300.99 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "72c79bd4-45e3-4a3a-8ec9-07e215c4caba")
+		(property "Reference" "#PWR090"
+			(at 382.27 307.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Earth"
+			(at 382.27 304.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 382.27 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 382.27 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Earth\""
+			(at 382.27 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "893f21ae-d983-43bd-b027-b33672268cd6")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR090")
 					(unit 1)
 				)
 			)
@@ -20610,8 +21632,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
-		(at 394.97 251.46 0)
+		(lib_id "power:Earth")
+		(at 382.27 254 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -20619,9 +21641,10 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "84e032bb-226a-453f-a267-89e995ee691a")
-		(property "Reference" "#PWR070"
-			(at 394.97 255.27 0)
+		(fields_autoplaced yes)
+		(uuid "83bf8fc1-65dc-44b6-a767-aa9382d21c10")
+		(property "Reference" "#PWR073"
+			(at 382.27 260.35 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20631,8 +21654,9 @@
 				)
 			)
 		)
-		(property "Value" "+3V3"
-			(at 394.716 247.396 0)
+		(property "Value" "Earth"
+			(at 382.27 257.81 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20642,7 +21666,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 394.97 251.46 0)
+			(at 382.27 254 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20653,7 +21677,84 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 394.97 251.46 0)
+			(at 382.27 254 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Earth\""
+			(at 382.27 254 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a0d6a345-b911-4f32-8af4-a4594038910b")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR073")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 394.97 261.62 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "84e032bb-226a-453f-a267-89e995ee691a")
+		(property "Reference" "#PWR070"
+			(at 394.97 265.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 394.716 257.556 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 394.97 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 394.97 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20664,7 +21765,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 394.97 251.46 0)
+			(at 394.97 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20880,7 +21981,7 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 481.33 251.46 0)
+		(at 481.33 261.62 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -20890,7 +21991,7 @@
 		(dnp no)
 		(uuid "88c60908-6579-42a7-b900-593fc69d5d85")
 		(property "Reference" "#PWR083"
-			(at 481.33 255.27 0)
+			(at 481.33 265.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20901,7 +22002,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 481.076 247.396 0)
+			(at 481.076 257.556 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20911,7 +22012,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 481.33 251.46 0)
+			(at 481.33 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20922,7 +22023,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 481.33 251.46 0)
+			(at 481.33 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20933,7 +22034,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 481.33 251.46 0)
+			(at 481.33 261.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20956,8 +22057,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:Earth")
-		(at 394.97 278.13 0)
+		(lib_id "power:+3V3")
+		(at 427.99 246.38 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -20965,10 +22066,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8ca6f29b-9c7c-4572-9004-a9f8f9717368")
-		(property "Reference" "#PWR071"
-			(at 394.97 284.48 0)
+		(uuid "8ae21899-810d-4d44-97a4-41286f033e0b")
+		(property "Reference" "#PWR091"
+			(at 427.99 250.19 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20978,9 +22078,8 @@
 				)
 			)
 		)
-		(property "Value" "Earth"
-			(at 394.97 281.94 0)
-			(hide yes)
+		(property "Value" "+3V3"
+			(at 427.736 242.316 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20990,7 +22089,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 394.97 278.13 0)
+			(at 427.99 246.38 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21001,7 +22100,86 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 394.97 278.13 0)
+			(at 427.99 246.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 427.99 246.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "351914c5-e597-4aa6-a14b-51af01e06fc8")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR091")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:Earth")
+		(at 394.97 288.29 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8ca6f29b-9c7c-4572-9004-a9f8f9717368")
+		(property "Reference" "#PWR071"
+			(at 394.97 294.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Earth"
+			(at 394.97 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 394.97 288.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 394.97 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21012,7 +22190,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 394.97 278.13 0)
+			(at 394.97 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22934,7 +24112,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 481.33 278.13 0)
+		(at 481.33 288.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -22945,7 +24123,7 @@
 		(fields_autoplaced yes)
 		(uuid "998c2d29-2d8a-44b4-9271-fc1bba8ceb69")
 		(property "Reference" "#PWR084"
-			(at 481.33 284.48 0)
+			(at 481.33 294.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22956,7 +24134,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 481.33 281.94 0)
+			(at 481.33 292.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22967,7 +24145,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 481.33 278.13 0)
+			(at 481.33 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22978,7 +24156,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 481.33 278.13 0)
+			(at 481.33 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22989,7 +24167,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 481.33 278.13 0)
+			(at 481.33 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24265,7 +25443,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 471.17 278.13 0)
+		(at 471.17 288.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -24276,7 +25454,7 @@
 		(fields_autoplaced yes)
 		(uuid "ac1a41ed-5e01-4112-a0cf-190e8f7f45e3")
 		(property "Reference" "#PWR079"
-			(at 471.17 284.48 0)
+			(at 471.17 294.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24287,7 +25465,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 471.17 281.94 0)
+			(at 471.17 292.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24298,7 +25476,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 471.17 278.13 0)
+			(at 471.17 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24309,7 +25487,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 471.17 278.13 0)
+			(at 471.17 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24320,7 +25498,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 471.17 278.13 0)
+			(at 471.17 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24663,6 +25841,83 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "TP3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 341.63 245.11 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "b490c0dc-1040-4f4b-a3b7-fe0e97e4662d")
+		(property "Reference" "#PWR074"
+			(at 341.63 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 341.376 241.046 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 341.63 245.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 341.63 245.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 341.63 245.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c1d6177a-dad5-4b65-9b63-1e5eecaa7269")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR074")
 					(unit 1)
 				)
 			)
@@ -25074,7 +26329,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 394.97 269.24 0)
+		(at 394.97 279.4 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25084,7 +26339,7 @@
 		(dnp no)
 		(uuid "ba4865b5-50ad-4133-b5aa-369b2a9018bc")
 		(property "Reference" "C23"
-			(at 397.51 267.97 0)
+			(at 397.51 278.13 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25095,7 +26350,7 @@
 			)
 		)
 		(property "Value" "100n"
-			(at 397.51 270.51 0)
+			(at 397.51 280.67 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25106,7 +26361,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
-			(at 395.9352 273.05 0)
+			(at 395.9352 283.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25117,7 +26372,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25128,7 +26383,7 @@
 			)
 		)
 		(property "Description" "25V 100nF X5R ¬±10% 0402"
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25139,7 +26394,7 @@
 			)
 		)
 		(property "Allied_Number" ""
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25150,7 +26405,7 @@
 			)
 		)
 		(property "LCSC PART #" "C361203"
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25161,7 +26416,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "C1005X5R1E104KT000E"
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25172,7 +26427,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "YAGEO"
-			(at 394.97 269.24 0)
+			(at 394.97 279.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25199,7 +26454,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 334.01 278.13 0)
+		(at 334.01 288.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25210,7 +26465,7 @@
 		(fields_autoplaced yes)
 		(uuid "bc15bd06-a803-497e-a789-f1da03a10c72")
 		(property "Reference" "#PWR069"
-			(at 334.01 284.48 0)
+			(at 334.01 294.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25221,7 +26476,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 334.01 281.94 0)
+			(at 334.01 292.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25232,7 +26487,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 334.01 278.13 0)
+			(at 334.01 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25243,7 +26498,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 334.01 278.13 0)
+			(at 334.01 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25254,7 +26509,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 334.01 278.13 0)
+			(at 334.01 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25271,6 +26526,83 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "#PWR069")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 427.99 292.1 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "be922d08-a01d-473e-869f-264d904acf09")
+		(property "Reference" "#PWR092"
+			(at 427.99 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 427.736 288.036 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 427.99 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 427.99 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 427.99 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a88acafe-c81b-4fd8-bd7a-bf0dccdd1821")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "#PWR092")
 					(unit 1)
 				)
 			)
@@ -25403,7 +26735,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 384.81 278.13 0)
+		(at 384.81 288.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25414,7 +26746,7 @@
 		(fields_autoplaced yes)
 		(uuid "bfcf7328-0c3c-4b4c-bc0f-74d350921ef9")
 		(property "Reference" "#PWR072"
-			(at 384.81 284.48 0)
+			(at 384.81 294.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25425,7 +26757,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 384.81 281.94 0)
+			(at 384.81 292.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25436,7 +26768,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 384.81 278.13 0)
+			(at 384.81 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25447,7 +26779,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 384.81 278.13 0)
+			(at 384.81 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25458,7 +26790,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 384.81 278.13 0)
+			(at 384.81 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25475,6 +26807,92 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "#PWR072")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 447.04 295.91 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c04a5c68-05a6-4e43-83b2-c150726d639e")
+		(property "Reference" "J7"
+			(at 448.31 289.56 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02_Odd_Even"
+			(at 448.31 292.1 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x02_P1.27mm_Vertical"
+			(at 447.04 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 447.04 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 447.04 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "7a332a7e-cd39-4b7a-8a30-641a3a814fd9")
+		)
+		(pin "2"
+			(uuid "badc9202-094f-4fe0-a59b-9eb18d4aaa46")
+		)
+		(pin "3"
+			(uuid "9fb32c7a-f222-4ddd-8ef8-4ada97a62d92")
+		)
+		(pin "4"
+			(uuid "33ded429-0d6c-4c74-bb65-2717815bdb90")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "J7")
 					(unit 1)
 				)
 			)
@@ -26427,7 +27845,7 @@
 	)
 	(symbol
 		(lib_id "PCB_Lib_ItsNotDaan:TMP117MAIDRVT")
-		(at 346.71 257.81 0)
+		(at 346.71 267.97 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -26438,7 +27856,7 @@
 		(fields_autoplaced yes)
 		(uuid "ce16e52f-200d-40d4-b82b-9580bdebfdb7")
 		(property "Reference" "IC4"
-			(at 361.95 250.19 0)
+			(at 361.95 260.35 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -26448,7 +27866,7 @@
 			)
 		)
 		(property "Value" "TMP117MAIDRVT"
-			(at 361.95 252.73 0)
+			(at 361.95 262.89 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -26458,7 +27876,7 @@
 			)
 		)
 		(property "Footprint" "PCB_Lib_ItsNotDaan:SON65P200X200X80-7N"
-			(at 373.38 352.73 0)
+			(at 373.38 362.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26470,7 +27888,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tmp117.pdf"
-			(at 373.38 452.73 0)
+			(at 373.38 462.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26482,7 +27900,7 @@
 			)
 		)
 		(property "Description" "±0.1°C I2C WSON-6-EP(2x2) Temperature Sensor (MAIDRVT obsoleet)"
-			(at 346.71 257.81 0)
+			(at 346.71 267.97 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26493,7 +27911,7 @@
 			)
 		)
 		(property "Height" "0.8"
-			(at 373.38 652.73 0)
+			(at 373.38 662.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26505,7 +27923,7 @@
 			)
 		)
 		(property "Manufacturer_Name" "Texas Instruments"
-			(at 373.38 752.73 0)
+			(at 373.38 762.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26517,7 +27935,7 @@
 			)
 		)
 		(property "Manufacturer_Part_Number" "TMP117MAIDRVR"
-			(at 373.38 852.73 0)
+			(at 373.38 862.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26529,7 +27947,7 @@
 			)
 		)
 		(property "Mouser Part Number" "595-TMP117MAIDRVT"
-			(at 373.38 952.73 0)
+			(at 373.38 962.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26541,7 +27959,7 @@
 			)
 		)
 		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TMP117MAIDRVT?qs=qSfuJ%252Bfl%2Fd7%252B0%2FufpTVPxA%3D%3D"
-			(at 373.38 1052.73 0)
+			(at 373.38 1062.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26553,7 +27971,7 @@
 			)
 		)
 		(property "Arrow Part Number" "TMP117MAIDRVT"
-			(at 373.38 1152.73 0)
+			(at 373.38 1162.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26565,7 +27983,7 @@
 			)
 		)
 		(property "Arrow Price/Stock" "https://www.arrow.com/en/products/tmp117maidrvt/texas-instruments.html?utm_currency=USD&region=nac"
-			(at 373.38 1252.73 0)
+			(at 373.38 1262.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26577,7 +27995,7 @@
 			)
 		)
 		(property "LCSC PART #" "C2803242"
-			(at 346.71 257.81 0)
+			(at 346.71 267.97 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26737,6 +28155,92 @@
 			(project "BodyTempSensor"
 				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
 					(reference "ACT1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_02x02_Odd_Even")
+		(at 360.68 248.92 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cfbe496f-569a-44e0-acdc-a9054a04b91a")
+		(property "Reference" "J2"
+			(at 361.95 242.57 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_02x02_Odd_Even"
+			(at 361.95 245.11 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x02_P1.27mm_Vertical_SMD"
+			(at 360.68 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 360.68 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, double row, 02x02, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 360.68 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "03f4b82f-5cc2-4fad-9160-304f0b2f461a")
+		)
+		(pin "2"
+			(uuid "112ccd56-3f69-4b0a-93e6-da7a57370f04")
+		)
+		(pin "3"
+			(uuid "f7ed2263-350a-442c-a14d-2cccfe29e9bb")
+		)
+		(pin "4"
+			(uuid "813b26db-c42e-40f5-90cc-494d35148f09")
+		)
+		(instances
+			(project "BodyTempSensor"
+				(path "/2233ec79-c23c-4e42-804a-effbfdf0fabb"
+					(reference "J2")
 					(unit 1)
 				)
 			)
@@ -27688,7 +29192,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 420.37 278.13 0)
+		(at 420.37 288.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -27699,7 +29203,7 @@
 		(fields_autoplaced yes)
 		(uuid "e8ec8e0b-249a-43f8-9a11-6ba4f9f16069")
 		(property "Reference" "#PWR078"
-			(at 420.37 284.48 0)
+			(at 420.37 294.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27710,7 +29214,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 420.37 281.94 0)
+			(at 420.37 292.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27721,7 +29225,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 420.37 278.13 0)
+			(at 420.37 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27732,7 +29236,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 420.37 278.13 0)
+			(at 420.37 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27743,7 +29247,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 420.37 278.13 0)
+			(at 420.37 288.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
